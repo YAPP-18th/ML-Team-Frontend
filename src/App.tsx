@@ -1,4 +1,8 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { jsx } from '@emotion/react';
 import React from 'react';
+import 'twin.macro';
 import logo from './logo.svg';
 import './App.css';
 
@@ -16,8 +20,9 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Come Here! React Here here!
         </a>
+        <div className="bg-blue-300">Hi Hello Hey</div>
       </header>
     </div>
   );
