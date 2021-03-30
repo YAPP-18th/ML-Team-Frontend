@@ -14,7 +14,10 @@
     }
   },
   "rules": {
-    "prettier/prettier": ["error", { "singleQuote": true }],
+    "prettier/prettier": [
+      "error",
+      { "endOfLine": "auto", "singleQuote": true }
+    ],
     "react/jsx-uses-vars": "error"
   },
   "ignorePatterns": ["*.config.js"]
