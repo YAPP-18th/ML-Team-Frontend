@@ -5,8 +5,8 @@
   "dependencies": {
     "@craco/craco": "6.1.1",
     "@emotion/core": "11.0.0",
-    "@emotion/react": "11.1.5",
-    "@emotion/styled": "11.1.5",
+    "@emotion/react": "^11.1.5",
+    "@emotion/styled": "^11.1.5",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -25,9 +25,6 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "build:tailwind": "tailwindcss build src/index.css -o src/tailwind.output.css",
-    "prestart": "npm run build:tailwind",
-    "prebuild": "npm run build:tailwind",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
@@ -58,20 +55,20 @@
   },
   "devDependencies": {
     "@babel/core": "7.13.10",
-    "@tailwindcss/postcss7-compat": "2.0.3",
-    "@types/react": "17.0.3",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "@types/react": "^17.0.3",
     "@types/react-dom": "17.0.2",
     "@types/react-router-dom": "5.1.7",
     "@typescript-eslint/eslint-plugin": "4.17.0",
     "@typescript-eslint/parser": "4.17.0",
-    "autoprefixer": "9.8.6",
+    "autoprefixer": "^9.8.6",
     "babel-plugin-macros": "3.0.1",
     "craco-alias": "2.2.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-react": "7.22.0",
-    "postcss": "7.0.35",
+    "postcss": "^7.0.35",
     "prettier": "2.2.1",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@2.0.3"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4"
   }
 }
