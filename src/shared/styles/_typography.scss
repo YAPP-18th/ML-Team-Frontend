@@ -1,0 +1,71 @@
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+* { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+
+/** for class */
+.std-typo {
+  &-h1 {
+    font-weight: bold;
+    font-size: 60px;
+    line-height: 72px;
+    letter-spacing: -0.8px;
+  }
+
+  &-h2 {
+    font-weight: bold;
+    font-size: 48px;
+    line-height: 64px;
+    letter-spacing: -0.6px;
+  }
+
+  &-h3 {
+    font-weight: bold;
+    font-size: 34px;
+    line-height: 64px;
+    letter-spacing: -0.48px;
+  }
+
+  &-h4 {
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 64px;
+    letter-spacing: -0.36px;
+  }
+
+  &-h5 {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 64px;
+    letter-spacing: -0.24px;
+  }
+
+  &-subtitle-1 {
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 64px;
+    letter-spacing: -0.18px;
+  }
+
+  &-body-1 {
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.08px;
+  }
+
+  &-body-2 {
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: 0;
+  }
+
+  &-caption-1 {
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: -0.1px;
+  }
+
+  &-caption-2 {
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: -0.2px;
+  }
+}
