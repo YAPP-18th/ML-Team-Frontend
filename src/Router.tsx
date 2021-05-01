@@ -4,7 +4,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import MyPage from './pages/MyPage';
 import MyStudy from './pages/MyStudy';
-import Onboarding from './pages/Onboarding';
+import OnBoarding from './pages/onboarding';
 import Report from './pages/Report';
 import Shop from './pages/Shop';
 import BeforeStudy from './pages/BeforeStudy';
@@ -18,7 +18,7 @@ const Router = () => {
         <Route path="/login" component={Login} />
         <Route path="/user" component={MyPage} />
         <Route path="/mystudy" component={MyStudy} />
-        <Route path="/onboarding" component={Onboarding} />
+        <Route path="/onboarding" component={OnBoarding} />
         <Route path="/report" component={Report} />
         <Route path="/shop" component={Shop} />
         <Route path="/wait" component={BeforeStudy} />
