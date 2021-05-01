@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { OnBoardingBoxWrapper } from '@src/shared/styled/OnBoardingStyled';
 import styled from '@emotion/styled';
-import OnBoardingImage from '@assets/images/onboarding.svg';
-import { StdTypoBody2, StdTypoH3 } from '@src/shared/styled/Typography';
-import tw from 'twin.macro';
 import { OnBoardingStepOne } from '@components/onboarding/OnBoardingStepOne';
 import { OnBoardingStepThree } from '@components/onboarding/OnBoardingStepThree';
 import { OnBoardingStepTwo } from '@components/onboarding/OnBoardingStepTwo';
+import { GRAY_10 } from '@src/shared/styles/colors';
 
 const OnBoardingWrapper = styled.div`
   width: 100%;
@@ -18,6 +15,15 @@ const OnBoardingWrapper = styled.div`
 `;
 
 type OnBoardingStepType = 1 | 2 | 3;
+
+export const OnBoardingBoxWrapper = styled.div`
+  display: block;
+  background: ${GRAY_10};
+  max-width: 768px;
+  width: 100%;
+  border-radius: 20px;
+  padding: 20px;
+`;
 
 const OnBoarding = () => {
   const [step, setStep] = useState<OnBoardingStepType>(1);
