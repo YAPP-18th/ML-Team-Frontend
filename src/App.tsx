@@ -1,10 +1,17 @@
 import React from 'react';
 import 'twin.macro';
 import './App.css';
-import Router from './Router';
+import { BrowserRouter } from 'react-router-dom';
+import { Main } from '@pages/Main';
 
-function App() {
-  return <Router />;
-}
+const App: React.FC = () => {
+  return (
+    <>
+      <BrowserRouter>
+        <Main />
+      </BrowserRouter>
+    </>
+  );
+};
 
 export default App;
