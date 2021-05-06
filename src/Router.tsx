@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Landing from './pages/Landing';
-import Login from './pages/Login';
+import Login from './pages/login/index';
 import MyPage from './pages/MyPage';
 import MyStudy from './pages/MyStudy';
 import OnBoarding from './pages/onboarding';
 import Report from './pages/Report';
 import Shop from './pages/Shop';
 import BeforeStudy from './pages/BeforeStudy';
-import Study from './pages/Study';
+import Study from './pages/study/index';
 
 const Router = () => {
   return (
