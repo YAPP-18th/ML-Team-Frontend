@@ -11,6 +11,8 @@ const StyledRestrictedWidthWrapper = styled.div`
   max-width: 1194px;
   width: 100%;
   margin: 0 auto;
+  padding: 0 30px;
+  box-sizing: content-box;
 `;
 
 export const MainLayout: React.FC = ({ children }) => {
