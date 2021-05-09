@@ -1,9 +1,15 @@
 import React from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { MyStudy } from '@pages/contents/my-study/MyStudy';
 
 export const Contents: React.FC = () => {
+  const { path } = useRouteMatch();
+
   return (
     <>
-      <span>asas</span>
+      <Switch>
+        <Route path={`${path}/my-study`} component={MyStudy} />
+      </Switch>
     </>
   );
 };
