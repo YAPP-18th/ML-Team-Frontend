@@ -1,6 +1,5 @@
 @import "shared/styles/colors";
 @import "shared/styles/typography";
-@import "shared/styles/euiTheme";
 
 @tailwind base;
 @tailwind components;
@@ -25,8 +24,4 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-img {
-  border: none;
 }

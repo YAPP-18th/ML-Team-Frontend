@@ -1,6 +1,6 @@
 import React from 'react';
 import OnBoardingImage from '@assets/images/onboarding.svg';
-import { StdTypoBody2, StdTypoH3 } from '@src/shared/styled/Typography';
+import { StdTypoBody2, StdTypoH3 } from '@shared/styled/Typography';
 import tw from 'twin.macro';
 
 export const OnBoardingStepTwo: React.FC = () => {
