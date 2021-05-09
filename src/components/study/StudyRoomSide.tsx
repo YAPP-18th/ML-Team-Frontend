@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
-import { GRAY_10, PRIMARY_8 } from '@src/shared/styles/colors';
+import { GRAY_10, PRIMARY_8 } from '@shared/styles/colors';
 import StatusCard from './StatusCard';
 
 const StudyRoomSide = () => {

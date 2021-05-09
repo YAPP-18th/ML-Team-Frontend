@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import { jsx, css } from '@emotion/react';
 import { Button } from 'antd';
 // colors
-import { GRAY_10 } from '@src/shared/styles/colors';
+import { GRAY_10 } from '@shared/styles/colors';
 
 // images
 import LogoImg from '@assets/images/logo.svg';

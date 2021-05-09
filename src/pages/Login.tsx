@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 // images
-import logo from '../assets/logo.svg';
-import google from '../assets/google.svg';
-import facebook from '../assets/facebook.svg';
+import logo from '@assets/images/logo.svg';
+import google from '@assets/images/google.svg';
+import facebook from '@assets/images/facebook.svg';
 
 interface LoginButtonProps {
   bgColor: string;

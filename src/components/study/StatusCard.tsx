@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
-import { GRAY_10, PRIMARY_8 } from '@src/shared/styles/colors';
+import { GRAY_10, PRIMARY_8 } from '@shared/styles/colors';
 import StarImg from '@assets/images/star.svg';
 
 interface IStatusProps {
@@ -17,7 +17,6 @@ const StatusCard = ({ nickname, status }: IStatusProps) => {
         <div>{nickname}</div>
         <NicknameIconStyled src={StarImg} />
       </div>
-
       <StatusStyled status={status}>상태</StatusStyled>
     </StatusCardStyled>
   );
