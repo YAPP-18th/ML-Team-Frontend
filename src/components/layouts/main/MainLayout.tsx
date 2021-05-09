@@ -47,9 +47,9 @@ export const MainLayout: React.FC = ({ children }) => {
           <StyledHeaderInner tw="flex">
             <img src={Logo} tw="self-center" alt="STUDEEP" />
             <Menu theme="dark" mode="horizontal" css={MenuStyle}>
-              <MenuItem key="1">nav 1</MenuItem>
-              <MenuItem key="2">nav 2</MenuItem>
-              <MenuItem key="3">nav dasdnjksanjkdasjdasjk3</MenuItem>
+              <MenuItem key="1">내 학습</MenuItem>
+              <MenuItem key="2">학습레포트</MenuItem>
+              <MenuItem key="3">별자리샵</MenuItem>
             </Menu>
           </StyledHeaderInner>
         </Header>
@@ -86,6 +86,7 @@ const MenuItem: React.FC = ({ children, ...props }) => {
 
     &.ant-menu-item-selected {
       background: transparent !important;
+      font-weight: 600;
 
       &::before {
         background: ${PRIMARY_8};
