@@ -9,13 +9,17 @@ import StudyRoomSide from '../../components/study/StudyRoomSide';
 import ExitImg from '@assets/images/exit.svg';
 import SoundOffImg from '@assets/images/sound-off.svg';
 import ShareImg from '@assets/images/share.svg';
+import { GRAY_12 } from '@shared/styles/colors';
+
+import 'twin.macro';
+import { StdTypoH4 } from '@shared/styled/Typography';
 
 const Study = () => {
   return (
     <Layout>
       <Header css={HeaderStyle}>
-        <div>공부방 이름</div>
-        <Tooltip title="search">
+        <StyledStudyRoomTitle>공부방 이름</StyledStudyRoomTitle>
+        <div tw="flex items-center space-x-5">
           <Button type="primary" shape="circle">
             <ButtonImgStyled src={SoundOffImg} />
           </Button>
@@ -25,7 +29,7 @@ const Study = () => {
               <div>공부 종료하기</div>
             </ButtonContentStyled>
           </Button>
-        </Tooltip>
+        </div>
       </Header>
       <Layout>
         <Content>Content</Content>
@@ -48,11 +52,20 @@ const Study = () => {
 export default Study;
 
 const HeaderStyle = css`
-  color: white;
-  background-color: black;
+  height: 80px;
+  padding: 0 40px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  color: white;
+  background: ${GRAY_12};
 `;
+
+const StyledStudyRoomTitle = styled.span`
+  font-size: 22px;
+  font-weight: 600;
+`;
+
 const ButtonContentStyled = styled.div`
   display: flex;
 `;

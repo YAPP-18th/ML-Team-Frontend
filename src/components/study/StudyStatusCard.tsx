@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
-import { jsx, css } from '@emotion/react';
-import { GRAY_10, PRIMARY_8 } from '@shared/styles/colors';
+import { css } from '@emotion/react';
+import { GRAY_10 } from '@shared/styles/colors';
 import StarImg from '@assets/images/star.svg';
 
 interface IStatusProps {
@@ -9,23 +9,22 @@ interface IStatusProps {
   status: string;
 }
 
-const StatusCard = ({ nickname, status }: IStatusProps) => {
+const StudyStatusCard = ({ nickname, status }: IStatusProps) => {
   return (
-    <StatusCardStyled>
+    <StudyStatusCardStyled>
       <div css={StatusIconStyle}>아이콘</div>
       <div style={{ display: 'flex' }}>
         <div>{nickname}</div>
         <NicknameIconStyled src={StarImg} />
       </div>
       <StatusStyled status={status}>상태</StatusStyled>
-    </StatusCardStyled>
+    </StudyStatusCardStyled>
   );
 };
 
-export default StatusCard;
+export default StudyStatusCard;
 
-const StatusCardStyled = styled.div`
-  width: 190px;
+const StudyStatusCardStyled = styled.div`
   height: 224px;
   background-color: ${GRAY_10};
   justify-content: center;
