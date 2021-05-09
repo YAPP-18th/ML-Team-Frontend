@@ -106,7 +106,7 @@ const MenuItem: React.FC = ({ children, ...props }) => {
 
   return (
     <>
-      <Menu.Item {...props} css={MenuItemStyle} className="std-typo-subtitle-1">
+      <Menu.Item {...props} css={MenuItemStyle}>
         {children}
       </Menu.Item>
     </>
