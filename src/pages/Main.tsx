@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Login from '@pages/Login';
 import OnBoarding from '@pages/onboarding';
 import { MainLayout } from '@components/layouts/main/MainLayout';
 import { Contents } from '@pages/contents/Contents';
+import Login from '@pages/login';
 
 export const Main: React.FC = () => {
   return (

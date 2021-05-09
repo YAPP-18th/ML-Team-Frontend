@@ -1,105 +1,67 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import 'antd/dist/antd.css';
-import { jsx, css } from '@emotion/react';
 import { Button } from 'antd';
+import 'twin.macro';
+
+// typography
+import { StdTypoCaption1, StdTypoH3 } from '@shared/styled/Typography';
+
 // colors
-import { GRAY_10 } from '@shared/styles/colors';
+import { GRAY_12 } from '@shared/styles/colors';
 
 // images
 import LogoImg from '@assets/images/logo.svg';
 import GoogleImg from '@assets/images/google.svg';
 import FacebookImg from '@assets/images/facebook.svg';
 
-interface ILoginButtonProps {
-  bgColor: string;
-  txtColor: string;
-  contents: string;
-  img: string;
-}
-
 const Login = () => {
   return (
-    <ContentWrapperStyled>
-      <ContentContainerStyled>
+    <section tw="bg-gray-10 h-full">
+      <StyledLoginLeftWrapper>
         <img src={LogoImg} alt="logo" />
-        <PhrasesStyled>
-          내 꿈을 향해
-          <br />
-          몰입하는 시간, 스터딥
-        </PhrasesStyled>
-        <LoginButtonStyled
-          bgColor="#F2F2F2"
-          txtColor={GRAY_10}
-          contents="구글로 시작하기"
-          img={GoogleImg}
-        ></LoginButtonStyled>
-        <LoginButtonStyled
-          bgColor="#5C79FF"
-          txtColor="white"
-          contents="페이스북으로 시작하기"
-          img={FacebookImg}
-        ></LoginButtonStyled>
-        <InfoStyled>
-          <a href="#" style={{ textDecoration: 'underline', color: 'white' }}>
-            이용약관, 개인정보 수집 및 이용, 개인정보 제공 내용
-          </a>
-          에 동의하는 것으로 간주합니다.
-        </InfoStyled>
-      </ContentContainerStyled>
-      <ContentRightStyled></ContentRightStyled>
-      {/* <Link to="/onboarding">Onboarding</Link>
-      <Link to="/mystudy">My Study 내 학습</Link> */}
-    </ContentWrapperStyled>
+        <StyledLoginContent>
+          <StdTypoH3 tw="text-gray-1">
+            내 꿈을 향해
+            <br />
+            몰입하는 시간, 스터딥
+          </StdTypoH3>
+          <div tw="mt-12 space-y-2.5">
+            <Button
+              tw="w-full block bg-gray-1 hover:bg-gray-1 hover:opacity-75 text-gray-10 hover:text-gray-8 font-bold space-x-2.5"
+              type="text"
+            >
+              <img src={GoogleImg} alt="구글 로그인" tw="inline-block" />
+              구글 로그인
+            </Button>
+            <Button tw="w-full block font-bold space-x-2.5" type="primary">
+              <img src={FacebookImg} alt="페이스북 로그인" tw="inline-block" />
+              페이스북으로 시작하기
+            </Button>
+          </div>
+          <StdTypoCaption1 tw="block text-center mt-5">
+            <a href="#" tw="underline">
+              서비스 이용약관, 개인정보 처리방침
+            </a>
+            에 동의하는 것으로 간주합니다.
+          </StdTypoCaption1>
+        </StyledLoginContent>
+      </StyledLoginLeftWrapper>
+    </section>
   );
 };
 
-const ContentWrapperStyled = styled.div`
+const StyledLoginLeftWrapper = styled.div`
   width: 771px;
-  height: 100vh;
-  display: flex;
-  align-items: 'center';
-`;
-const ContentContainerStyled = styled.div`
-  width: 35vw;
-  min-width: 540px;
-  background-color: #141414;
+  height: 100%;
   padding: 150px;
-`;
-const ContentRightStyled = styled.div`
-  background-color: #262626;
-`;
-const PhrasesStyled = styled.p`
-  font-size: 34px;
-  font-weight: 700;
-  color: white;
-  line-height: 46px;
-  margin-top: 193px;
-  margin-bottom: 47px;
+  background: ${GRAY_12};
 `;
 
-const LoginImgStyled = styled.img`
-  margin-right: 10px;
-  width: 24px;
-  height: 24px;
-`;
-const LoginButtonStyled = (props: ILoginButtonProps) => (
-  <Button type="primary">
-    <div style={{ display: 'flex' }}>
-      <LoginImgStyled src={props.img} alt={props.img} />
-      <div>{props.contents}</div>
-    </div>
-  </Button>
-);
-const InfoStyled = styled.div`
+const StyledLoginContent = styled.div`
+  height: 100%;
   display: flex;
-  color: white;
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: 400;
-  margin-top: 20px;
+  flex-direction: column;
   justify-content: center;
-  flex-wrap: nowrap;
 `;
+
 export default Login;
