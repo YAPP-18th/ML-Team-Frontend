@@ -16,8 +16,8 @@ import FacebookImg from '@assets/images/facebook.svg';
 
 const Login = () => {
   return (
-    <section tw="bg-gray-10 h-full">
-      <StyledLoginLeftWrapper>
+    <section tw="h-full flex justify-center items-center">
+      <StyledLoginWrapper>
         <img src={LogoImg} alt="logo" />
         <StyledLoginContent>
           <StdTypoH3 tw="text-gray-1">
@@ -25,7 +25,7 @@ const Login = () => {
             <br />
             몰입하는 시간, 스터딥
           </StdTypoH3>
-          <div tw="mt-12 space-y-2.5">
+          <div tw="mt-14 space-y-2.5">
             <Button
               tw="w-full block bg-gray-1 hover:bg-gray-1 hover:opacity-75 text-gray-10 hover:text-gray-8 font-bold space-x-2.5"
               type="text"
@@ -45,16 +45,17 @@ const Login = () => {
             에 동의하는 것으로 간주합니다.
           </StdTypoCaption1>
         </StyledLoginContent>
-      </StyledLoginLeftWrapper>
+      </StyledLoginWrapper>
     </section>
   );
 };
 
-const StyledLoginLeftWrapper = styled.div`
-  width: 771px;
-  height: 100%;
-  padding: 150px;
+const StyledLoginWrapper = styled.div`
+  width: 532px;
+  height: 778px;
+  padding: 80px 50px;
   background: ${GRAY_12};
+  border-radius: 20px;
 `;
 
 const StyledLoginContent = styled.div`
