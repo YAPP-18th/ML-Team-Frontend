@@ -8,7 +8,7 @@ export const Contents: React.FC = () => {
   return (
     <>
       <Switch>
-        <Route path={`${path}/my-study`} component={MyStudy} />
+        <Route path={`${path}/mystudy`} component={MyStudy} />
       </Switch>
     </>
   );
