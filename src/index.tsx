@@ -5,11 +5,17 @@ import '@shared/styles/theme.less';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.scss';
+import { BrowserRouter } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyles />
-    <App />
+    <BrowserRouter>
+      <CookiesProvider>
+        <GlobalStyles />
+        <App />
+      </CookiesProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),
 );
