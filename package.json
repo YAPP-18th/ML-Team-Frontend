@@ -2,6 +2,7 @@
   "name": "yapp_ml_2021",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://27.96.131.49:8000",
   "dependencies": {
     "@craco/craco": "6.1.1",
     "@emotion/babel-preset-css-prop": "^11.2.0",
@@ -27,6 +28,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "^4.0.3",
     "redux": "4.0.5",
+    "rxjs": "^7.0.0",
     "twin.macro": "2.3.0",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
