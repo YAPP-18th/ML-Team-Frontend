@@ -19,21 +19,38 @@ import LogoImg from '@assets/images/logo.svg';
 import GoogleImg from '@assets/images/google.svg';
 import FacebookImg from '@assets/images/facebook.svg';
 import { css, Global } from '@emotion/react';
-import { ajax } from 'rxjs/ajax';
+import { ajax, AjaxError } from 'rxjs/ajax';
 import { take } from 'rxjs/operators';
+import { useCookies } from 'react-cookie';
 
 const Login = () => {
+  // const [cookies, setCookie] = useCookies(['accessToken']);
   const onSuccessGoogleLogin = (res: any) => {
     ajax({
       url: '/api/user/signin',
       method: 'GET',
       headers: {
         authorization: `Bearer ${res.accessToken}`,
-        'Access-Control-Allow-Origin': '*',
       },
     })
       .pipe(take(1))
-      .subscribe((i) => console.log(i));
+      .subscribe({
+        next: (i) => {
+          alert('회원가입이 되어 있군 ㅋ');
+        },
+        error: (err: AjaxError) => {
+          console.log(err);
+          if (err.status === 404) {
+            alert('회원가입이 필요하겠군 ㅋ');
+
+            // get Response Header
+            console.log(err.xhr.getResponseHeader('authorization'));
+          }
+        },
+        complete: () => {
+          console.log('complete');
+        },
+      });
   };
   const { signIn, loaded } = useGoogleLogin({
     clientId:
