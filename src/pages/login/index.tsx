@@ -1,23 +1,57 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Button, Tooltip } from 'antd';
 import 'twin.macro';
-import { useGoogleLogin } from 'react-google-login';
+import {
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+  useGoogleLogin,
+} from 'react-google-login';
 
 // typography
 import { StdTypoCaption1, StdTypoH3 } from '@shared/styled/Typography';
 
 // colors
-import { GRAY_12 } from '@shared/styles/colors';
+import { GRAY_10, GRAY_12 } from '@shared/styles/colors';
 
 // images
 import LogoImg from '@assets/images/logo.svg';
 import GoogleImg from '@assets/images/google.svg';
 import FacebookImg from '@assets/images/facebook.svg';
+import { css, Global } from '@emotion/react';
+import { ajax } from 'rxjs/ajax';
+import { take } from 'rxjs/operators';
 
 const Login = () => {
+  const onSuccessGoogleLogin = (res: any) => {
+    ajax({
+      url: '/api/user/signin',
+      method: 'GET',
+      headers: {
+        authorization: `Bearer ${res.accessToken}`,
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+      .pipe(take(1))
+      .subscribe((i) => console.log(i));
+  };
+  const { signIn, loaded } = useGoogleLogin({
+    clientId:
+      '532567031933-13u39u6uup1t3f62mldba3u94ituljpn.apps.googleusercontent.com',
+    onSuccess: onSuccessGoogleLogin,
+    onFailure: (err) => {
+      console.log(err, 'err');
+    },
+  });
   return (
-    <section tw="h-full flex justify-center items-center">
+    <section tw="h-full w-full flex justify-center items-center">
+      <Global
+        styles={css`
+          body {
+            background: ${GRAY_10};
+          }
+        `}
+      />
       <StyledLoginWrapper>
         <img src={LogoImg} alt="logo" />
         <StyledLoginContent>
@@ -30,6 +64,7 @@ const Login = () => {
             <Button
               tw="w-full block bg-gray-1 hover:bg-gray-1 hover:opacity-75 text-gray-10 hover:text-gray-10 font-bold space-x-2.5 focus:bg-gray-6 focus:text-gray-10"
               type="text"
+              onClick={signIn}
             >
               <img src={GoogleImg} alt="구글 로그인" tw="inline-block" />
               구글 로그인
