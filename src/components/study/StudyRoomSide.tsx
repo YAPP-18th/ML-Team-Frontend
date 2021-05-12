@@ -12,6 +12,22 @@ import { StdTypoH4, StdTypoCaption1 } from '@shared/styled/Typography';
 import UserImg from '@assets/images/user.svg';
 
 const StudyRoomSide = () => {
+  const doCopy = () => {
+    if (!document.queryCommandSupported('copy')) {
+      return alert('복사하기가 지원되지 않는 브라우저입니다.');
+    }
+    const textarea = document.createElement('textarea');
+    textarea.value = window.location.href;
+
+    document.body.appendChild(textarea);
+    // Safari
+    textarea.focus();
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('클립보드에 복사되었습니다.');
+  };
+
   return (
     <section
       tw="h-full bg-gray-12"
@@ -27,7 +43,9 @@ const StudyRoomSide = () => {
             <StdTypoCaption1>$/6</StdTypoCaption1>
           </div>
         </div>
-        <Button type="ghost">초대하기</Button>
+        <Button type="ghost" onClick={() => doCopy()}>
+          초대하기
+        </Button>
       </StyledSideTitleWrapper>
       <MemberStatusWrapperStyled>
         {/* 인원수만큼*/}
@@ -40,7 +58,6 @@ const StudyRoomSide = () => {
     </section>
   );
 };
-
 export default StudyRoomSide;
 
 const MemberStatusWrapperStyled = styled.div`
