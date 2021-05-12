@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
-import { Button, Tooltip } from 'antd';
+import { Button } from 'antd';
 import 'twin.macro';
-import {
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-  useGoogleLogin,
-} from 'react-google-login';
+import { useGoogleLogin } from 'react-google-login';
 
 // typography
 import { StdTypoCaption1, StdTypoH3 } from '@shared/styled/Typography';
@@ -24,7 +20,7 @@ import { take } from 'rxjs/operators';
 import { useCookies } from 'react-cookie';
 
 const Login = () => {
-  // const [cookies, setCookie] = useCookies(['accessToken']);
+  const [cookies, setCookie] = useCookies(['accessToken']);
   const onSuccessGoogleLogin = (res: any) => {
     ajax({
       url: '/api/user/signin',
@@ -35,20 +31,15 @@ const Login = () => {
     })
       .pipe(take(1))
       .subscribe({
-        next: (i) => {
-          alert('회원가입이 되어 있군 ㅋ');
+        next: (data) => {
+          const accessToken = data.xhr.getResponseHeader('authorization');
+          setCookie('accessToken', accessToken, { maxAge: 1800 });
         },
         error: (err: AjaxError) => {
-          console.log(err);
           if (err.status === 404) {
-            alert('회원가입이 필요하겠군 ㅋ');
-
-            // get Response Header
-            console.log(err.xhr.getResponseHeader('authorization'));
+            const accessToken = err.xhr.getResponseHeader('authorization');
+            setCookie('accessToken', accessToken, { maxAge: 1800 });
           }
-        },
-        complete: () => {
-          console.log('complete');
         },
       });
   };

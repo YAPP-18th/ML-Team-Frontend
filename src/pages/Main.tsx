@@ -1,22 +1,41 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import OnBoarding from '@pages/onboarding';
-import { MainLayout } from '@components/layouts/main/MainLayout';
-import { Contents } from '@pages/contents/Contents';
+import React, { useMemo } from 'react';
+import { Switch } from 'react-router-dom';
+import { AppMain } from '@pages/contents/AppMain';
 import Login from '@pages/login';
-import Study from '@pages/study';
+import ConditionalRoute from '@components/common/ConditionalRoute';
+import { message } from 'antd';
+import { useCookies } from 'react-cookie';
 
 export const Main: React.FC = () => {
+  const [cookies] = useCookies(['accessToken']);
+  const appAccessCondition = useMemo(() => {
+    return !!cookies?.accessToken && cookies?.accessToken !== '';
+  }, [cookies]);
+
   return (
     <>
       <Switch>
-        {/*<Route exact={true} path="/" component={Landing} />*/}
-        <Route path="/login" component={Login} />
-        <Route path="/onboarding" component={OnBoarding} />
-        <Route path="/study" component={Study} />
-        <MainLayout>
-          <Route path="/app" component={Contents} />
-        </MainLayout>
+        <ConditionalRoute
+          path="/login"
+          redirectPath="/app"
+          condition={!appAccessCondition}
+          onFalse={() => {
+            message.error('이미 로그인이 되어 있습니다.');
+          }}
+        >
+          <Login />
+        </ConditionalRoute>
+
+        <ConditionalRoute
+          path="/app"
+          redirectPath="/login"
+          condition={appAccessCondition}
+          onFalse={() => {
+            message.error('로그인 정보가 없습니다.');
+          }}
+        >
+          <AppMain />
+        </ConditionalRoute>
       </Switch>
     </>
   );
