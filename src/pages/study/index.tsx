@@ -4,18 +4,24 @@ import { jsx, css } from '@emotion/react';
 import 'twin.macro';
 
 // components
-import { Button, Layout } from 'antd';
+import { Modal, Button, Layout } from 'antd';
 import StudyRoomSide from '../../components/study/StudyRoomSide';
 import RTCVideo from '../../components/study/RTCVideo';
 const { Header, Sider, Footer, Content } = Layout;
 
 // typography
-import { StdTypoH1, StdTypoH5 } from '@shared/styled/Typography';
+import {
+  StdTypoSubtitle1,
+  StdTypoH1,
+  StdTypoH4,
+  StdTypoH5,
+} from '@shared/styled/Typography';
 
 // colors
 import {
-  GRAY_4,
+  GRAY_8,
   GRAY_9,
+  GRAY_10,
   GRAY_11,
   GRAY_12,
   PRIMARY_10,
@@ -28,11 +34,73 @@ import TimeImg from '@assets/images/time.svg';
 
 const Study = () => {
   const [localStream, setLocalStream] = useState<MediaStream>();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
       setLocalStream(stream);
     });
   }, []);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const ExitModal = () => {
+    return (
+      <div
+        tw="bg-gray-10 relative "
+        css={css`
+          width: 420px;
+          height: 220px;
+          border-radius: 20px;
+        `}
+      >
+        <StdTypoH4
+          tw="text-gray-2 flex flex-col items-center justify-center"
+          css={css`
+            height: 148px;
+          `}
+        >
+          공부를 종료할까요?
+        </StdTypoH4>
+        <div tw="flex">
+          <Button
+            tw="w-1/2 absolute left-0 bottom-0 bg-gray-8 rounded-none"
+            css={css`
+              height: 74px;
+              border-bottom-left-radius: 20px;
+            `}
+            key="keep"
+            onClick={handleCancel}
+          >
+            <StdTypoSubtitle1>조금 더 해볼래요</StdTypoSubtitle1>
+          </Button>
+          <Button
+            tw="w-1/2 absolute right-0 bottom-0 rounded-none"
+            css={css`
+              height: 74px;
+              border-bottom-right-radius: 20px;
+            `}
+            key="quit"
+            type="primary"
+            onClick={handleOk}
+          >
+            <StdTypoSubtitle1>네, 그만할래요</StdTypoSubtitle1>
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Layout>
       <Header css={HeaderStyle}>
@@ -45,14 +113,26 @@ const Study = () => {
           tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 "
           shape="round"
           type="primary"
+          onClick={showModal}
         >
           <ButtonImgStyled src={ExitImg} alt="공부종료" />
           <div>공부 종료하기</div>
         </Button>
+        <Modal
+          visible={isModalVisible}
+          closable={false}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          keyboard={false}
+          modalRender={ExitModal}
+        >
+          <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
+        </Modal>
       </Header>
       <Layout>
         <Content tw="relative">
           <RTCVideo width={'1544px'} mediaStream={localStream} />
+
           <StyledStudyInfoBar>
             <div tw="flex items-center">
               <StyledStudyInfoSet>
@@ -61,12 +141,7 @@ const Study = () => {
               </StyledStudyInfoSet>
               <div tw="flex items-end">
                 <StdTypoH1>$$:$$:$$</StdTypoH1>
-                <StdTypoH5
-                  css={css`
-                    margin-left: 20px;
-                    color: ${GRAY_4};
-                  `}
-                >
+                <StdTypoH5 tw="ml-4 text-gray-4">
                   휴식시간까지 $$:$$:$$
                 </StdTypoH5>
               </div>
@@ -76,7 +151,7 @@ const Study = () => {
             </StyledStudyInfoStatus>
           </StyledStudyInfoBar>
         </Content>
-        <Sider style={{ backgroundColor: 'green' }} width={465}>
+        <Sider width={465}>
           <StudyRoomSide />
         </Sider>
       </Layout>
@@ -108,7 +183,7 @@ const StyledStudyInfoBar = styled.div`
   display: flex;
   top: 840px;
   left: 34px;
-  background-color: ${GRAY_11};
+  background-color: ${GRAY_8};
   opacity: 0.9;
   align-items: center;
   border-radius: 20px;
@@ -125,6 +200,7 @@ const StyledStudyInfoStatus = styled.div`
   height: 56px;
 `;
 const StyledStudyInfoSet = styled.div`
+  width: auto;
   background-color: ${GRAY_9};
   display: flex;
   border-radius: 8px;
