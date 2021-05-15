@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Link,
+  withRouter,
+  BrowserRouter,
+  Route,
+  Redirect,
+  RouteComponentProps,
+} from 'react-router-dom'; //npm install react-router-dom
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
+import { useHistory } from 'react-router';
 import 'twin.macro';
 
 // components
@@ -18,23 +27,18 @@ import {
 } from '@shared/styled/Typography';
 
 // colors
-import {
-  GRAY_8,
-  GRAY_9,
-  GRAY_10,
-  GRAY_11,
-  GRAY_12,
-  PRIMARY_10,
-} from '@shared/styles/colors';
+import { GRAY_8, GRAY_9, GRAY_12, PRIMARY_10 } from '@shared/styles/colors';
 
 // images
 import ExitImg from '@assets/images/exit.svg';
 import PrivateImg from '@assets/images/private.svg';
 import TimeImg from '@assets/images/time.svg';
 
-const Study = () => {
+const Study = (props: RouteComponentProps) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [wantExit, setWantExit] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -46,69 +50,19 @@ const Study = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const ExitModal = () => {
-    return (
-      <div
-        tw="bg-gray-10 relative "
-        css={css`
-          width: 420px;
-          height: 220px;
-          border-radius: 20px;
-        `}
-      >
-        <StdTypoH4
-          tw="text-gray-2 flex flex-col items-center justify-center"
-          css={css`
-            height: 148px;
-          `}
-        >
-          공부를 종료할까요?
-        </StdTypoH4>
-        <div tw="flex">
-          <Button
-            tw="w-1/2 absolute left-0 bottom-0 bg-gray-8 rounded-none"
-            css={css`
-              height: 74px;
-              border-bottom-left-radius: 20px;
-            `}
-            key="keep"
-            onClick={handleCancel}
-          >
-            <StdTypoSubtitle1>조금 더 해볼래요</StdTypoSubtitle1>
-          </Button>
-          <Button
-            tw="w-1/2 absolute right-0 bottom-0 rounded-none"
-            css={css`
-              height: 74px;
-              border-bottom-right-radius: 20px;
-            `}
-            key="quit"
-            type="primary"
-            onClick={handleOk}
-          >
-            <StdTypoSubtitle1>네, 그만할래요</StdTypoSubtitle1>
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <Layout>
+    <Layout
+      css={css`
+        height: 100%;
+      `}
+    >
       <Header css={HeaderStyle}>
         <div tw="flex">
           <StdTypoH5>공부방 이름</StdTypoH5>
           {/* private이라면 */}
           <img src={PrivateImg} />
         </div>
+
         <Button
           tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 "
           shape="round"
@@ -121,18 +75,21 @@ const Study = () => {
         <Modal
           visible={isModalVisible}
           closable={false}
-          onOk={handleOk}
-          onCancel={handleCancel}
           keyboard={false}
-          modalRender={ExitModal}
-        >
-          <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
-        </Modal>
+          modalRender={(modal) => <ExitModal modal={modal} />}
+          maskStyle={{
+            background: `rgba(31,31,31,0.8)`,
+            backdropFilter: `blur(5px)`,
+          }}
+        ></Modal>
       </Header>
       <Layout>
-        <Content tw="relative">
-          <RTCVideo width={'1544px'} mediaStream={localStream} />
-
+        <Content
+          css={css`
+            width: 100%;
+          `}
+        >
+          <RTCVideo tw="relative" mediaStream={localStream} />
           <StyledStudyInfoBar>
             <div tw="flex items-center">
               <StyledStudyInfoSet>
@@ -158,6 +115,82 @@ const Study = () => {
     </Layout>
   );
 };
+
+const StatusModal = () => {
+  return (
+    <div
+      tw="bg-gray-10"
+      css={css`
+        width: 620px;
+        height: 439px;
+      `}
+    ></div>
+  );
+};
+
+interface IExitModalProps {
+  modal: Modal;
+}
+
+const ExitModal: React.FC<IExitModalProps> = ({ setIsModalVisible }) => {
+  const history = useHistory();
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  useEffect(() => {
+    console.log(history.location);
+  }, [history]);
+
+  return (
+    <div
+      tw="bg-gray-10 relative "
+      css={css`
+        width: 420px;
+        height: 220px;
+        border-radius: 20px;
+      `}
+    >
+      <StdTypoH4
+        tw="text-gray-2 flex flex-col items-center justify-center"
+        css={css`
+          height: 148px;
+        `}
+      >
+        공부를 종료할까요?
+      </StdTypoH4>
+      <div tw="flex">
+        <Button
+          tw="w-1/2 absolute left-0 bottom-0 bg-gray-8 rounded-none"
+          css={css`
+            height: 74px;
+            border-bottom-left-radius: 20px;
+          `}
+          key="keep"
+          onClick={handleCancel}
+        >
+          <StdTypoSubtitle1>조금 더 해볼래요</StdTypoSubtitle1>
+        </Button>
+        <Button
+          tw="w-1/2 absolute right-0 bottom-0 rounded-none"
+          css={css`
+            height: 74px;
+            border-bottom-right-radius: 20px;
+          `}
+          key="quit"
+          type="primary"
+          onClick={() => {
+            console.log('clicked');
+          }}
+        >
+          <StdTypoSubtitle1>네, 그만할래요</StdTypoSubtitle1>
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 export default Study;
 
 const HeaderStyle = css`
@@ -181,7 +214,7 @@ const StyledStudyInfoBar = styled.div`
   position: absolute;
   color: white;
   display: flex;
-  top: 840px;
+  top: 75vh;
   left: 34px;
   background-color: ${GRAY_8};
   opacity: 0.9;
