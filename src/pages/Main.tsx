@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
-import { Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { AppMain } from '@pages/contents/AppMain';
 import Login from '@pages/login';
 import ConditionalRoute from '@components/common/ConditionalRoute';
 import { message } from 'antd';
 import { useCookies } from 'react-cookie';
+import { NotFound } from '@pages/NotFound';
 
 export const Main: React.FC = () => {
   const [cookies] = useCookies(['accessToken']);
@@ -15,8 +16,11 @@ export const Main: React.FC = () => {
   return (
     <>
       <Switch>
+        <Route path="/" exact={true}>
+          <Redirect to="/app" />
+        </Route>
         <ConditionalRoute
-          path="/login"
+          path="/auth"
           redirectPath="/app"
           condition={!appAccessCondition}
           onFalse={() => {
@@ -36,6 +40,9 @@ export const Main: React.FC = () => {
         >
           <AppMain />
         </ConditionalRoute>
+        <Route path="*">
+          <NotFound />
+        </Route>
       </Switch>
     </>
   );
