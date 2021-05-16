@@ -9,9 +9,9 @@ import { PRIMARY_8, GRAY_10 } from '@shared/styles/colors';
 // images
 import LeftImg from '@assets/images/left.svg';
 import RestImg from '@assets/images/rest.svg';
-import SleepingImg from '@assets/images/sleeping.svg';
+import SleepingImg from '@assets/images/sleeping_side.svg';
 import StudyingImg from '@assets/images/studying.svg';
-import SmartphoneImg from '@assets/images/smartphone.svg';
+import SmartphoneImg from '@assets/images/smartphone_side.svg';
 import StarImg from '@assets/images/star.svg';
 import HostImg from '@assets/images/host.svg';
 
