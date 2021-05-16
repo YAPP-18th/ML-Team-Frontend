@@ -6,6 +6,7 @@ import { Contents } from '@pages/contents/Contents';
 import Login from '@pages/login';
 import StudyReady from '@pages/study_ready';
 import Study from '@pages/study';
+import StudyFinish from '@pages/study_finish';
 
 export const Main: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ export const Main: React.FC = () => {
         <Route path="/onboarding" component={OnBoarding} />
         <Route path="/ready" component={StudyReady} />
         <Route path="/study" component={Study} />
+        <Route path="/exit" component={StudyFinish} />
         <MainLayout>
           <Route path="/app" component={Contents} />
         </MainLayout>
