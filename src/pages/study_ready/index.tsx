@@ -94,7 +94,11 @@ const StudyReady = () => {
     );
   };
   return (
-    <Layout>
+    <Layout
+      css={css`
+        height: 100%;
+      `}
+    >
       <Header css={HeaderStyle}>
         <div tw="flex">
           <StdTypoH5>공부방 이름</StdTypoH5>
@@ -121,14 +125,11 @@ const StudyReady = () => {
           <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
         </Modal>
       </Header>
-      <Layout>
-        <Content
-          tw="flex flex-col items-center justify-center"
-          css={css`
-            height: 1000px;
-          `}
-        >
-          <StdTypoH3 tw="from-gray-1">정확한 집중도 분석을 위해</StdTypoH3>
+      <Layout tw="flex flex-col items-center justify-center">
+        <Content tw="flex flex-col items-center justify-center ">
+          <StdTypoH3 tw="from-gray-1 mt-16">
+            정확한 집중도 분석을 위해
+          </StdTypoH3>
           <StdTypoH3 tw="from-gray-1">
             화면에 두 손이 나오게 준비해주세요
           </StdTypoH3>
@@ -140,9 +141,9 @@ const StudyReady = () => {
             <StyledStudyReadyStatus status="준비완료">
               준비완료
             </StyledStudyReadyStatus>
-            <div tw="mb-7">$초 뒤 자동입장</div>
+            <div tw="mb-6">$초 뒤 자동입장</div>
           </div>
-          <RTCVideo width={'840px'} mediaStream={localStream} />
+          <RTCVideo mediaStream={localStream} />
         </Content>
       </Layout>
     </Layout>

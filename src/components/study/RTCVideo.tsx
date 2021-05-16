@@ -3,10 +3,11 @@ import { css } from '@emotion/react';
 
 interface RTCVideoProps {
   mediaStream: MediaStream | undefined;
-  width: number | string;
+  width?: number | string;
+  height?: number | string;
 }
 
-const RTCVideo = ({ mediaStream, width }: RTCVideoProps) => {
+const RTCVideo = ({ mediaStream, width, height }: RTCVideoProps) => {
   const viewRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -15,8 +16,20 @@ const RTCVideo = ({ mediaStream, width }: RTCVideoProps) => {
   }, [mediaStream]);
 
   return (
-    <div>
-      <video width={width} ref={viewRef} autoPlay muted></video>
+    <div
+      tw="flex flex-col items-center justify-center"
+      css={css`
+        height: 100%;
+      `}
+    >
+      <video
+        css={css`
+          height: 100%;
+        `}
+        ref={viewRef}
+        autoPlay
+        muted
+      ></video>
     </div>
   );
 };
