@@ -5,7 +5,7 @@ import Login from '@pages/Login/Login';
 import ConditionalRoute from '@components/Common/ConditionalRoute';
 import { message } from 'antd';
 import { useCookies } from 'react-cookie';
-import { NotFound } from '@pages/NotFound/NotFound';
+import { InnerRedirect } from '@pages/InnerRedirect/InnerRedirect';
 
 export const Main: React.FC = () => {
   const [cookies] = useCookies(['accessToken']);
@@ -37,6 +37,9 @@ export const Main: React.FC = () => {
         >
           <AppMain />
         </ConditionalRoute>
+
+        <Route path="/redirect" component={InnerRedirect} />
+
         <Route path="*">
           <Redirect to="/app" />
         </Route>
