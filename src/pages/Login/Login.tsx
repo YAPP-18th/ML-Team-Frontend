@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from '@emotion/styled';
 import { Button } from 'antd';
 import 'twin.macro';
@@ -18,8 +18,10 @@ import { css, Global } from '@emotion/react';
 import { ajax, AjaxError } from 'rxjs/ajax';
 import { take } from 'rxjs/operators';
 import { useCookies } from 'react-cookie';
+import { useLocation, useParams } from 'react-router-dom';
 
 const Login = () => {
+  const location = useLocation<{ redirectUrl: string }>();
   const [cookies, setCookie] = useCookies(['accessToken']);
   const onSuccessGoogleLogin = (res: any) => {
     ajax({
@@ -51,6 +53,11 @@ const Login = () => {
       console.log(err, 'err');
     },
   });
+
+  const customRedirectUrl = useMemo(() => {
+    return location?.state?.redirectUrl;
+  }, [location]);
+
   return (
     <section tw="h-full w-full flex justify-center items-center">
       <Global
