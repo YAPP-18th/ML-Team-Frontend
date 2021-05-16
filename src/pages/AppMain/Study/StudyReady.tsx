@@ -6,7 +6,7 @@ import 'twin.macro';
 // components
 import { Modal, Button, Layout } from 'antd';
 const { Header, Content } = Layout;
-import RTCVideo from '../../components/study/RTCVideo';
+import RTCVideo from '@components/Study/RTCVideo';
 
 // typography
 import {

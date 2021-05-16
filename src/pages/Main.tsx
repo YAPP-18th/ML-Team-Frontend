@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { AppMain } from '@pages/contents/AppMain';
-import Login from '@pages/login';
-import ConditionalRoute from '@components/common/ConditionalRoute';
+import { AppMain } from '@pages/AppMain/AppMain';
+import Login from '@pages/Login/Login';
+import ConditionalRoute from '@components/Common/ConditionalRoute';
 import { message } from 'antd';
 import { useCookies } from 'react-cookie';
-import { NotFound } from '@pages/NotFound';
+import { NotFound } from '@pages/NotFound/NotFound';
 
 export const Main: React.FC = () => {
   const [cookies] = useCookies(['accessToken']);

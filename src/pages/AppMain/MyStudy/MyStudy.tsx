@@ -5,19 +5,22 @@ import styled from '@emotion/styled';
 import 'twin.macro';
 import { GRAY_11 } from '@shared/styles/colors';
 import { Button } from 'antd';
+import { MainLayout } from '@components/Layouts/main/MainLayout';
 
 export const MyStudy: React.FC = () => {
   return (
-    <StyledRestrictedArea>
-      <StyledMyStudyCard>
-        <StdTypoH4>내 공부방</StdTypoH4>
-        <MyStudyRoom />
-      </StyledMyStudyCard>
-      <StyledMyStudyCard>
-        <StdTypoH4>온에어 공부방</StdTypoH4>
-        <OnAirStudyRoom />
-      </StyledMyStudyCard>
-    </StyledRestrictedArea>
+    <MainLayout>
+      <StyledRestrictedArea>
+        <StyledMyStudyCard>
+          <StdTypoH4>내 공부방</StdTypoH4>
+          <MyStudyRoom />
+        </StyledMyStudyCard>
+        <StyledMyStudyCard>
+          <StdTypoH4>온에어 공부방</StdTypoH4>
+          <OnAirStudyRoom />
+        </StyledMyStudyCard>
+      </StyledRestrictedArea>
+    </MainLayout>
   );
 };
 

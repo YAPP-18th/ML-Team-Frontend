@@ -15,10 +15,10 @@ import 'twin.macro';
 
 // components
 import { Modal, Button, Layout } from 'antd';
-import StudyRoomSide from '../../components/study/StudyRoomSide';
-import RTCVideo from '../../components/study/RTCVideo';
-import StatusModal from '../../components/study/StatusModal';
-import StudyInfoBar from '../../components/study/StudyInfoBar';
+import StudyRoomSide from '@components/Study/StudyRoomSide';
+import RTCVideo from '@components/Study/RTCVideo';
+import StatusModal from '@components/Study/StatusModal';
+import StudyInfoBar from '@components/Study/StudyInfoBar';
 const { Header, Sider, Footer, Content } = Layout;
 
 // typography
