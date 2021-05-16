@@ -2,8 +2,10 @@
   "name": "yapp_ml_2021",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://27.96.131.49:8000",
   "dependencies": {
     "@craco/craco": "6.1.1",
+    "@emotion/babel-preset-css-prop": "^11.2.0",
     "@emotion/core": "11.0.0",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
@@ -13,13 +15,21 @@
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
     "@types/react-redux": "7.1.16",
+    "antd": "^4.15.4",
+    "craco-less": "^1.17.1",
+    "moment": "^2.29.1",
+    "node-sass": "^5.0.0",
     "npm": "7.7.5",
+    "prop-types": "^15.7.2",
     "react": "17.0.1",
+    "react-cookie": "^4.0.3",
     "react-dom": "17.0.1",
+    "react-google-login": "^5.2.2",
     "react-redux": "7.2.3",
     "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "redux": "4.0.5",
+    "rxjs": "^7.0.0",
     "twin.macro": "2.3.0",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
@@ -69,6 +79,6 @@
     "eslint-plugin-react": "7.22.0",
     "postcss": "^7.0.35",
     "prettier": "2.2.1",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.2"
   }
 }
