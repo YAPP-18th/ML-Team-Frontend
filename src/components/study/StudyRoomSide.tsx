@@ -25,7 +25,9 @@ const StudyRoomSide = () => {
     textarea.select();
     document.execCommand('copy');
     document.body.removeChild(textarea);
-    alert('클립보드에 복사되었습니다.');
+    alert(
+      '공부방 주소가 클립보드에 복사되었습니다. 친구에게 공유해서 초대해보세요.',
+    );
   };
 
   return (
