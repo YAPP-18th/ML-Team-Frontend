@@ -25,7 +25,7 @@ export const InnerRedirect: React.FC = () => {
     const redirectType = query.get('type');
 
     switch (redirectType) {
-      case 'studyroom': {
+      case 'study': {
         const id = query.get('id');
         setRedirectUrl(`/app/study/${id}`);
         break;
