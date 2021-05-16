@@ -16,9 +16,6 @@ export const Main: React.FC = () => {
   return (
     <>
       <Switch>
-        <Route path="/" exact={true}>
-          <Redirect to="/app" />
-        </Route>
         <ConditionalRoute
           path="/auth"
           redirectPath="/app"
@@ -32,7 +29,7 @@ export const Main: React.FC = () => {
 
         <ConditionalRoute
           path="/app"
-          redirectPath="/login"
+          redirectPath="/auth"
           condition={appAccessCondition}
           onFalse={() => {
             message.error('로그인 정보가 없습니다.');
@@ -41,7 +38,7 @@ export const Main: React.FC = () => {
           <AppMain />
         </ConditionalRoute>
         <Route path="*">
-          <NotFound />
+          <Redirect to="/app" />
         </Route>
       </Switch>
     </>
