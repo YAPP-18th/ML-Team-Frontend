@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu } from 'antd';
 import { Content, Footer, Header } from 'antd/es/layout/layout';
 import Logo from '@assets/images/logo.svg';
@@ -9,6 +9,9 @@ import { GRAY_10, PRIMARY_8 } from '@shared/styles/colors';
 import tw from 'twin.macro';
 import { StyledRestrictedArea } from '@shared/styled/Common';
 import { Body2Style } from '@shared/styled/Typography';
+import { MenuItemProps } from 'antd/lib/menu/MenuItem';
+import { MenuClickEventHandler } from 'rc-menu/lib/interface';
+import { useHistory, useRouteMatch } from 'react-router';
 
 const FooterStyle = css`
   width: 100%;
@@ -29,7 +32,37 @@ const MenuStyle = css`
   background: transparent !important;
 `;
 
+type MenuKey = 'mystudy' | 'report';
+type MenuItemMap = {
+  [key in MenuKey]: MenuItem;
+};
+type MenuItem = { linkTo: string; title: string };
+
+const menuItemMap: MenuItemMap = {
+  mystudy: {
+    linkTo: './mystudy',
+    title: '내 학습',
+  },
+  report: {
+    linkTo: './report',
+    title: '학습레포트',
+  },
+};
+
 export const MainLayout: React.FC = ({ children }) => {
+  const [selectedMenu, setSelectedMenu] = useState<MenuKey>();
+  const history = useHistory();
+  const match = useRouteMatch<{ current: string }>('/app/:current');
+
+  const onMenuClick: MenuClickEventHandler = ({ key }) => {
+    history.push(menuItemMap[key as MenuKey]?.linkTo);
+  };
+
+  useEffect(() => {
+    const currentRoute: MenuKey = match?.params?.current as MenuKey;
+    setSelectedMenu(currentRoute);
+  }, [match]);
+
   return (
     <>
       <Layout>
@@ -42,10 +75,16 @@ export const MainLayout: React.FC = ({ children }) => {
         >
           <StyledRestrictedArea tw="flex">
             <img src={Logo} tw="self-center" alt="STUDEEP" />
-            <Menu theme="dark" mode="horizontal" css={MenuStyle}>
-              <MenuItem key="1">내 학습</MenuItem>
-              <MenuItem key="2">학습레포트</MenuItem>
-              <MenuItem key="3">별자리샵</MenuItem>
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              css={MenuStyle}
+              selectedKeys={selectedMenu ? [selectedMenu] : []}
+              onClick={onMenuClick}
+            >
+              {Object.entries(menuItemMap).map((i) => (
+                <MenuItem key={i[0]}>{i[1].title}</MenuItem>
+              ))}
             </Menu>
           </StyledRestrictedArea>
         </Header>
@@ -73,7 +112,7 @@ export const MainLayout: React.FC = ({ children }) => {
   );
 };
 
-const MenuItem: React.FC = ({ children, ...props }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ children, ...props }) => {
   const MenuItemStyle = css`
     padding: 0 5px !important;
     margin-right: 30px;
