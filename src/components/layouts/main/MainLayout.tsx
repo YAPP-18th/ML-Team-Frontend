@@ -88,7 +88,13 @@ export const MainLayout: React.FC = ({ children }) => {
             </Menu>
           </StyledRestrictedArea>
         </Header>
-        <Content>{children}</Content>
+        <Content
+          css={css`
+            padding: 0 30px;
+          `}
+        >
+          {children}
+        </Content>
         <Footer css={FooterStyle}>
           <StyledFooterInner>
             <div tw="flex justify-between items-center space-x-10">
