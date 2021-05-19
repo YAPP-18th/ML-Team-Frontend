@@ -32,7 +32,7 @@ const StyledMyStudyCard = styled.div`
   }
 `;
 
-const StyledCardWrapper = styled.div`
+const StyledEmptyCardWrapper = styled.div`
   width: 100%;
   background: ${GRAY_11};
   border-radius: 5px;
@@ -41,12 +41,12 @@ const StyledCardWrapper = styled.div`
 const MyStudyRoom: React.FC = () => {
   return (
     <>
-      <StyledCardWrapper tw="text-center space-y-5 py-20">
+      <StyledEmptyCardWrapper tw="text-center space-y-5 py-20">
         <StdTypoSubtitle1 tw="text-gray-6">
           아직 시작한 공부방이 없어요. 공부를 시작해보세요.
         </StdTypoSubtitle1>
         <Button type="primary">공부방 만들기</Button>
-      </StyledCardWrapper>
+      </StyledEmptyCardWrapper>
     </>
   );
 };
@@ -54,11 +54,11 @@ const MyStudyRoom: React.FC = () => {
 const OnAirStudyRoom: React.FC = () => {
   return (
     <>
-      <StyledCardWrapper tw="text-center space-y-5 py-20">
+      <StyledEmptyCardWrapper tw="text-center space-y-5 py-20">
         <StdTypoSubtitle1 tw="text-gray-6">
           현재 온에어 상태인 공부방이 없어요.
         </StdTypoSubtitle1>
-      </StyledCardWrapper>
+      </StyledEmptyCardWrapper>
     </>
   );
 };

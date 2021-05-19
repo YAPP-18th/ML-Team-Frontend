@@ -69,6 +69,7 @@ export const MainLayout: React.FC = ({ children }) => {
         <Header
           tw="p-0"
           css={css`
+            padding: 0 30px;
             background: ${GRAY_10};
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
           `}
