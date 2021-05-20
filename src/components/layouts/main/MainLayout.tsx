@@ -40,11 +40,11 @@ type MenuItem = { linkTo: string; title: string };
 
 const menuItemMap: MenuItemMap = {
   mystudy: {
-    linkTo: './mystudy',
+    linkTo: '/app/mystudy',
     title: '내 학습',
   },
   report: {
-    linkTo: './report',
+    linkTo: '/app/report',
     title: '학습레포트',
   },
 };
