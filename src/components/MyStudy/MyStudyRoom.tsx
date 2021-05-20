@@ -13,7 +13,7 @@ const MyStudyRoom: React.FC = () => {
     <>
       {roomList?.length ? (
         <div
-          tw="grid grid-cols-4"
+          tw="grid grid-cols-2 md:grid-cols-4"
           css={css`
             gap: 26px;
           `}
