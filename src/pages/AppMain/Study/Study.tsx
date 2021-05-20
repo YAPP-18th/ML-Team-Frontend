@@ -35,8 +35,8 @@ export const Study: React.FC = () => {
     <>
       <Switch>
         <ConditionalRoute
-          path="/app/study"
-          redirectPath="/app/mystudy"
+          path="/app/mystudy"
+          redirectPath="/app/study"
           condition={!appAccessCondition} //스터디룸 입장 권한 여부 요청
           onFalse={() => {
             message.error('공부방 입장 권한이 없습니다.');
@@ -47,8 +47,8 @@ export const Study: React.FC = () => {
         </ConditionalRoute>
 
         <ConditionalRoute
-          path="/app/mystudy"
-          redirectPath="/app/study"
+          path="/app/study"
+          redirectPath="/app/mystudy"
           condition={appAccessCondition} //스터디룸 입장 권한 여부 요청
           onFalse={() => {
             console.log('입장권한확인');
@@ -57,7 +57,7 @@ export const Study: React.FC = () => {
         >
           <Switch>
             <Route path={`${path}/ready`} component={StudyReady} />
-            {/* <Route path={`${path}/studyroom`} component={StudyRoom} /> */}
+            <Route path={`${path}/studyroom`} component={StudyRoom} />
             <Route path={`${path}/finish`} component={StudyFinish} />
             {/* <Route path={`${path}/report`} component={Report} /> */}
             <Route path={`${path}/*`} component={NotFound} />
