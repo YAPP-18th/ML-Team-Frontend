@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
 import 'twin.macro';
+import { RouteComponentProps } from 'react-router-dom'; //npm install react-router-dom
 
 // components
 import { Button } from 'antd';
@@ -16,7 +17,7 @@ import {
 // colors
 import { GRAY_10 } from '@shared/styles/colors';
 
-const StudyFinish = () => {
+const StudyFinish = ({ history }: RouteComponentProps) => {
   return (
     <div tw="flex h-full flex-col items-center justify-center">
       <div tw="flex flex-col justify-center items-center">
@@ -52,7 +53,13 @@ const StudyFinish = () => {
         </div>
       </StyledResult>
       <div tw="flex">
-        <Button css={ResultButtonStyle} tw="text-gray-6">
+        <Button
+          css={ResultButtonStyle}
+          tw="text-gray-6"
+          onClick={() => {
+            history.push('/app/mystudy');
+          }}
+        >
           내 학습으로 돌아가기
         </Button>
         <Button css={ResultButtonStyle} tw="text-gray-1" type="primary">
