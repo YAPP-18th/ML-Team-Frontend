@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { css } from '@emotion/react';
 import { SerializedStyles } from '@emotion/serialize';
 import styled from '@emotion/styled';
@@ -7,6 +7,12 @@ import UserIcon from '@assets/icons/user.svg';
 import EnterIcon from '@assets/icons/enter.svg';
 import 'twin.macro';
 import { GRAY_10 } from '@shared/styles/colors';
+import StudyRoomImg1 from '@assets/images/studyroom-1.svg';
+import StudyRoomImg2 from '@assets/images/studyroom-2.svg';
+import StudyRoomImg3 from '@assets/images/studyroom-3.svg';
+import StudyRoomImg4 from '@assets/images/studyroom-4.svg';
+import MoreIcon from '@assets/icons/more.svg';
+import { Dropdown, Menu } from 'antd';
 
 type StudyCardStyles = 'style_1' | 'style_2' | 'style_3' | 'style_4';
 
@@ -14,16 +20,16 @@ const studyCardGradientList: {
   [key in StudyCardStyles]: SerializedStyles;
 } = {
   style_1: css`
-    background: linear-gradient(180deg, #ffbcbc 0%, #9d57b6 100%);
+    background: url(${StudyRoomImg1}) center;
   `,
   style_2: css`
-    background: linear-gradient(180deg, #bccfff 0%, #576cb6 100%);
+    background: url(${StudyRoomImg2}) center;
   `,
   style_3: css`
-    background: linear-gradient(180deg, #cdf7de 0%, #5ba6a2 100%);
+    background: url(${StudyRoomImg3}) center;
   `,
   style_4: css`
-    background: linear-gradient(180deg, #ffd8bc 0%, #b66e57 100%);
+    background: url(${StudyRoomImg4}) center;
   `,
 };
 
@@ -38,6 +44,12 @@ const StudyCard: React.FC<IStudyCardProps> = ({
   title,
   description,
 }) => {
+  const menu = (
+    <Menu>
+      <Menu.Item key="0">삭제하기</Menu.Item>
+    </Menu>
+  );
+
   return (
     <StudyCardWrapper onClick={() => alert('clicked')}>
       <StudyCardInnerWrapper css={studyCardGradientList[style]}>
@@ -54,6 +66,9 @@ const StudyCard: React.FC<IStudyCardProps> = ({
           <StdTypoSubtitle1>입장하기</StdTypoSubtitle1>
         </EnterButton>
       </StudyCardHover>
+      <Dropdown overlay={menu} trigger={['click']}>
+        <MoreButton src={MoreIcon} onClick={(e) => e.preventDefault()} />
+      </Dropdown>
     </StudyCardWrapper>
   );
 };
@@ -77,6 +92,7 @@ const StudyCardWrapper = styled.div`
 `;
 
 const StudyCardInnerWrapper = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   border-radius: 10px;
@@ -84,6 +100,17 @@ const StudyCardInnerWrapper = styled.div`
 
   > * + * {
     margin-top: 6px;
+  }
+`;
+
+const MoreButton = styled.img`
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  &:hover {
+    background: ${GRAY_10}80;
+    border-radius: 50%;
   }
 `;
 
