@@ -41,6 +41,7 @@ import {
 // images
 import ExitImg from '@assets/images/exit.svg';
 import PrivateImg from '@assets/images/private.svg';
+import { useHistory } from 'react-router';
 
 const MenuStyle = css`
   margin-left: 45px;
@@ -52,15 +53,14 @@ type StudyPageType = 'ready' | 'studyroom';
 interface IStudyLayoutProps {
   page: StudyPageType;
   children: React.ReactNode;
-  // history: RouteComponentProps;
-  history: any;
 }
 
 export const StudyLayout: React.FC<IStudyLayoutProps> = ({
   children,
   page,
-  history,
 }) => {
+  const history = useHistory();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
     setIsModalVisible(true);

@@ -17,7 +17,7 @@ const StudyRoomSide = () => {
       return alert('복사하기가 지원되지 않는 브라우저입니다.');
     }
     const textarea = document.createElement('textarea');
-    textarea.value = window.location.href;
+    textarea.value = `${origin}/redirect?type=study&id=1213`;
 
     document.body.appendChild(textarea);
     // Safari

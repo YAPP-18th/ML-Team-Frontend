@@ -6,12 +6,17 @@ import 'twin.macro';
 import RTCVideo from '@components/Study/RTCVideo';
 import StudyInfoBar from '@components/Study/StudyInfoBar';
 import { StudyLayout } from '@components/Layouts/study/StudyLayout';
+import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 
 interface IStudyInfoBarProps {
   status: string;
 }
 
-export const StudyRoom = ({ history }: RouteComponentProps) => {
+interface IStudyRoomProps {
+  currentStudy?: ICurrentStudy;
+}
+
+export const StudyRoom = ({ currentStudy }: IStudyRoomProps) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
 
   useEffect(() => {
@@ -21,7 +26,7 @@ export const StudyRoom = ({ history }: RouteComponentProps) => {
   }, []);
 
   return (
-    <StudyLayout history={history} page="studyroom">
+    <StudyLayout page="studyroom">
       <RTCVideo tw="relative" mediaStream={localStream} />
       <ResponsiveStyledStudyInfoBar status={'상태표시'} />
     </StudyLayout>

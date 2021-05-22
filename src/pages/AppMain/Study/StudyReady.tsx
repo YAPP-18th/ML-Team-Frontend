@@ -13,13 +13,20 @@ import { StdTypoH3 } from '@shared/styled/Typography';
 // colors
 import { GRAY_6, GRAY_8, PRIMARY_8 } from '@shared/styles/colors';
 import { StudyLayout } from '@components/Layouts/study/StudyLayout';
+import { ICurrentStudy } from '@pages/AppMain/Study/Study';
+import { useHistory } from 'react-router';
 
 interface IReadyStatusProps {
   status: string;
 }
 
-export const StudyReady = ({ history }: RouteComponentProps) => {
+interface IStudyReadyProps {
+  currentStudy?: ICurrentStudy;
+}
+
+export const StudyReady = ({ currentStudy }: IStudyReadyProps) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
+  const history = useHistory();
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -27,7 +34,7 @@ export const StudyReady = ({ history }: RouteComponentProps) => {
     });
   }, []);
   return (
-    <StudyLayout history={history} page="ready">
+    <StudyLayout page="ready">
       <StdTypoH3 tw="from-gray-1 mt-16">정확한 집중도 분석을 위해</StdTypoH3>
       <StdTypoH3 tw="from-gray-1">화면에 두 손이 나오게 준비해주세요</StdTypoH3>
       {/* 현재 손의 준비 상태에 따라 둘 중에 하나 리턴 */}

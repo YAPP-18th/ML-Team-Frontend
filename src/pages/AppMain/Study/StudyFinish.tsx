@@ -16,8 +16,16 @@ import {
 
 // colors
 import { GRAY_10 } from '@shared/styles/colors';
+import { useHistory } from 'react-router';
+import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 
-export const StudyFinish = ({ history }: RouteComponentProps) => {
+interface IStudyFinishProps {
+  currentStudy?: ICurrentStudy;
+}
+
+export const StudyFinish = ({ currentStudy }: IStudyFinishProps) => {
+  const history = useHistory();
+
   return (
     <div tw="flex h-full flex-col items-center justify-center">
       <div tw="flex flex-col justify-center items-center">
