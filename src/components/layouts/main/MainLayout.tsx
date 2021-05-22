@@ -12,6 +12,7 @@ import { Body2Style } from '@shared/styled/Typography';
 import { MenuItemProps } from 'antd/lib/menu/MenuItem';
 import { MenuClickEventHandler } from 'rc-menu/lib/interface';
 import { useHistory, useRouteMatch } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const FooterStyle = css`
   width: 100%;
@@ -40,11 +41,11 @@ type MenuItem = { linkTo: string; title: string };
 
 const menuItemMap: MenuItemMap = {
   mystudy: {
-    linkTo: './mystudy',
+    linkTo: '/app/mystudy',
     title: '내 학습',
   },
   report: {
-    linkTo: './report',
+    linkTo: '/app/report',
     title: '학습레포트',
   },
 };
@@ -69,12 +70,15 @@ export const MainLayout: React.FC = ({ children }) => {
         <Header
           tw="p-0"
           css={css`
+            padding: 0 30px;
             background: ${GRAY_10};
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
           `}
         >
           <StyledRestrictedArea tw="flex">
-            <img src={Logo} tw="self-center" alt="STUDEEP" />
+            <Link to="/" tw="inline-flex">
+              <img src={Logo} tw="self-center" alt="STUDEEP" />
+            </Link>
             <Menu
               theme="dark"
               mode="horizontal"
@@ -110,7 +114,14 @@ export const MainLayout: React.FC = ({ children }) => {
                 <li>개인정보 처리방침</li>
               </ul>
             </div>
-            <span tw="text-gray-6">© STUDEEP All Rights Reserved.</span>
+            <span
+              tw="text-gray-6"
+              css={css`
+                font-family: 'Lexend', sans-serif;
+              `}
+            >
+              © STUDEEP All Rights Reserved.
+            </span>
           </StyledFooterInner>
         </Footer>
       </Layout>

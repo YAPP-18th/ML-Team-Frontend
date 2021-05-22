@@ -1,18 +1,27 @@
 import React from 'react';
 import { StyledRestrictedArea } from '@shared/styled/Common';
-import { StdTypoH4, StdTypoSubtitle1 } from '@shared/styled/Typography';
+import { StdTypoH4 } from '@shared/styled/Typography';
 import styled from '@emotion/styled';
 import 'twin.macro';
-import { GRAY_11 } from '@shared/styles/colors';
-import { Button } from 'antd';
 import { MainLayout } from '@components/Layouts/main/MainLayout';
+import MyStudyRoom from '@components/MyStudy/MyStudyRoom';
+import OnAirStudyRoom from '@components/MyStudy/OnAirStudyRoom';
+import { Button } from 'antd';
+import { Link, useRouteMatch } from 'react-router-dom';
 
 export const MyStudy: React.FC = () => {
+  const { path } = useRouteMatch();
+
   return (
     <MainLayout>
       <StyledRestrictedArea>
         <StyledMyStudyCard>
-          <StdTypoH4>내 공부방</StdTypoH4>
+          <div tw="flex items-center justify-between">
+            <StdTypoH4>내 공부방</StdTypoH4>
+            <Link to={`${path}/create`}>
+              <Button size="small">공부방 만들기</Button>
+            </Link>
+          </div>
           <MyStudyRoom />
         </StyledMyStudyCard>
         <StyledMyStudyCard>
@@ -31,34 +40,3 @@ const StyledMyStudyCard = styled.div`
     margin-top: 15px;
   }
 `;
-
-const StyledCardWrapper = styled.div`
-  width: 100%;
-  background: ${GRAY_11};
-  border-radius: 5px;
-`;
-
-const MyStudyRoom: React.FC = () => {
-  return (
-    <>
-      <StyledCardWrapper tw="text-center space-y-5 py-20">
-        <StdTypoSubtitle1 tw="text-gray-6">
-          아직 시작한 공부방이 없어요. 공부를 시작해보세요.
-        </StdTypoSubtitle1>
-        <Button type="primary">공부방 만들기</Button>
-      </StyledCardWrapper>
-    </>
-  );
-};
-
-const OnAirStudyRoom: React.FC = () => {
-  return (
-    <>
-      <StyledCardWrapper tw="text-center space-y-5 py-20">
-        <StdTypoSubtitle1 tw="text-gray-6">
-          현재 온에어 상태인 공부방이 없어요.
-        </StdTypoSubtitle1>
-      </StyledCardWrapper>
-    </>
-  );
-};

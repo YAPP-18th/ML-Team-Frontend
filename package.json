@@ -19,6 +19,7 @@
     "antd": "^4.15.4",
     "anymatch": "2.0.0",
     "craco-less": "^1.17.1",
+    "firebase": "9.0.0-beta.1",
     "moment": "^2.29.1",
     "node-sass": "^5.0.0",
     "npm": "7.7.5",
@@ -27,6 +28,7 @@
     "react-cookie": "^4.0.3",
     "react-dom": "17.0.1",
     "react-google-login": "^5.2.2",
+    "react-hook-form": "^7.6.4",
     "react-redux": "7.2.3",
     "react-responsive": "8.2.0",
     "react-router-dom": "5.2.0",
@@ -41,6 +43,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "deploy": "craco build && firebase deploy",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

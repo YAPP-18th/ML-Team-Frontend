@@ -20,6 +20,37 @@
 @btn-padding-horizontal-lg: 32px;
 @btn-padding-horizontal-sm: 14px;
 
+@input-height-base: 42px;
+
+@radio-size: 24px;
+@radio-top: 0;
+@radio-border-width: 0;
+@radio-dot-size: @radio-size - 8px;
+@radio-dot-color: @primary-color;
+@radio-button-bg: #434343;
+@radio-solid-checked-color: @component-background;
+
+.ant-radio-group {
+  .ant-radio-wrapper {
+    align-items: center;
+  }
+}
+
+.ant-input {
+  &-borderless {
+    background: #434343;
+
+    &:focus {
+      background: #434343;
+    }
+
+    &:hover {
+      background: #434343;
+      opacity: .75;
+    }
+  }
+}
+
 .ant-btn {
   font-weight: 500;
 }
