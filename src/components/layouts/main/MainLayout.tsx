@@ -114,7 +114,14 @@ export const MainLayout: React.FC = ({ children }) => {
                 <li>개인정보 처리방침</li>
               </ul>
             </div>
-            <span tw="text-gray-6">© STUDEEP All Rights Reserved.</span>
+            <span
+              tw="text-gray-6"
+              css={css`
+                font-family: 'Lexend', sans-serif;
+              `}
+            >
+              © STUDEEP All Rights Reserved.
+            </span>
           </StyledFooterInner>
         </Footer>
       </Layout>
