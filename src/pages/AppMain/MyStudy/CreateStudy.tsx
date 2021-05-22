@@ -56,7 +56,7 @@ const CreateStudy: React.FC = () => {
               </Col>
             </Row>
             <Row gutter={10} align="middle">
-              <Col span={18} push={4}>
+              <Col span={18} push={4} tw="flex items-center">
                 <Radio.Group>
                   <Radio value={1}>YES</Radio>
                   <Radio value={2}>NO</Radio>
