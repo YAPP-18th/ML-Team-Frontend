@@ -3,8 +3,6 @@ import { StyledRestrictedArea } from '@shared/styled/Common';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import 'twin.macro';
-import * as echarts from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
 
 // typographys
 import {
@@ -20,7 +18,7 @@ import { GRAY_5, GRAY_11, PRIMARY_10 } from '@shared/styles/colors';
 
 // components
 import { Button, Calendar } from 'antd';
-import { MainLayout } from '@components/layouts/main/MainLayout';
+import { MainLayout } from '@components/Layouts/main/MainLayout';
 
 export const Report: React.FC = () => {
   return (

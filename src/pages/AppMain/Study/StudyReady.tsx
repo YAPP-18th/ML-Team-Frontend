@@ -6,19 +6,19 @@ import { RouteComponentProps } from 'react-router-dom'; //npm install react-rout
 
 // components
 import RTCVideo from '@components/Study/RTCVideo';
-import { StudyLayout } from '@components/layouts/study/StudyLayout';
 
 // typography
 import { StdTypoH3 } from '@shared/styled/Typography';
 
 // colors
 import { GRAY_6, GRAY_8, PRIMARY_8 } from '@shared/styles/colors';
+import { StudyLayout } from '@components/Layouts/study/StudyLayout';
 
 interface IReadyStatusProps {
   status: string;
 }
 
-const StudyReady = ({ history }: RouteComponentProps) => {
+export const StudyReady = ({ history }: RouteComponentProps) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
 
   useEffect(() => {
@@ -44,7 +44,6 @@ const StudyReady = ({ history }: RouteComponentProps) => {
     </StudyLayout>
   );
 };
-export default StudyReady;
 
 const StyledStudyReadyStatus = styled.div(({ status }: IReadyStatusProps) => ({
   width: '96px',

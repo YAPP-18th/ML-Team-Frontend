@@ -6,7 +6,6 @@ import {
   useRouteMatch,
   useLocation,
 } from 'react-router-dom';
-import { StudyMain } from '@pages/AppMain/Study/StudyMain';
 import Login from '@pages/Login/Login';
 import ConditionalRoute from '@components/Common/ConditionalRoute';
 import { message } from 'antd';
@@ -19,9 +18,9 @@ import { useHistory } from 'react-router';
 // components
 import { NotFound } from '@pages/NotFound/NotFound';
 import { MyStudy } from '@pages/AppMain/MyStudy/MyStudy';
-import StudyRoom from '@pages/AppMain/Study/StudyRoom';
-import StudyReady from '@pages/AppMain/Study/StudyReady';
-import StudyFinish from '@pages/AppMain/Study/StudyFinish';
+import { StudyRoom } from '@pages/AppMain/Study/StudyRoom';
+import { StudyReady } from '@pages/AppMain/Study/StudyReady';
+import { StudyFinish } from '@pages/AppMain/Study/StudyFinish';
 import { Report } from '@pages/AppMain/Report/Report';
 
 export const Study: React.FC = () => {

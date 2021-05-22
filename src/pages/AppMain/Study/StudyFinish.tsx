@@ -17,7 +17,7 @@ import {
 // colors
 import { GRAY_10 } from '@shared/styles/colors';
 
-const StudyFinish = ({ history }: RouteComponentProps) => {
+export const StudyFinish = ({ history }: RouteComponentProps) => {
   return (
     <div tw="flex h-full flex-col items-center justify-center">
       <div tw="flex flex-col justify-center items-center">
@@ -69,7 +69,6 @@ const StudyFinish = ({ history }: RouteComponentProps) => {
     </div>
   );
 };
-export default StudyFinish;
 
 const StyledResult = styled.div`
   display: flex;
