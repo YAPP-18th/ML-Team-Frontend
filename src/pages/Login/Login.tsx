@@ -47,7 +47,7 @@ const Login = () => {
   };
   const { signIn, loaded } = useGoogleLogin({
     clientId:
-      '532567031933-13u39u6uup1t3f62mldba3u94ituljpn.apps.googleusercontent.com',
+      '424037183060-ddflsa6cg27bg58goel3p0qpt034mobc.apps.googleusercontent.com',
     onSuccess: onSuccessGoogleLogin,
     onFailure: (err) => {
       console.log(err, 'err');
