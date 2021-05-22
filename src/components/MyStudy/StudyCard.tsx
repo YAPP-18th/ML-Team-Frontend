@@ -78,7 +78,7 @@ const StudyCard: React.FC<IStudyCardProps> = ({
           <StdTypoSubtitle1>입장하기</StdTypoSubtitle1>
         </EnterButton>
       </StudyCardHover>
-      <Dropdown overlay={menu} trigger={['click']}>
+      <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
         <MoreButton src={MoreIcon} onClick={(e) => e.preventDefault()} />
       </Dropdown>
     </StudyCardWrapper>
