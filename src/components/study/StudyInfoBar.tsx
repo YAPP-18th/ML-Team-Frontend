@@ -1,5 +1,4 @@
-import React from 'react';
-// import { BrowserRouter, Route, RouteComponentProps } from 'react-router-dom'; //npm install react-router-dom
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
 import 'twin.macro';
@@ -24,22 +23,89 @@ interface IStudyInfoBarProps {
 }
 
 const StudyInfoBar = ({ isLarge, status }: IStudyInfoBarProps) => {
+  const [sets, setSets] = useState(1);
+  const [minutes, setMinutes] = useState(30);
+  const [seconds, setSeconds] = useState(0);
+  const [cycle, setCycle] = useState('휴식');
+  const [totalMinutes, setTotalMinutes] = useState(0);
+  const [totalSeconds, setTotalSeconds] = useState(0);
+  const [totalHours, setTotalHours] = useState(0);
+
+  useEffect(() => {
+    const totalTime = setInterval(() => {
+      if (totalSeconds < 59) {
+        setTotalSeconds(totalSeconds + 1);
+      }
+      if (totalSeconds === 59) {
+        if (totalMinutes === 59) {
+          setTotalHours(totalHours + 1);
+          setTotalMinutes(0);
+        } else {
+          setTotalMinutes(totalMinutes + 1);
+        }
+        setTotalSeconds(0);
+      }
+    }, 1000);
+    return () => clearInterval(totalTime);
+  }, [totalHours, totalMinutes, totalSeconds]);
+
+  useEffect(() => {
+    const studyCountdown = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          // if ((totalMinutes + sets * totalHours + 1) % (sets * 3) <= 1) {
+          if ((totalMinutes + sets * totalHours + 10) % (sets * 30) <= 10) {
+            // setMinutes(0);
+            setMinutes(9);
+            setCycle('집중');
+          } else {
+            setSets(sets + 1);
+            // setMinutes(2);
+            setMinutes(29);
+            setCycle('휴식');
+          }
+        } else {
+          setMinutes(minutes - 1);
+        }
+        setSeconds(59);
+      }
+    }, 1000);
+    return () => clearInterval(studyCountdown);
+  }, [minutes, seconds]);
+
   return (
     <StyledStudyInfoBar isLarge={isLarge}>
       <div tw="flex items-center">
         <StyledStudyInfoSet isLarge={isLarge}>
           <img src={TimeImg} tw="mr-1" alt="공부세트" />
-          <div>$ set</div>
+          <div>{sets} set</div>
         </StyledStudyInfoSet>
         {isLarge ? (
           <div tw="flex items-end">
-            <StdTypoH1>$$:$$:$$</StdTypoH1>
-            <StdTypoH5 tw="ml-4 text-gray-4">휴식시간까지 $$:$$:$$</StdTypoH5>
+            <StdTypoH1>
+              {totalHours < 10 ? `0${totalHours}` : totalHours}:
+              {totalMinutes < 10 ? `0${totalMinutes}` : totalMinutes}:
+              {totalSeconds < 10 ? `0${totalSeconds}` : totalSeconds}
+            </StdTypoH1>
+            <StdTypoH5 tw="ml-4 text-gray-4">
+              휴식시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:
+              {seconds < 10 ? `0${seconds}` : seconds}
+            </StdTypoH5>
           </div>
         ) : (
           <div>
-            <StdTypoH3>$$:$$:$$</StdTypoH3>
-            <StdTypoBody1 tw="text-gray-4">휴식시간까지 $$:$$:$$</StdTypoBody1>
+            <StdTypoH3>
+              {totalHours < 10 ? `0${totalHours}` : totalHours}:
+              {totalMinutes < 10 ? `0${totalMinutes}` : totalMinutes}:
+              {totalSeconds < 10 ? `0${totalSeconds}` : totalSeconds}
+            </StdTypoH3>
+            <StdTypoBody1 tw="text-gray-4">
+              {cycle}시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:
+              {seconds < 10 ? `0${seconds}` : seconds}
+            </StdTypoBody1>
           </div>
         )}
       </div>
@@ -85,15 +151,3 @@ const StyledStudyInfoSet = styled.div(({ isLarge }: IStudyInfoBarProps) => ({
   alignItems: 'center',
   marginRight: '30px',
 }));
-// const StyledStudyReadyStatus = styled.div(({ status }: IReadyStatusProps) => ({
-//   width: '96px',
-//   height: '30px',
-//   marginTop: '30px',
-//   marginBottom: status == '준비중' ? '78px' : '20px',
-//   backgroundColor: status == '준비중' ? GRAY_8 : PRIMARY_8,
-//   color: status == '준비중' ? GRAY_6 : 'white',
-//   display: 'flex',
-//   justifyContent: 'center',
-//   alignItems: 'center',
-//   borderRadius: '5px',
-// }));

@@ -1,199 +1,122 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
-  Link,
-  withRouter,
-  BrowserRouter,
-  Route,
   Redirect,
-  RouteComponentProps,
-} from 'react-router-dom'; //npm install react-router-dom
-import styled from '@emotion/styled';
-import { jsx, css } from '@emotion/react';
-import { useMediaQuery } from 'react-responsive';
+  Route,
+  Switch,
+  useRouteMatch,
+  useLocation,
+} from 'react-router-dom';
+import { StudyMain } from '@pages/AppMain/Study/StudyMain';
+import Login from '@pages/Login/Login';
+import ConditionalRoute from '@components/Common/ConditionalRoute';
+import { message } from 'antd';
+import { useCookies } from 'react-cookie';
+// import { StudyInnerRedirect } from '@pages/AppMain/Study/StudyInnerRedirect';
+import { timer } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { useHistory } from 'react-router';
-import 'twin.macro';
 
 // components
-import { Modal, Button, Layout } from 'antd';
-import StudyRoomSide from '@components/Study/StudyRoomSide';
-import RTCVideo from '@components/Study/RTCVideo';
-import StatusModal from '@components/Study/StatusModal';
-import StudyInfoBar from '@components/Study/StudyInfoBar';
-const { Header, Sider, Footer, Content } = Layout;
+import { NotFound } from '@pages/NotFound/NotFound';
+import { MyStudy } from '@pages/AppMain/MyStudy/MyStudy';
+import StudyRoom from '@pages/AppMain/Study/StudyRoom';
+import StudyReady from '@pages/AppMain/Study/StudyReady';
+import StudyFinish from '@pages/AppMain/Study/StudyFinish';
+import { Report } from '@pages/AppMain/Report/Report';
 
-// typography
-import { StdTypoH1, StdTypoH5 } from '@shared/styled/Typography';
-
-// colors
-import { GRAY_8, GRAY_9, GRAY_12, PRIMARY_10 } from '@shared/styles/colors';
-
-// images
-import ExitImg from '@assets/images/exit.svg';
-import PrivateImg from '@assets/images/private.svg';
-
-interface IStudyInfoBarProps {
-  status: string;
-}
-
-const Study = (props: RouteComponentProps) => {
-  const [localStream, setLocalStream] = useState<MediaStream>();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [wantExit, setWantExit] = useState(false);
-  const history = useHistory();
-
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-      setLocalStream(stream);
-    });
-  }, []);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
+export const Study: React.FC = () => {
+  const [cookies] = useCookies(['accessToken']);
+  const appAccessCondition = useMemo(() => {
+    return !!cookies?.accessToken && cookies?.accessToken !== '';
+  }, [cookies]);
+  const { path } = useRouteMatch();
 
   return (
-    <Layout
-      css={css`
-        height: 100%;
-      `}
-    >
-      <Header css={HeaderStyle}>
-        <div tw="flex">
-          <StdTypoH5>공부방 이름</StdTypoH5>
-          {/* private이라면 */}
-          <img src={PrivateImg} />
-        </div>
-
-        <Button
-          tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 "
-          shape="round"
-          type="primary"
-          onClick={showModal}
-        >
-          <ButtonImgStyled src={ExitImg} alt="공부종료" />
-          <div>공부 종료하기</div>
-        </Button>
-        <Modal
-          visible={isModalVisible}
-          closable={false}
-          keyboard={false}
-          // modalRender={(modal) => <ExitModal modal={modal} />}
-          maskStyle={{
-            background: `rgba(31,31,31,0.8)`,
-            backdropFilter: `blur(5px)`,
+    <>
+      <Switch>
+        <ConditionalRoute
+          path="/app/mystudy"
+          redirectPath="/app/study"
+          condition={!appAccessCondition} //스터디룸 입장 권한 여부 요청
+          onFalse={() => {
+            message.error('공부방 입장 권한이 없습니다.');
+            console.log('입장불가');
           }}
-        ></Modal>
-      </Header>
-      <Layout>
-        <Content
-          tw="flex justify-center"
-          css={css`
-            width: 100%;
-          `}
         >
-          <RTCVideo tw="relative" mediaStream={localStream} />
-          <ResponsiveStyledStudyInfoBar status={'상태표시'} />
-        </Content>
-        <ResponsiveSider />
-      </Layout>
-    </Layout>
+          <MyStudy />
+        </ConditionalRoute>
+
+        <ConditionalRoute
+          path="/app/study"
+          redirectPath="/app/mystudy"
+          condition={appAccessCondition} //스터디룸 입장 권한 여부 요청
+          onFalse={() => {
+            console.log('입장권한확인');
+            message.error('공부방 입장이 가능한 이용자입니다.');
+          }}
+        >
+          <Switch>
+            <Route path={`${path}/ready`} component={StudyReady} />
+            <Route path={`${path}/studyroom`} component={StudyRoom} />
+            <Route path={`${path}/finish`} component={StudyFinish} />
+            {/* <Route path={`${path}/report`} component={Report} /> */}
+            <Route path={`${path}/*`} component={NotFound} />
+          </Switch>
+        </ConditionalRoute>
+
+        <Route path={`${path}/redirect`} component={StudyInnerRedirect} />
+      </Switch>
+    </>
   );
 };
 
-// interface IExitModalProps {
-//   modal: Modal;
-// }
-
-// const ExitModal: React.FC<IExitModalProps> = ({ setIsModalVisible }) => {
-//   const history = useHistory();
-
-//   const handleCancel = () => {
-//     setIsModalVisible(false);
-//   };
-
-//   useEffect(() => {
-//     console.log(history.location);
-//   }, [history]);
-
-//   return (
-//     <div
-//       tw="bg-gray-10 relative "
-//       css={css`
-//         width: 420px;
-//         height: 220px;
-//         border-radius: 20px;
-//       `}
-//     >
-//       <StdTypoH4
-//         tw="text-gray-2 flex flex-col items-center justify-center"
-//         css={css`
-//           height: 148px;
-//         `}
-//       >
-//         공부를 종료할까요?
-//       </StdTypoH4>
-//       <div tw="flex">
-//         <Button
-//           tw="w-1/2 absolute left-0 bottom-0 bg-gray-8 rounded-none"
-//           css={css`
-//             height: 74px;
-//             border-bottom-left-radius: 20px;
-//           `}
-//           key="keep"
-//           onClick={handleCancel}
-//         >
-//           <StdTypoSubtitle1>조금 더 해볼래요</StdTypoSubtitle1>
-//         </Button>
-//         <Button
-//           tw="w-1/2 absolute right-0 bottom-0 rounded-none"
-//           css={css`
-//             height: 74px;
-//             border-bottom-right-radius: 20px;
-//           `}
-//           key="quit"
-//           type="primary"
-//           onClick={() => {
-//             console.log('clicked');
-//           }}
-//         >
-//           <StdTypoSubtitle1>네, 그만할래요</StdTypoSubtitle1>
-//         </Button>
-//       </div>
-//     </div>
-//   );
-// };
-
-export default Study;
-
-const HeaderStyle = css`
-  height: 80px;
-  padding: 0 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-  background: ${GRAY_12};
-`;
-
-const ButtonImgStyled = styled.img`
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-`;
-
-const ResponsiveSider = () => {
-  const isLarge = useMediaQuery({ minWidth: 965 });
-  return isLarge ? (
-    <Sider width={465}>
-      <StudyRoomSide />
-    </Sider>
-  ) : null;
+const useQuery = (): URLSearchParams => {
+  return new URLSearchParams(useLocation().search);
 };
-const ResponsiveStyledStudyInfoBar = (props: IStudyInfoBarProps) => {
-  const isLarge = useMediaQuery({ minWidth: 965 });
-  return isLarge ? (
-    <StudyInfoBar status={props.status} isLarge={true} />
-  ) : (
-    <StudyInfoBar status={props.status} isLarge={false} />
+
+//접속하려는 방에 접속할 수 있는지 //접속불가능하면 mystudy로 돌아감
+export const StudyInnerRedirect: React.FC = () => {
+  const history = useHistory();
+  const query = useQuery();
+  const [redirectUrl, setRedirectUrl] = useState<string>();
+  const [cookies] = useCookies(['accessToken']);
+
+  useEffect(() => {
+    const redirectType = query.get('type');
+    switch (redirectType) {
+      case 'study': {
+        const id = query.get('id');
+        setRedirectUrl(`/app/study/${id}`);
+        break;
+      }
+    }
+  }, [query]);
+
+  useEffect(() => {
+    if (redirectUrl) {
+      const redirectHandler = () => {
+        // 스터디룸 입장 권한 여부를 요청하는 내용으로 수정 예정
+        const hasAccessToken =
+          !!cookies?.accessToken && cookies?.accessToken !== '';
+
+        if (hasAccessToken) {
+          history.push(redirectUrl);
+        } else {
+          history.push('app/mystudy', { redirectUrl }); //권한이 없으면 mystudy로 redirect
+        }
+      };
+
+      // ReactiveX
+      // 2초 후 redirectHandler 실행
+      timer(2000)
+        .pipe(take(1))
+        .subscribe(() => redirectHandler());
+    }
+  }, [redirectUrl]);
+
+  return (
+    <>
+      <div>Redirecting...</div>
+    </>
   );
 };
