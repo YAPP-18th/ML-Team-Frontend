@@ -40,13 +40,16 @@ export const MainLayout: React.FC = ({ children }) => {
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
           `}
         >
-          <StyledRestrictedArea tw="flex">
-            <img src={Logo} tw="self-center" alt="STUDEEP" />
-            <Menu theme="dark" mode="horizontal" css={MenuStyle}>
-              <MenuItem key="1">내 학습</MenuItem>
-              <MenuItem key="2">학습레포트</MenuItem>
-              <MenuItem key="3">별자리샵</MenuItem>
-            </Menu>
+          <StyledRestrictedArea tw="flex justify-between">
+            <div tw="flex ">
+              <img src={Logo} tw="self-center" alt="STUDEEP" />
+              <Menu theme="dark" mode="horizontal" css={MenuStyle}>
+                <MenuItem key="1">내 학습</MenuItem>
+                <MenuItem key="2">학습레포트</MenuItem>
+                <MenuItem key="3">별자리샵</MenuItem>
+              </Menu>
+            </div>
+            <div>닉네임$$$$$</div>
           </StyledRestrictedArea>
         </Header>
         <Content>{children}</Content>
