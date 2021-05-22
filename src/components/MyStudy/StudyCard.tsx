@@ -12,6 +12,7 @@ import StudyRoomImg2 from '@assets/images/studyroom-2.svg';
 import StudyRoomImg3 from '@assets/images/studyroom-3.svg';
 import StudyRoomImg4 from '@assets/images/studyroom-4.svg';
 import MoreIcon from '@assets/icons/more.svg';
+import DeleteIcon from '@assets/icons/delete.svg';
 import { Dropdown, Menu } from 'antd';
 
 type StudyCardStyles = 'style_1' | 'style_2' | 'style_3' | 'style_4';
@@ -46,12 +47,23 @@ const StudyCard: React.FC<IStudyCardProps> = ({
 }) => {
   const menu = (
     <Menu>
-      <Menu.Item key="0">삭제하기</Menu.Item>
+      <Menu.Item key="0">
+        <div tw="flex items-center space-x-1">
+          <img src={DeleteIcon} alt="삭제하기 아이콘" />
+          <StdTypoBody2
+            css={css`
+              color: #d6686e;
+            `}
+          >
+            삭제하기
+          </StdTypoBody2>
+        </div>
+      </Menu.Item>
     </Menu>
   );
 
   return (
-    <StudyCardWrapper onClick={() => alert('clicked')}>
+    <StudyCardWrapper>
       <StudyCardInnerWrapper css={studyCardGradientList[style]}>
         <StdTypoSubtitle1>{title}</StdTypoSubtitle1>
         <StdTypoBody2>{description}</StdTypoBody2>
