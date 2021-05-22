@@ -35,6 +35,8 @@ const StudyRoomSide = () => {
       tw="h-full bg-gray-12"
       css={css`
         padding: 40px 20px;
+        overflow: scroll;
+        overflow-x: hidden;
       `}
     >
       <StyledSideTitleWrapper>
