@@ -26,24 +26,25 @@ const StudyInfoBar = ({ isLarge, status }: IStudyInfoBarProps) => {
   const [sets, setSets] = useState(1);
   const [minutes, setMinutes] = useState(30);
   const [seconds, setSeconds] = useState(0);
-  const [cycle, setCycle] = useState('휴식');
+  const [cycle, setCycle] = useState('집중');
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [totalSeconds, setTotalSeconds] = useState(0);
   const [totalHours, setTotalHours] = useState(0);
-
   useEffect(() => {
     const totalTime = setInterval(() => {
-      if (totalSeconds < 59) {
-        setTotalSeconds(totalSeconds + 1);
-      }
-      if (totalSeconds === 59) {
-        if (totalMinutes === 59) {
-          setTotalHours(totalHours + 1);
-          setTotalMinutes(0);
-        } else {
-          setTotalMinutes(totalMinutes + 1);
+      if (cycle == '집중') {
+        if (totalSeconds < 59) {
+          setTotalSeconds(totalSeconds + 1);
         }
-        setTotalSeconds(0);
+        if (totalSeconds === 59) {
+          if (totalMinutes === 59) {
+            setTotalHours(totalHours + 1);
+            setTotalMinutes(0);
+          } else {
+            setTotalMinutes(totalMinutes + 1);
+          }
+          setTotalSeconds(0);
+        }
       }
     }, 1000);
     return () => clearInterval(totalTime);
