@@ -12,6 +12,7 @@ import { Body2Style } from '@shared/styled/Typography';
 import { MenuItemProps } from 'antd/lib/menu/MenuItem';
 import { MenuClickEventHandler } from 'rc-menu/lib/interface';
 import { useHistory, useRouteMatch } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const FooterStyle = css`
   width: 100%;
@@ -75,7 +76,9 @@ export const MainLayout: React.FC = ({ children }) => {
           `}
         >
           <StyledRestrictedArea tw="flex">
-            <img src={Logo} tw="self-center" alt="STUDEEP" />
+            <Link to="/" tw="inline-flex">
+              <img src={Logo} tw="self-center" alt="STUDEEP" />
+            </Link>
             <Menu
               theme="dark"
               mode="horizontal"
