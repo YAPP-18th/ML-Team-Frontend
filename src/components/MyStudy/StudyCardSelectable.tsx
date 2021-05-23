@@ -41,6 +41,7 @@ const StudyCardWrapper = styled.div<{ focused: boolean }>`
   position: relative;
 
   cursor: pointer;
+  transition: 0.2s ease;
 
   ${(props) =>
     props?.focused &&
