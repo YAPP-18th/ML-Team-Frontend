@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { MouseEventHandler, useMemo } from 'react';
 import {
   studyCardStyleList,
-  StudyCardStyles,
+  StudyCardStyle,
 } from '@components/MyStudy/StudyCard';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -10,17 +10,23 @@ import CheckIcon from '@assets/icons/checked.svg';
 import 'twin.macro';
 
 interface IStudyCardSelectableProps {
-  style: StudyCardStyles;
+  style: StudyCardStyle;
   focused: boolean;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 export const StudyCardSelectable: React.FC<IStudyCardSelectableProps> = ({
   style,
   focused = false,
+  onClick,
 }) => {
   const wrapperCardStyle = useMemo(() => studyCardStyleList[style], [style]);
   return (
-    <StudyCardWrapper css={wrapperCardStyle} focused={focused}>
+    <StudyCardWrapper
+      css={wrapperCardStyle}
+      focused={focused}
+      onClick={onClick}
+    >
       {focused && (
         <img src={CheckIcon} alt="Check" tw="absolute top-1.5 left-1.5" />
       )}
@@ -39,6 +45,6 @@ const StudyCardWrapper = styled.div<{ focused: boolean }>`
   ${(props) =>
     props?.focused &&
     css`
-      border: 2px solid ${PRIMARY_9};
+      box-shadow: 0px 0px 0px 2px ${PRIMARY_9};
     `}
 `;
