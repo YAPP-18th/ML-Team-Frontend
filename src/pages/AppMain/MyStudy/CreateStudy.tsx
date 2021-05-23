@@ -40,7 +40,7 @@ const CreateStudy: React.FC = () => {
               `}
             >
               <Row gutter={10}>
-                <Col span={18} push={4}>
+                <Col span={20} push={4}>
                   <Form.Item
                     name="cardType"
                     rules={[{ required: true }]}
@@ -49,12 +49,12 @@ const CreateStudy: React.FC = () => {
                     <StudyCardSelectableControl />
                   </Form.Item>
                 </Col>
-                <Col span={4} pull={18}>
+                <Col span={4} pull={20}>
                   <StdTypoBody1 tw="font-bold mt-2">공부방 이미지</StdTypoBody1>
                 </Col>
               </Row>
               <Row gutter={10} align="middle">
-                <Col span={18} push={4}>
+                <Col span={20} push={4}>
                   <Form.Item
                     name="title"
                     rules={[{ required: true }]}
@@ -66,12 +66,12 @@ const CreateStudy: React.FC = () => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={4} pull={18}>
+                <Col span={4} pull={20}>
                   <StdTypoBody1 tw="font-bold">공부방 이름</StdTypoBody1>
                 </Col>
               </Row>
               <Row gutter={10}>
-                <Col span={18} push={4}>
+                <Col span={20} push={4}>
                   <Form.Item
                     name="description"
                     rules={[{ required: true }]}
@@ -85,12 +85,12 @@ const CreateStudy: React.FC = () => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={4} pull={18}>
+                <Col span={4} pull={20}>
                   <StdTypoBody1 tw="font-bold mt-2">공부방 설명</StdTypoBody1>
                 </Col>
               </Row>
               <Row gutter={10} align="middle">
-                <Col span={18} push={4} tw="flex items-center">
+                <Col span={20} push={4} tw="flex items-center">
                   <div tw="relative">
                     <Form.Item
                       name="isPublic"
@@ -109,7 +109,7 @@ const CreateStudy: React.FC = () => {
                     </StdTypoBody2>
                   )}
                 </Col>
-                <Col span={4} pull={18}>
+                <Col span={4} pull={20}>
                   <StdTypoBody1 tw="font-bold">방 공개</StdTypoBody1>
                 </Col>
               </Row>
@@ -162,7 +162,7 @@ const StudyCardSelectableControl: React.FC<IStudyCardSelectableControlProps> = (
   }, []);
 
   return (
-    <div tw="flex gap-3.5">
+    <div tw="flex space-x-3.5">
       {(['style_1', 'style_2', 'style_3', 'style_4'] as StudyCardStyle[]).map(
         (type) => (
           <StudyCardSelectable
