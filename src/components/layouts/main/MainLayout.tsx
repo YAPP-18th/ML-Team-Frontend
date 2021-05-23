@@ -87,7 +87,7 @@ export const MainLayout: React.FC = ({ children }) => {
               onClick={onMenuClick}
             >
               {Object.entries(menuItemMap).map((i) => (
-                <MenuItem key={i[0]}>{i[1].title}</MenuItem>
+                <MenuItemOverride key={i[0]}>{i[1].title}</MenuItemOverride>
               ))}
             </Menu>
           </StyledRestrictedArea>
@@ -129,7 +129,7 @@ export const MainLayout: React.FC = ({ children }) => {
   );
 };
 
-const MenuItem: React.FC<MenuItemProps> = ({ children, ...props }) => {
+const MenuItemOverride: React.FC<MenuItemProps> = ({ children, ...props }) => {
   const MenuItemStyle = css`
     padding: 0 5px !important;
     margin-right: 30px;
