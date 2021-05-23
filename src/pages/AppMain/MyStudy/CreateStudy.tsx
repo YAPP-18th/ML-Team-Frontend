@@ -67,10 +67,7 @@ const CreateStudy: React.FC = () => {
                     rules={[{ required: true }]}
                     noStyle={true}
                   >
-                    <Input
-                      placeholder="어떤 공부를 할지 적어주세요"
-                      bordered={false}
-                    />
+                    <Input placeholder="어떤 공부를 할지 적어주세요" />
                   </Form.Item>
                 </Col>
                 <Col span={4} pull={20}>
@@ -89,7 +86,6 @@ const CreateStudy: React.FC = () => {
                   >
                     <TextArea
                       placeholder="공부방에 대한 설명을 적어주세요"
-                      bordered={false}
                       rows={3}
                       tw="resize-none"
                     />
