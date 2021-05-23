@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MainLayout } from '@components/Layouts/main/MainLayout';
 import { StyledBoxWrapper, StyledRestrictedArea } from '@shared/styled/Common';
 import { css } from '@emotion/react';
@@ -7,14 +7,16 @@ import { StdTypoBody1 } from '@shared/styled/Typography';
 import 'twin.macro';
 import TextArea from 'antd/es/input/TextArea';
 import { Controller, useForm } from 'react-hook-form';
-import StudyCard from '@components/MyStudy/StudyCard';
+import StudyCard, { StudyCardStyle } from '@components/MyStudy/StudyCard';
 import { StudyCardSelectable } from '@components/MyStudy/StudyCardSelectable';
+
+interface IStudyCardSelectableControlProps {
+  value?: StudyCardStyle;
+  onChange?: (value: StudyCardStyle) => void;
+}
 
 const CreateStudy: React.FC = () => {
   const [form] = Form.useForm();
-  useEffect(() => {
-    console.log(form.getFieldsError());
-  }, [form.getFieldsError()]);
 
   return (
     <MainLayout>
@@ -33,11 +35,14 @@ const CreateStudy: React.FC = () => {
               `}
             >
               <Row gutter={10}>
-                <Col span={18} push={4} tw="flex gap-2">
-                  <StudyCardSelectable style="style_1" focused={true} />
-                  <StudyCardSelectable style="style_2" focused={true} />
-                  <StudyCardSelectable style="style_3" focused={true} />
-                  <StudyCardSelectable style="style_4" focused={true} />
+                <Col span={18} push={4}>
+                  <Form.Item
+                    name="cardType"
+                    rules={[{ required: true }]}
+                    noStyle={true}
+                  >
+                    <StudyCardSelectableControl />
+                  </Form.Item>
                 </Col>
                 <Col span={4} pull={18}>
                   <StdTypoBody1 tw="font-bold mt-2">공부방 이미지</StdTypoBody1>
@@ -122,6 +127,43 @@ const CreateStudy: React.FC = () => {
         </StyledBoxWrapper>
       </StyledRestrictedArea>
     </MainLayout>
+  );
+};
+
+const StudyCardSelectableControl: React.FC<IStudyCardSelectableControlProps> = ({
+  value,
+  onChange,
+}) => {
+  const [cardType, setCardType] = useState<StudyCardStyle>();
+
+  const triggerChange = (changedValue: StudyCardStyle) => {
+    onChange?.(changedValue);
+  };
+
+  const onClickCard = (newValue: StudyCardStyle) => {
+    setCardType(newValue);
+    triggerChange(newValue);
+  };
+
+  useEffect(() => {
+    setCardType(value);
+  }, []);
+
+  return (
+    <div tw="flex gap-3.5">
+      {(['style_1', 'style_2', 'style_3', 'style_4'] as StudyCardStyle[]).map(
+        (type) => (
+          <StudyCardSelectable
+            key={type}
+            style={type}
+            focused={cardType === type}
+            onClick={() => {
+              onClickCard(type);
+            }}
+          />
+        ),
+      )}
+    </div>
   );
 };
 
