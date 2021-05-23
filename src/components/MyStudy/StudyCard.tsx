@@ -15,22 +15,26 @@ import MoreIcon from '@assets/icons/more.svg';
 import DeleteIcon from '@assets/icons/delete.svg';
 import { Dropdown, Menu } from 'antd';
 
-type StudyCardStyles = 'style_1' | 'style_2' | 'style_3' | 'style_4';
+export type StudyCardStyles = 'style_1' | 'style_2' | 'style_3' | 'style_4';
 
-const studyCardGradientList: {
+export const studyCardStyleList: {
   [key in StudyCardStyles]: SerializedStyles;
 } = {
   style_1: css`
     background: url(${StudyRoomImg1}) center;
+    background-size: cover;
   `,
   style_2: css`
     background: url(${StudyRoomImg2}) center;
+    background-size: cover;
   `,
   style_3: css`
     background: url(${StudyRoomImg3}) center;
+    background-size: cover;
   `,
   style_4: css`
     background: url(${StudyRoomImg4}) center;
+    background-size: cover;
   `,
 };
 
@@ -64,7 +68,7 @@ const StudyCard: React.FC<IStudyCardProps> = ({
 
   return (
     <StudyCardWrapper>
-      <StudyCardInnerWrapper css={studyCardGradientList[style]}>
+      <StudyCardInnerWrapper css={studyCardStyleList[style]}>
         <StdTypoSubtitle1>{title}</StdTypoSubtitle1>
         <StdTypoBody2>{description}</StdTypoBody2>
         <div tw="flex items-center space-x-1.5">
@@ -93,12 +97,12 @@ const StudyCardWrapper = styled.div`
   cursor: pointer;
 
   .study-card-hover {
-    visibility: hidden;
+    opacity: 0;
   }
 
   &:hover {
     .study-card-hover {
-      visibility: visible;
+      opacity: 1;
     }
   }
 `;
@@ -119,10 +123,11 @@ const MoreButton = styled.img`
   position: absolute;
   top: 14px;
   right: 14px;
+  transition: 0.2s ease background;
+  border-radius: 50%;
 
   &:hover {
     background: ${GRAY_10}80;
-    border-radius: 50%;
   }
 `;
 
@@ -130,6 +135,7 @@ const StudyCardHover = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: 0.2s ease;
 
   position: absolute;
   top: 0;
