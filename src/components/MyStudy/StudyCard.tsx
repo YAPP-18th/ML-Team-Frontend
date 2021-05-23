@@ -15,10 +15,10 @@ import MoreIcon from '@assets/icons/more.svg';
 import DeleteIcon from '@assets/icons/delete.svg';
 import { Dropdown, Menu } from 'antd';
 
-export type StudyCardStyles = 'style_1' | 'style_2' | 'style_3' | 'style_4';
+export type StudyCardStyle = 'style_1' | 'style_2' | 'style_3' | 'style_4';
 
 export const studyCardStyleList: {
-  [key in StudyCardStyles]: SerializedStyles;
+  [key in StudyCardStyle]: SerializedStyles;
 } = {
   style_1: css`
     background: url(${StudyRoomImg1}) center;
@@ -39,7 +39,7 @@ export const studyCardStyleList: {
 };
 
 interface IStudyCardProps {
-  style: StudyCardStyles;
+  style: StudyCardStyle;
   title?: string;
   description?: string;
 }
