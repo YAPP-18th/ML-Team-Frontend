@@ -113,9 +113,11 @@ const CreateStudy: React.FC = () => {
                       </Radio.Group>
                     </Form.Item>
                   </div>
-                  {form.getFieldValue('isPublic') && (
+                  {form.isFieldTouched('isPublic') && (
                     <StdTypoBody2 tw="absolute text-gray-6 top-10">
-                      모르는 사람이 공부방에 함께 참여할 수 있어요
+                      {form.getFieldValue('isPublic')
+                        ? '모르는 사람이 공부방에 함께 참여할 수 있어요'
+                        : '초대한 사람만 들어올 수 있어요'}
                     </StdTypoBody2>
                   )}
                 </Col>
