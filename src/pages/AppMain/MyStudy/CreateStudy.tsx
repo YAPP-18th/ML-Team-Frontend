@@ -3,7 +3,7 @@ import { MainLayout } from '@components/Layouts/main/MainLayout';
 import { StyledBoxWrapper, StyledRestrictedArea } from '@shared/styled/Common';
 import { css } from '@emotion/react';
 import { Button, Col, Form, Input, Radio, Row, Space } from 'antd';
-import { StdTypoBody1 } from '@shared/styled/Typography';
+import { StdTypoBody1, StdTypoBody2 } from '@shared/styled/Typography';
 import 'twin.macro';
 import TextArea from 'antd/es/input/TextArea';
 import { Controller, useForm } from 'react-hook-form';
@@ -17,6 +17,7 @@ interface IStudyCardSelectableControlProps {
 
 const CreateStudy: React.FC = () => {
   const [form] = Form.useForm();
+  const [formValues, setFormValues] = useState({});
 
   return (
     <MainLayout>
@@ -26,7 +27,11 @@ const CreateStudy: React.FC = () => {
             margin-top: 60px;
           `}
         >
-          <Form form={form} onFinish={(v) => console.log(v)}>
+          <Form
+            form={form}
+            onFinish={(v) => console.log(v)}
+            onChange={(values) => setFormValues(values)}
+          >
             <div
               css={css`
                 > * + * {
@@ -86,16 +91,23 @@ const CreateStudy: React.FC = () => {
               </Row>
               <Row gutter={10} align="middle">
                 <Col span={18} push={4} tw="flex items-center">
-                  <Form.Item
-                    name="isPublic"
-                    rules={[{ required: true }]}
-                    noStyle={true}
-                  >
-                    <Radio.Group>
-                      <Radio value={1}>YES</Radio>
-                      <Radio value={2}>NO</Radio>
-                    </Radio.Group>
-                  </Form.Item>
+                  <div tw="relative">
+                    <Form.Item
+                      name="isPublic"
+                      rules={[{ required: true }]}
+                      noStyle={true}
+                    >
+                      <Radio.Group>
+                        <Radio value={true}>공개</Radio>
+                        <Radio value={false}>비공개</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </div>
+                  {form.getFieldValue('isPublic') && (
+                    <StdTypoBody2 tw="absolute text-gray-6 top-10">
+                      모르는 사람이 공부방에 함께 참여할 수 있어요
+                    </StdTypoBody2>
+                  )}
                 </Col>
                 <Col span={4} pull={18}>
                   <StdTypoBody1 tw="font-bold">방 공개</StdTypoBody1>
@@ -106,7 +118,7 @@ const CreateStudy: React.FC = () => {
                   <Button
                     type="primary"
                     size="large"
-                    tw="w-full mt-12"
+                    tw="w-full mt-16"
                     htmlType="submit"
                     disabled={
                       !form.isFieldsTouched(true) ||
