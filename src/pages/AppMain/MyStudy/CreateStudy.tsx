@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '@components/Layouts/main/MainLayout';
-import { StyledBoxWrapper, StyledRestrictedArea } from '@shared/styled/Common';
+import {
+  LabelRequiredCircle,
+  StyledBoxWrapper,
+  StyledRestrictedArea,
+} from '@shared/styled/Common';
 import { css } from '@emotion/react';
 import { Button, Col, Form, Input, Radio, Row, Space } from 'antd';
 import { StdTypoBody1, StdTypoBody2 } from '@shared/styled/Typography';
@@ -50,7 +54,10 @@ const CreateStudy: React.FC = () => {
                   </Form.Item>
                 </Col>
                 <Col span={4} pull={20}>
-                  <StdTypoBody1 tw="font-bold mt-2">공부방 이미지</StdTypoBody1>
+                  <StdTypoBody1 tw="font-bold mt-2">
+                    공부방 이미지
+                    <LabelRequiredCircle />
+                  </StdTypoBody1>
                 </Col>
               </Row>
               <Row gutter={10} align="middle">
@@ -67,7 +74,10 @@ const CreateStudy: React.FC = () => {
                   </Form.Item>
                 </Col>
                 <Col span={4} pull={20}>
-                  <StdTypoBody1 tw="font-bold">공부방 이름</StdTypoBody1>
+                  <StdTypoBody1 tw="font-bold">
+                    공부방 이름
+                    <LabelRequiredCircle />
+                  </StdTypoBody1>
                 </Col>
               </Row>
               <Row gutter={10}>
@@ -110,7 +120,10 @@ const CreateStudy: React.FC = () => {
                   )}
                 </Col>
                 <Col span={4} pull={20}>
-                  <StdTypoBody1 tw="font-bold">방 공개</StdTypoBody1>
+                  <StdTypoBody1 tw="font-bold">
+                    방 공개
+                    <LabelRequiredCircle />
+                  </StdTypoBody1>
                 </Col>
               </Row>
               <Form.Item shouldUpdate noStyle={true}>
