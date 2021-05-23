@@ -90,8 +90,8 @@ const CreateStudy: React.FC = () => {
                 </Col>
               </Row>
               <Row gutter={10} align="middle">
-                <Col span={20} push={4} tw="flex items-center">
-                  <div tw="relative">
+                <Col span={20} push={4}>
+                  <div tw="relative flex items-center">
                     <Form.Item
                       name="isPublic"
                       rules={[{ required: true }]}
