@@ -16,6 +16,9 @@
 @btn-font-size-base: 16px;
 @btn-font-size-sm: 14px;
 
+@btn-disable-border: none;
+@btn-border-style: none;
+
 @btn-padding-horizontal-base: 26px;
 @btn-padding-horizontal-lg: 32px;
 @btn-padding-horizontal-sm: 14px;
@@ -37,17 +40,15 @@
 }
 
 .ant-input {
-  &-borderless {
+  background: #434343;
+
+  &:focus {
     background: #434343;
+  }
 
-    &:focus {
-      background: #434343;
-    }
-
-    &:hover {
-      background: #434343;
-      opacity: .75;
-    }
+  &:hover {
+    background: #434343;
+    opacity: .75;
   }
 }
 
