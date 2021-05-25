@@ -6,22 +6,54 @@ import {
   StyledRestrictedArea,
 } from '@shared/styled/Common';
 import { css } from '@emotion/react';
-import { Button, Col, Form, Input, Radio, Row, Space } from 'antd';
+import { Button, Col, Form, Input, Radio, Row } from 'antd';
 import { StdTypoBody1, StdTypoBody2 } from '@shared/styled/Typography';
 import 'twin.macro';
 import TextArea from 'antd/es/input/TextArea';
-import { Controller, useForm } from 'react-hook-form';
-import StudyCard, { StudyCardStyle } from '@components/MyStudy/StudyCard';
+import { StudyCardStyle } from '@components/MyStudy/StudyCard';
 import { StudyCardSelectable } from '@components/MyStudy/StudyCardSelectable';
+import { camel2Under } from '@shared/utils';
+import { ajax } from 'rxjs/ajax';
+import { useLocalStorage } from '@rehooks/local-storage';
 
 interface IStudyCardSelectableControlProps {
   value?: StudyCardStyle;
   onChange?: (value: StudyCardStyle) => void;
 }
 
+interface ICreateStudyRequest {
+  style: StudyCardStyle;
+  title: string;
+  description?: string;
+  isPublic: boolean;
+}
+
 const CreateStudy: React.FC = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<ICreateStudyRequest>();
   const [formValues, setFormValues] = useState({});
+  const [accessToken] = useLocalStorage('accessToken');
+  const onSubmit = (value: ICreateStudyRequest) => {
+    const keys = Object.keys(value).map((i) => camel2Under(i));
+    const values = Object.values(value);
+
+    const body = keys.reduce((acc, cur, idx) => {
+      return {
+        ...acc,
+        [cur]: values[idx],
+      };
+    }, {});
+    ajax({
+      url: `/api/study-rooms`,
+      method: 'POST',
+      body: {
+        ...body,
+        owner_id: 1,
+      },
+      headers: {
+        authorization: `${accessToken}`,
+      },
+    }).subscribe((r) => console.log(r));
+  };
 
   return (
     <MainLayout>
@@ -33,7 +65,7 @@ const CreateStudy: React.FC = () => {
         >
           <Form
             form={form}
-            onFinish={(v) => console.log(v)}
+            onFinish={(v) => onSubmit(v)}
             onChange={(values) => setFormValues(values)}
           >
             <div
@@ -46,7 +78,7 @@ const CreateStudy: React.FC = () => {
               <Row gutter={10}>
                 <Col span={20} push={4}>
                   <Form.Item
-                    name="cardType"
+                    name="style"
                     rules={[{ required: true }]}
                     noStyle={true}
                   >
@@ -79,11 +111,7 @@ const CreateStudy: React.FC = () => {
               </Row>
               <Row gutter={10}>
                 <Col span={20} push={4}>
-                  <Form.Item
-                    name="description"
-                    rules={[{ required: true }]}
-                    noStyle={true}
-                  >
+                  <Form.Item name="description" noStyle={true}>
                     <TextArea
                       placeholder="공부방에 대한 설명을 적어주세요"
                       rows={3}
@@ -132,7 +160,9 @@ const CreateStudy: React.FC = () => {
                     tw="w-full mt-16"
                     htmlType="submit"
                     disabled={
-                      !form.isFieldsTouched(true) ||
+                      !form.isFieldTouched('style') ||
+                      !form.isFieldTouched('title') ||
+                      !form.isFieldTouched('isPublic') ||
                       form
                         .getFieldsError()
                         .filter(({ errors }) => errors?.length).length > 0

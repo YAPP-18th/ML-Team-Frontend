@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyledRestrictedArea } from '@shared/styled/Common';
 import { StdTypoH4 } from '@shared/styled/Typography';
 import styled from '@emotion/styled';
@@ -8,9 +8,24 @@ import MyStudyRoom from '@components/MyStudy/MyStudyRoom';
 import OnAirStudyRoom from '@components/MyStudy/OnAirStudyRoom';
 import { Button } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
+import { ajax } from 'rxjs/ajax';
+import { useLocalStorage } from '@rehooks/local-storage';
 
 export const MyStudy: React.FC = () => {
   const { path } = useRouteMatch();
+  const [accessToken] = useLocalStorage('accessToken');
+
+  useEffect(() => {
+    ajax({
+      url: `/api/study-rooms?skip=${0}&limit=${5}`,
+      method: 'GET',
+      headers: {
+        authorization: `${accessToken}`,
+      },
+    }).subscribe((res) => {
+      console.log(res);
+    });
+  }, [accessToken]);
 
   return (
     <MainLayout>

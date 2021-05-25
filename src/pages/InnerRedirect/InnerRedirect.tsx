@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import { useHistory } from 'react-router';
 import { timer } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { useLocalStorage } from '@rehooks/local-storage';
 
 // https://sudeep.com/redirect&type=studyroom&id=스터디룸아이디
 // InnerRedirect로 왔을 경우
@@ -19,7 +19,7 @@ export const InnerRedirect: React.FC = () => {
   const history = useHistory();
   const query = useQuery();
   const [redirectUrl, setRedirectUrl] = useState<string>();
-  const [cookies] = useCookies(['accessToken']);
+  const [accessToken] = useLocalStorage('accessToken');
 
   useEffect(() => {
     const redirectType = query.get('type');
@@ -36,8 +36,7 @@ export const InnerRedirect: React.FC = () => {
   useEffect(() => {
     if (redirectUrl) {
       const redirectHandler = () => {
-        const hasAccessToken =
-          !!cookies?.accessToken && cookies?.accessToken !== '';
+        const hasAccessToken = !!accessToken && accessToken !== '';
 
         if (hasAccessToken) {
           history.push(redirectUrl);

@@ -17,12 +17,12 @@ import FacebookImg from '@assets/images/facebook.svg';
 import { css, Global } from '@emotion/react';
 import { ajax, AjaxError } from 'rxjs/ajax';
 import { take } from 'rxjs/operators';
-import { useCookies } from 'react-cookie';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { writeStorage } from '@rehooks/local-storage';
 
 const Login = () => {
   const location = useLocation<{ redirectUrl: string }>();
-  const [cookies, setCookie] = useCookies(['accessToken']);
+
   const onSuccessGoogleLogin = (res: any) => {
     ajax({
       url: '/api/user/signin',
@@ -35,12 +35,12 @@ const Login = () => {
       .subscribe({
         next: (data) => {
           const accessToken = data.xhr.getResponseHeader('authorization');
-          setCookie('accessToken', accessToken, { maxAge: 1800 });
+          writeStorage('accessToken', accessToken);
         },
         error: (err: AjaxError) => {
           if (err.status === 404) {
             const accessToken = err.xhr.getResponseHeader('authorization');
-            setCookie('accessToken', accessToken, { maxAge: 1800 });
+            writeStorage('accessToken', accessToken);
           }
         },
       });
