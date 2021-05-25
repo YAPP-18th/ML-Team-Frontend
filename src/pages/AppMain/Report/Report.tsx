@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyledRestrictedArea } from '@shared/styled/Common';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import 'twin.macro';
 import locale from 'antd/es/date-picker/locale/ko_KR';
+import ReactECharts from 'echarts-for-react';
+import { PieChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
 
 // typographys
 import {
@@ -18,51 +21,62 @@ import {
 import {
   GRAY_1,
   GRAY_5,
-  GRAY_6,
+  GRAY_10,
   GRAY_11,
   PRIMARY_10,
 } from '@shared/styles/colors';
 
 // components
-import { Button, Calendar, DatePicker, Space } from 'antd';
-import { ResponsivePie } from '@nivo/pie';
-import { MainLayout } from '@components/Layouts/main/MainLayout';
+import { ReportLayout } from '@components/Layouts/report/ReportLayout';
 import { Moment } from 'moment';
-import moment from 'moment';
 
 function onChange(value: Moment | null, dateString: string) {
   console.log(dateString);
 }
 
 export const Report: React.FC = () => {
-  return (
-    <MainLayout>
-      {/* <div
-        css={css`
-          height: 153px;
-        `}
-      >
-        <Calendar
-          tw="w-full"
-          css={css`
-            height: 153px;
-          `}
-        />
-      </div> */}
-      <StyledRestrictedArea>
-        <div tw="flex justify-between items-end mt-20">
-          <StdTypoH2 tw="mb-6">$월 $$일</StdTypoH2>
-          <Space direction="vertical">
-            <DatePicker
-              locale={locale}
-              tw="mb-6"
-              style={{ width: '300px' }}
-              onChange={onChange}
-            />
-          </Space>
-        </div>
+  // const option = {
+  //   title: {
+  //     text: '某站点用户访问来源',
+  //     subtext: '纯属虚构',
+  //     x: 'center',
+  //   },
+  //   tooltip: {
+  //     trigger: 'item',
+  //     formatter: '{a} <br/>{b} : {c} ({d}%)',
+  //   },
+  //   legend: {
+  //     orient: 'vertical',
+  //     left: 'left',
+  //     data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎'],
+  //   },
+  //   series: [
+  //     {
+  //       name: '访问来源',
+  //       type: 'pie',
+  //       radius: '55%',
+  //       center: ['50%', '60%'],
+  //       data: [
+  //         { value: 335, name: '直接访问' },
+  //         { value: 310, name: '邮件营销' },
+  //         { value: 234, name: '联盟广告' },
+  //         { value: 135, name: '视频广告' },
+  //         { value: 1548, name: '搜索引擎' },
+  //       ],
+  //       itemStyle: {
+  //         emphasis: {
+  //           shadowBlur: 10,
+  //           shadowOffsetX: 0,
+  //           shadowColor: 'rgba(0, 0, 0, 0.5)',
+  //         },
+  //       },
+  //     },
+  //   ],
+  // };
 
-        <div
+  return (
+    <ReportLayout>
+      {/* <div
           tw="bg-gray-11"
           css={css`
             width: 100%;
@@ -73,79 +87,131 @@ export const Report: React.FC = () => {
           `}
         >
           <StdTypoH5>타임라인</StdTypoH5>
+        </div> */}
+      <div
+        tw="flex w-full"
+        css={css`
+          display: grid;
+          grid-template-columns: 0.8fr 1.2fr;
+        `}
+      >
+        <div
+          css={css`
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            align-items: space-between;
+          `}
+        >
+          <StyledElementBlock tw="mt-0">
+            <StdTypoH5>순수 공부시간</StdTypoH5>
+            <StdTypoH3>$$시간 $$분</StdTypoH3>
+          </StyledElementBlock>
+
+          <StyledElementBlock tw="mb-0">
+            <StdTypoH5>오늘의 집중도</StdTypoH5>
+            <div tw="flex flex-col justify-center items-center">
+              <StdTypoH3>$$%</StdTypoH3>
+              <StdTypoSubtitle1 tw="text-gray-4">
+                {/* 100%: 야호! 완벽한 집중력!👍 
+                  80-99% 잘하고 있어요!🙌
+                  40-79% 다음에는 더 잘 할 거에요!😎
+                  0-39% 이런 날도 있는거죠😢
+                  */}
+                다음에는 더 잘 할 거예요!😎
+              </StdTypoSubtitle1>
+            </div>
+          </StyledElementBlock>
         </div>
-        <div tw="flex w-full">
-          <div
+        <div
+          tw="bg-gray-11"
+          css={css`
+            margin-left: 13px;
+            border-radius: 10px;
+            padding: 20px;
+            height: 472px;
+          `}
+        >
+          <StdTypoH5 tw="text-gray-1">집중 분산요인</StdTypoH5>
+          <StdTypoBody2
+            tw="text-gray-1"
             css={css`
-              width: 44%;
+              margin-top: 8px;
             `}
           >
-            <StyledElementBlock>
-              <StdTypoH5>순수 공부시간</StdTypoH5>
-              <StdTypoH3>$$시간 $$분</StdTypoH3>
-            </StyledElementBlock>
-            <StyledElementBlock
-              css={css`
-                margin: 26px 0;
-              `}
-            >
-              <StdTypoH5>오늘의 달성률</StdTypoH5>
-              <div tw="flex flex-col justify-center items-center">
-                <StdTypoH3>$$%</StdTypoH3>
-                <StdTypoSubtitle1 tw="text-gray-4">
-                  이런 날도 있는거죠😢
-                </StdTypoSubtitle1>
-              </div>
-            </StyledElementBlock>
-            <StyledElementBlock>
-              <StdTypoH5>오늘의 집중도</StdTypoH5>
-              <div tw="flex flex-col justify-center items-center">
-                <StdTypoH3>$$%</StdTypoH3>
-                <StdTypoSubtitle1 tw="text-gray-4">
-                  다음에는 더 잘 할 거예요!😎
-                </StdTypoSubtitle1>
-              </div>
-            </StyledElementBlock>
-          </div>
+            총 $회 집중이 분산됐어요
+          </StdTypoBody2>
           <div
-            tw="bg-gray-11"
             css={css`
-              width: 56%;
-              // width: 686px;
-              margin-left: 26px;
-              border-radius: 10px;
-              padding: 20px;
-              height: 472px;
+              margin-top: 15px;
             `}
           >
-            <StdTypoH5 tw="text-gray-1">집중 분산요인</StdTypoH5>
-            <StdTypoBody2
-              tw="text-gray-1"
-              css={css`
-                margin-top: 8px;
-              `}
-            >
-              총 $회 집중이 분산됐어요
-            </StdTypoBody2>
-            <MyResponsivePie />
+            <ReactECharts
+              style={{
+                height: 280,
+              }}
+              option={{
+                tooltip: {
+                  trigger: 'item',
+                  formatter: `{a} <br/>{b}: {d}% <br/> 총 {c}회`,
+                  textStyle: {
+                    color: `${GRAY_1}`,
+                  },
+                  extraCssText: `font-size:14px; background-color:${GRAY_10}; width:160px; height:90px;`,
+                },
+                color: ['#E58389', '#7DD3B5', '#87A1E7'],
+                legend: {
+                  icon: 'square',
+                  orient: 'vertical',
+                  y: '10px',
+                  left: 10,
+                  data: ['스마트폰', '조는중', '자리비움'],
+                  textStyle: {
+                    color: '#FFFFFF',
+                  },
+                },
+                series: [
+                  {
+                    name: '집중 분산요인',
+                    type: 'pie',
+                    radius: '90%',
+                    avoidLabelOverlap: false,
+                    data: [
+                      { value: 8, name: '스마트폰' },
+                      { value: 3, name: '조는중' },
+                      { value: 2, name: '자리비움' },
+                    ],
+                    label: {
+                      show: false,
+                      position: 'center',
+                      normal: {
+                        textStyle: {
+                          color: '#FFFFFF',
+                        },
+                      },
+                    },
+                    labelLine: {
+                      show: true,
+                    },
+                  },
+                ],
+              }}
+            />
           </div>
         </div>
-      </StyledRestrictedArea>
-    </MainLayout>
+      </div>
+    </ReportLayout>
   );
 };
 
 const StyledElementBlock = styled.div`
   background-color: ${GRAY_11};
-  width: 100%;
-  // width: 482px;
-  height: 140px;
   color: ${GRAY_5};
   border-radius: 10px;
   padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 13px 13px 13px 0;
 `;
 
 interface IChartData {
@@ -175,35 +241,3 @@ const StudyData: Array<IChartData> = [
     color: '#87A1E7',
   },
 ];
-
-const MyResponsivePie = () => (
-  <ResponsivePie
-    data={StudyData}
-    colors={['#E58389', '#7DD3B5', '#87A1E7']}
-    margin={{ top: 40, right: 80, bottom: 80, left: 150 }}
-    enableArcLabels={false}
-    arcLabelsTextColor={'#000000'}
-    arcLinkLabelsSkipAngle={10}
-    arcLinkLabelsDiagonalLength={10}
-    arcLinkLabelsStraightLength={10}
-    arcLinkLabelsTextColor={GRAY_6}
-    arcLinkLabelsThickness={1}
-    arcLabelsSkipAngle={10}
-    legends={[
-      {
-        anchor: 'top-left',
-        direction: 'column',
-        justify: false,
-        translateX: -150,
-        translateY: 0,
-        itemsSpacing: 0,
-        itemWidth: 130,
-        itemHeight: 28,
-        itemDirection: 'left-to-right',
-        symbolSize: 20,
-        symbolShape: `square`,
-        textColor: 'pink',
-      },
-    ]}
-  />
-);
