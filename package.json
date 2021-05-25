@@ -12,6 +12,7 @@
     "@mediapipe/camera_utils": "^0.3.1620247984",
     "@mediapipe/drawing_utils": "^0.3.1620248257",
     "@mediapipe/hands": "^0.3.1620248595",
+    "@rehooks/local-storage": "2.4.0",
     "@tensorflow-models/coco-ssd": "^2.2.2",
     "@tensorflow/tfjs": "^3.6.0",
     "@testing-library/jest-dom": "^5.11.4",
