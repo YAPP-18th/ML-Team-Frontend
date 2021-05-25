@@ -1,26 +1,17 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Button, Modal } from 'antd';
-// import { Content, Header } from 'antd/es/layout/layout';
-const { Header, Sider, Footer, Content } = Layout;
-import Logo from '@assets/images/logo.svg';
+import React, { useState, useCallback } from 'react';
 import 'twin.macro';
 import { css } from '@emotion/react';
+
 import styled from '@emotion/styled';
 import tw from 'twin.macro';
-import { StyledRestrictedArea } from '@shared/styled/Common';
-import { Body2Style } from '@shared/styled/Typography';
 import { useMediaQuery } from 'react-responsive';
-import {
-  Link,
-  withRouter,
-  BrowserRouter,
-  Route,
-  Redirect,
-  RouteComponentProps,
-} from 'react-router-dom'; //npm install react-router-dom
+import { useCookies } from 'react-cookie';
 
 //components
+import { Layout, Menu, Button, Modal } from 'antd';
 import StudyRoomSide from '@components/Study/StudyRoomSide';
+import { StyledRestrictedArea } from '@shared/styled/Common';
+const { Header, Sider, Footer, Content } = Layout;
 
 // typography
 import {
@@ -43,24 +34,20 @@ import ExitImg from '@assets/images/exit.svg';
 import PrivateImg from '@assets/images/private.svg';
 import { useHistory } from 'react-router';
 
-const MenuStyle = css`
-  margin-left: 45px;
-  background: transparent !important;
-`;
-
 type StudyPageType = 'ready' | 'studyroom';
 
 interface IStudyLayoutProps {
   page: StudyPageType;
   children: React.ReactNode;
+  isPublic: boolean;
 }
 
 export const StudyLayout: React.FC<IStudyLayoutProps> = ({
   children,
   page,
+  isPublic,
 }) => {
   const history = useHistory();
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
     setIsModalVisible(true);
@@ -70,10 +57,12 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
     if (page == 'ready') {
       history.push(`/app/mystudy`);
     } else {
-      history.push(`/app/finish`);
+      history.push({
+        pathname: '/app/finish',
+        // state:{set:}
+      });
     }
   };
-
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -87,8 +76,7 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
         <Header css={HeaderStyle}>
           <div tw="flex">
             <StdTypoH5>공부방 이름</StdTypoH5>
-            {/* private이라면 */}
-            <img src={PrivateImg} />
+            {isPublic == false && <img src={PrivateImg} alt="비밀방" />}
           </div>
 
           <Button
@@ -212,44 +200,4 @@ const ResponsiveSider = () => {
       <StudyRoomSide />
     </Sider>
   ) : null;
-};
-
-const MenuItem: React.FC = ({ children, ...props }) => {
-  const MenuItemStyle = css`
-    padding: 0 5px !important;
-    margin-right: 30px;
-
-    &.ant-menu-item-selected {
-      background: transparent !important;
-      font-weight: 600;
-
-      &::before {
-        background: ${PRIMARY_8};
-      }
-    }
-
-    &::before {
-      transition: all 0.1s;
-      background: transparent;
-      height: 4px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      content: '';
-      right: 0;
-      width: 100%;
-    }
-
-    &:hover {
-      background: transparent !important;
-    }
-  `;
-
-  return (
-    <>
-      <Menu.Item {...props} css={MenuItemStyle}>
-        {children}
-      </Menu.Item>
-    </>
-  );
 };

@@ -22,11 +22,11 @@ interface IReadyStatusProps {
 
 interface IStudyReadyProps {
   currentStudy?: ICurrentStudy;
+  isPublic: boolean;
 }
 
-export const StudyReady = ({ currentStudy }: IStudyReadyProps) => {
+export const StudyReady = ({ currentStudy, isPublic }: IStudyReadyProps) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
-  const history = useHistory();
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -34,7 +34,7 @@ export const StudyReady = ({ currentStudy }: IStudyReadyProps) => {
     });
   }, []);
   return (
-    <StudyLayout page="ready">
+    <StudyLayout isPublic={isPublic} page="ready">
       <StdTypoH3 tw="from-gray-1 mt-16">정확한 집중도 분석을 위해</StdTypoH3>
       <StdTypoH3 tw="from-gray-1">화면에 두 손이 나오게 준비해주세요</StdTypoH3>
       {/* 현재 손의 준비 상태에 따라 둘 중에 하나 리턴 */}
