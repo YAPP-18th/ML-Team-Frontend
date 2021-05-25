@@ -2,7 +2,7 @@
   "name": "yapp_ml_2021",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://27.96.131.49:8000",
+  "proxy": "https://api.studeep.com/",
   "dependencies": {
     "@craco/craco": "6.1.1",
     "@emotion/babel-preset-css-prop": "^11.2.0",
