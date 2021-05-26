@@ -123,9 +123,9 @@ const CreateStudy: React.FC = () => {
                   <StdTypoBody1 tw="font-bold mt-2">공부방 설명</StdTypoBody1>
                 </Col>
               </Row>
-              <Row gutter={10} align="middle">
-                <Col span={20} push={4}>
-                  <div tw="relative flex items-center">
+              <div>
+                <Row gutter={10} align="middle">
+                  <Col span={20} push={4}>
                     <Form.Item
                       name="isPublic"
                       rules={[{ required: true }]}
@@ -136,22 +136,41 @@ const CreateStudy: React.FC = () => {
                         <Radio value={false}>비공개</Radio>
                       </Radio.Group>
                     </Form.Item>
-                  </div>
-                  {form.isFieldTouched('isPublic') && (
-                    <StdTypoBody2 tw="absolute text-gray-6 top-10">
-                      {form.getFieldValue('isPublic')
-                        ? '모르는 사람이 공부방에 함께 참여할 수 있어요'
-                        : '초대한 사람만 들어올 수 있어요'}
-                    </StdTypoBody2>
-                  )}
-                </Col>
-                <Col span={4} pull={20}>
-                  <StdTypoBody1 tw="font-bold">
-                    방 공개
-                    <LabelRequiredCircle />
-                  </StdTypoBody1>
-                </Col>
-              </Row>
+                  </Col>
+                  <Col span={4} pull={20}>
+                    <StdTypoBody1 tw="font-bold">
+                      방 공개
+                      <LabelRequiredCircle />
+                    </StdTypoBody1>
+                  </Col>
+                </Row>
+                {form.getFieldValue('isPublic') === false && (
+                  <Row gutter={10} align="middle" tw="mt-4">
+                    <Col span={20} push={4}>
+                      <div tw="relative flex items-center">
+                        <Form.Item
+                          name="password"
+                          rules={[{ required: true }]}
+                          noStyle={true}
+                        >
+                          <Input
+                            placeholder="비밀번호를 입력해주세요."
+                            disabled={form.getFieldValue('isPublic')}
+                          />
+                        </Form.Item>
+                      </div>
+                      {form.isFieldTouched('isPublic') && (
+                        <StdTypoBody2 tw="absolute text-gray-6 top-14">
+                          {form.getFieldValue('isPublic')
+                            ? '모르는 사람이 공부방에 함께 참여할 수 있어요'
+                            : '초대한 사람만 들어올 수 있어요'}
+                        </StdTypoBody2>
+                      )}
+                    </Col>
+                    <Col span={4} pull={20} />
+                  </Row>
+                )}
+              </div>
               <Form.Item shouldUpdate noStyle={true}>
                 {() => (
                   <Button
@@ -163,6 +182,8 @@ const CreateStudy: React.FC = () => {
                       !form.isFieldTouched('style') ||
                       !form.isFieldTouched('title') ||
                       !form.isFieldTouched('isPublic') ||
+                      (!form.getFieldValue('isPublic') &&
+                        !form.isFieldTouched('password')) ||
                       form
                         .getFieldsError()
                         .filter(({ errors }) => errors?.length).length > 0
