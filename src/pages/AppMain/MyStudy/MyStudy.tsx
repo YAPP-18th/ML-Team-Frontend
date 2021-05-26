@@ -10,6 +10,7 @@ import { Button } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { ajax } from 'rxjs/ajax';
 import { useLocalStorage } from '@rehooks/local-storage';
+import { API_ENDPOINT } from '@shared/common';
 
 export const MyStudy: React.FC = () => {
   const { path } = useRouteMatch();
@@ -17,7 +18,7 @@ export const MyStudy: React.FC = () => {
 
   useEffect(() => {
     ajax({
-      url: `/api/study-rooms?skip=${0}&limit=${5}`,
+      url: `${API_ENDPOINT}/api/study-rooms?skip=${0}&limit=${5}`,
       method: 'GET',
       headers: {
         authorization: `${accessToken}`,

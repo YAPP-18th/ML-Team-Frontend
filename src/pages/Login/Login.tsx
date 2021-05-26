@@ -19,13 +19,14 @@ import { ajax, AjaxError } from 'rxjs/ajax';
 import { take } from 'rxjs/operators';
 import { useLocation } from 'react-router-dom';
 import { writeStorage } from '@rehooks/local-storage';
+import { API_ENDPOINT } from '@shared/common';
 
 const Login = () => {
   const location = useLocation<{ redirectUrl: string }>();
 
   const onSuccessGoogleLogin = (res: any) => {
     ajax({
-      url: '/api/user/signin',
+      url: `${API_ENDPOINT}/api/user/signin`,
       method: 'GET',
       headers: {
         authorization: `Bearer ${res.accessToken}`,

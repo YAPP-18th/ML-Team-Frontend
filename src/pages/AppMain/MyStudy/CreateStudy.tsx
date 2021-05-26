@@ -15,6 +15,7 @@ import { StudyCardSelectable } from '@components/MyStudy/StudyCardSelectable';
 import { camel2Under } from '@shared/utils';
 import { ajax } from 'rxjs/ajax';
 import { useLocalStorage } from '@rehooks/local-storage';
+import { API_ENDPOINT } from '@shared/common';
 
 interface IStudyCardSelectableControlProps {
   value?: StudyCardStyle;
@@ -43,7 +44,7 @@ const CreateStudy: React.FC = () => {
       };
     }, {});
     ajax({
-      url: `/api/study-rooms`,
+      url: `${API_ENDPOINT}/api/study-rooms`,
       method: 'POST',
       body: {
         ...body,
