@@ -33,15 +33,19 @@ export const StudyReady = ({ currentStudy, isPublic }: IStudyReadyProps) => {
       setLocalStream(stream);
     });
   }, []);
+  // 디자인 시스템 반영 보완
   return (
     <StudyLayout isPublic={isPublic} page="ready">
-      <StdTypoH3 tw="from-gray-1 mt-16">정확한 집중도 분석을 위해</StdTypoH3>
+      <StdTypoH3 tw="from-gray-1 mt-16 font-medium">
+        정확한 집중도 분석을 위해
+      </StdTypoH3>
       <StdTypoH3 tw="from-gray-1">화면에 두 손이 나오게 준비해주세요</StdTypoH3>
       {/* 현재 손의 준비 상태에 따라 둘 중에 하나 리턴 */}
       {/* <StyledStudyReadyStatus status="준비중">
             준비중
           </StyledStudyReadyStatus> */}
       <div>
+        {/* 반영 보완 */}
         <StyledStudyReadyStatus status="준비완료">
           준비완료
         </StyledStudyReadyStatus>

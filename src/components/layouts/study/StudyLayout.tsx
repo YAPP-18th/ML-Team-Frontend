@@ -67,6 +67,7 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
     setIsModalVisible(false);
   };
   return (
+    // 디자인 시스템 반영 보완
     <>
       <Layout
         css={css`

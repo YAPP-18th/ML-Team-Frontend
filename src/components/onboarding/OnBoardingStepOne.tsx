@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import OnBoardingImage from '@assets/images/onboarding.svg';
 import { StdTypoBody2, StdTypoH3 } from '@shared/styled/Typography';
 import tw from 'twin.macro';
@@ -6,8 +6,13 @@ import 'twin.macro';
 import { OnBoardingContainer } from '@shared/styled/OnBoarding';
 import { Button } from 'antd';
 import { css } from '@emotion/react';
+import { OnBoardingStepType } from '@pages/AppMain/OnBoarding/OnBoarding';
 
-export const OnBoardingStepOne: React.FC = () => {
+interface IStepProps {
+  setStep: Dispatch<SetStateAction<OnBoardingStepType>>;
+}
+
+export const OnBoardingStepOne = ({ setStep }: IStepProps) => {
   return (
     <OnBoardingContainer>
       <img
@@ -26,6 +31,9 @@ export const OnBoardingStepOne: React.FC = () => {
           margin-top: 50px;
         `}
         tw="px-12"
+        onClick={() => {
+          setStep(2);
+        }}
       >
         시작하기
       </Button>

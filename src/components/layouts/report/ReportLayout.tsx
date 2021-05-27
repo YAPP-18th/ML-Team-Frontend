@@ -6,36 +6,48 @@ import 'twin.macro';
 import locale from 'antd/es/date-picker/locale/ko_KR';
 import { Content } from 'antd/es/layout/layout';
 // typographys
-import { StdTypoH2, StdTypoSubtitle1 } from '@shared/styled/Typography';
-
-// colors
-import {
-  GRAY_1,
-  GRAY_5,
-  GRAY_10,
-  GRAY_11,
-  PRIMARY_10,
-} from '@shared/styles/colors';
-
-// images
-import EmptyImg from '@assets/images/empty.svg';
+import { StdTypoH2 } from '@shared/styled/Typography';
 
 // components
 import { Button, DatePicker, Space } from 'antd';
 import { MainLayout } from '@components/Layouts/main/MainLayout';
 import { Moment } from 'moment';
+import { SetStateAction } from 'react';
+import { Dispatch } from 'react';
 
-function onChange(value: Moment | null, dateString: string) {
-  console.log(dateString);
+interface IDateProps {
+  children: React.ReactNode;
+  setYear: Dispatch<SetStateAction<number>>;
+  setMonth: Dispatch<SetStateAction<number>>;
+  setDate: Dispatch<SetStateAction<number>>;
 }
 
-export const ReportLayout: React.FC = ({ children }) => {
+export const ReportLayout = ({
+  children,
+  setYear,
+  setMonth,
+  setDate,
+}: IDateProps) => {
+  const [report, setReport] = useState(false);
+
+  function onChange(value: Moment | null, dateString: string) {
+    console.log(dateString);
+
+    const dateArr = dateString.split('');
+    setMonth(Number(dateArr[0] + dateArr[1] + dateArr[2] + dateArr[3]));
+    setMonth(Number(dateArr[5] + dateArr[6]));
+    setDate(Number(dateArr[8] + dateArr[9]));
+    // API요청해서 결과가 404/detail => noreport 반환
+    // else (200) => report 반환
+  }
+
   return (
     <MainLayout>
       <StyledRestrictedArea>
         <div tw="flex justify-between items-end mt-20">
-          {/* API 요청해서 날짜 쓰기 */}
-          <StdTypoH2 tw="mb-6">$월 $$일</StdTypoH2>
+          <StdTypoH2 tw="mb-6 text-gray-1">
+            {/* {year}년 {month}월 {date}일 */}
+          </StdTypoH2>
           <Space direction="vertical">
             <DatePicker
               locale={locale}

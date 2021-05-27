@@ -16,12 +16,14 @@ import {
 import { GRAY_6, GRAY_7, GRAY_9 } from '@shared/styles/colors';
 
 // components
-import { Button } from 'antd';
+import { Button, Alert } from 'antd';
 import { OnBoardingContainer } from '@shared/styled/OnBoarding';
+import { useHistory } from 'react-router-dom';
 
 export const OnBoardingStepTwo: React.FC = () => {
   const [cookies, setCookie] = useCookies(['accessToken']);
   const [nickname, setNickname] = useState('');
+  const history = useHistory();
   const sendNickname = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
@@ -32,15 +34,6 @@ export const OnBoardingStepTwo: React.FC = () => {
         body: JSON.stringify({
           provider: 'google',
           nickname: nickname,
-          // goal: {
-          //   MON: 2,
-          //   TUE: 2,
-          //   WED: 2,
-          //   THU: 2,
-          //   FRI: 2,
-          //   SAT: 2,
-          //   SUN: 2,
-          // },
         }),
         headers: {
           authorization: `${cookies.accessToken}`,
@@ -71,11 +64,24 @@ export const OnBoardingStepTwo: React.FC = () => {
         value={nickname}
         css={inputStyle}
         onChange={(e) => setNickname(e.target.value)}
+        required
       />
-      <StdTypoCaption1 tw="mt-2 mb-20">
+      <StdTypoCaption1 tw="mt-2.5 mb-20 text-gray-6">
         8글자 이내로 입력해주세요
       </StdTypoCaption1>
-      <Button type="primary" onClick={sendNickname}>
+      <Button
+        type="primary"
+        size="large"
+        onClick={() => {
+          if (nickname != '') {
+            sendNickname;
+            history.push('/app/mystudy');
+          } else {
+            // return <Alert message="Error Text" type="error" />;
+            alert('닉네임을 입력해주세요.');
+          }
+        }}
+      >
         완료
       </Button>
     </OnBoardingContainer>
