@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import tw from 'twin.macro';
 import { useMediaQuery } from 'react-responsive';
 import { useCookies } from 'react-cookie';
+import { API_ENDPOINT } from '@shared/common';
 
 //components
 import { Layout, Menu, Button, Modal } from 'antd';
@@ -21,13 +22,7 @@ import {
   StdTypoH5,
 } from '@shared/styled/Typography';
 // colors
-import {
-  GRAY_6,
-  GRAY_8,
-  GRAY_10,
-  GRAY_12,
-  PRIMARY_8,
-} from '@shared/styles/colors';
+import { GRAY_4, GRAY_8, GRAY_10, GRAY_12 } from '@shared/styles/colors';
 
 // images
 import ExitImg from '@assets/images/exit.svg';
@@ -58,7 +53,7 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
       history.push(`/app/mystudy`);
     } else {
       history.push({
-        pathname: '/app/finish',
+        pathname: `/app/finish`,
         // state:{set:}
       });
     }
@@ -67,7 +62,6 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
     setIsModalVisible(false);
   };
   return (
-    // 디자인 시스템 반영 보완
     <>
       <Layout
         css={css`
@@ -125,9 +119,9 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
           `}
         >
           <Content
-            tw="flex flex-col items-center justify-center "
+            tw="flex flex-col items-center justify-center bg-gray-10"
             css={css`
-              width: ${page == 'studyroom' && '100%'};
+              width: 100%;
             `}
           >
             {children}
@@ -147,6 +141,8 @@ const HeaderStyle = css`
   align-items: center;
   color: white;
   background: ${GRAY_12};
+  border-bottom-width: 0.1px;
+  border-color: ${GRAY_8};
 `;
 
 const ButtonImgStyled = styled.img`
@@ -163,7 +159,7 @@ interface IModalButtonProps {
 const StyledModalButton = ({ role, func }: IModalButtonProps) => {
   return (
     <Button
-      tw=" w-1/2 absolute"
+      tw=" w-1/2 absolute rounded-none"
       css={[
         css`
           height: 74px;
@@ -172,13 +168,14 @@ const StyledModalButton = ({ role, func }: IModalButtonProps) => {
           ? css`
               left: 0;
               bottom: 0;
-              // border-bottom-left-radius: 10px;
+              border-bottom-left-radius: 10px;
               background-color: ${GRAY_8};
               &:hover {
                 background-color: ${GRAY_10};
               }
             `
           : css`
+              border-bottom-right-radius: 10px;
               right: 0;
               bottom: 0;
             `,
