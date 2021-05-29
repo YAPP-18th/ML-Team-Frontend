@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
 import 'twin.macro';
@@ -24,58 +24,63 @@ interface IStudyInfoBarProps {
 
 const StudyInfoBar = ({ isLarge, status }: IStudyInfoBarProps) => {
   const [sets, setSets] = useState(1);
-  const [minutes, setMinutes] = useState(30);
+  const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
-  const [cycle, setCycle] = useState('집중');
+  const [cycle, setCycle] = useState('휴식');
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [totalSeconds, setTotalSeconds] = useState(0);
   const [totalHours, setTotalHours] = useState(0);
-  useEffect(() => {
-    const totalTime = setInterval(() => {
-      if (cycle == '집중') {
-        if (totalSeconds < 59) {
-          setTotalSeconds(totalSeconds + 1);
-        }
-        if (totalSeconds === 59) {
-          if (totalMinutes === 59) {
-            setTotalHours(totalHours + 1);
-            setTotalMinutes(0);
-          } else {
-            setTotalMinutes(totalMinutes + 1);
-          }
-          setTotalSeconds(0);
-        }
-      }
-    }, 1000);
-    return () => clearInterval(totalTime);
-  }, [totalHours, totalMinutes, totalSeconds]);
 
-  useEffect(() => {
-    const studyCountdown = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
+  function useInterval(callback: () => void, delay: number | null) {
+    const savedCallback = useRef(callback);
+
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    useEffect(() => {
+      if (delay === null) {
+        return;
       }
-      if (seconds === 0) {
-        if (minutes === 0) {
-          // if ((totalMinutes + sets * totalHours + 1) % (sets * 3) <= 1) {
-          if ((totalMinutes + sets * totalHours + 10) % (sets * 30) <= 10) {
-            // setMinutes(0);
-            setMinutes(9);
-            setCycle('집중');
-          } else {
-            setSets(sets + 1);
-            // setMinutes(2);
-            setMinutes(29);
-            setCycle('휴식');
-          }
+      const id = setInterval(() => savedCallback.current(), delay);
+      return () => clearInterval(id);
+    }, [delay]);
+  }
+
+  useInterval(() => {
+    if (totalSeconds < 59) {
+      setTotalSeconds(totalSeconds + 1);
+    }
+    if (totalSeconds === 59) {
+      if (totalMinutes === 59) {
+        setTotalHours(totalHours + 1);
+        setTotalMinutes(0);
+      } else {
+        setTotalMinutes(totalMinutes + 1);
+      }
+      setTotalSeconds(0);
+    }
+  }, 1000);
+  useInterval(() => {
+    if (seconds > 0) {
+      setSeconds(seconds - 1);
+    }
+    if (seconds === 0) {
+      if (minutes === 0) {
+        if ((totalMinutes + sets * totalHours + 5) % (sets * 25) <= 5) {
+          setMinutes(4);
+          setCycle('집중');
         } else {
-          setMinutes(minutes - 1);
+          setSets(sets + 1);
+          setMinutes(24);
+          setCycle('휴식');
         }
-        setSeconds(59);
+      } else {
+        setMinutes(minutes - 1);
       }
-    }, 1000);
-    return () => clearInterval(studyCountdown);
-  }, [minutes, seconds]);
+      setSeconds(59);
+    }
+  }, 1000);
 
   return (
     <StyledStudyInfoBar isLarge={isLarge}>
@@ -92,7 +97,7 @@ const StudyInfoBar = ({ isLarge, status }: IStudyInfoBarProps) => {
               {totalSeconds < 10 ? `0${totalSeconds}` : totalSeconds}
             </StdTypoH1>
             <StdTypoH5 tw="ml-4 text-gray-4">
-              휴식시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:
+              {cycle}시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}
             </StdTypoH5>
           </div>
