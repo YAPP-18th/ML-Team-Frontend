@@ -19,18 +19,19 @@ export const AppMain: React.FC = () => {
     return user.error?.response?.status;
   }, [user]);
 
+  useEffect(() => {
+    // 403 오류 발생 시 온보딩 화면으로 이동
+    if (userFetchStatus === 403) {
+      history.replace('/app/onboarding');
+    }
+  }, [user]);
+
   return (
     <>
       <Switch>
-        <ConditionalRoute
-          path={`${path}`}
-          exact={true}
-          redirectPath={`${path}/onboarding`}
-          condition={userFetchStatus !== 403}
-        >
+        <Route path={`${path}`} exact={true}>
           <Redirect to={`${path}/mystudy`} />
-        </ConditionalRoute>
-
+        </Route>
         <Route path={`${path}/mystudy`} component={MyStudyRoot} />
 
         <ConditionalRoute
