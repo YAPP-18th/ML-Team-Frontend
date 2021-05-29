@@ -2,7 +2,8 @@ import useSWR from 'swr';
 import { API_END_POINT } from '@shared/common';
 import useAccessToken from './useAccessToken';
 import axios from 'axios';
-import { IUser } from '@shared/types';
+import { IStudyRoom } from '@shared/types';
+import useUser from './useUser';
 import { SWRResponse } from 'swr/dist/types';
 
 async function fetcher(url: string, accessToken?: string | null) {
@@ -15,13 +16,17 @@ async function fetcher(url: string, accessToken?: string | null) {
   return response.data?.data;
 }
 
-function useUser(): SWRResponse<IUser, any> {
+function useMyStudyRoom(): SWRResponse<IStudyRoom[], any> {
+  const user = useUser();
   const [accessToken] = useAccessToken();
-  const _useSWR = useSWR(USER_END_POINT, (url) => fetcher(url, accessToken));
+  const _useSWR = useSWR(
+    user?.data?.id ? `${MY_STUDY_ROOM_END_POINT}${user?.data?.id}` : null,
+    (url) => fetcher(url, accessToken),
+  );
 
   return _useSWR;
 }
 
-const USER_END_POINT = `${API_END_POINT}/api/user/get`;
+export const MY_STUDY_ROOM_END_POINT = `${API_END_POINT}/api/study-rooms?owner_id=`;
 
-export default useUser;
+export default useMyStudyRoom;

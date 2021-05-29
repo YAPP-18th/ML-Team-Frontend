@@ -1,1 +1,1 @@
-export const API_ENDPOINT = 'https://api.studeep.com';
+export const API_END_POINT = 'https://api.studeep.com';

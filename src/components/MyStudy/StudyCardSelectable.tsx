@@ -1,13 +1,10 @@
 import React, { MouseEventHandler, useMemo } from 'react';
-import {
-  studyCardStyleList,
-  StudyCardStyle,
-} from '@components/MyStudy/StudyCard';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { PRIMARY_9 } from '@shared/styles/colors';
 import CheckIcon from '@assets/icons/checked.svg';
 import 'twin.macro';
+import { StudyCardStyle, studyCardStyleList } from '@shared/types';
 
 interface IStudyCardSelectableProps {
   style: StudyCardStyle;

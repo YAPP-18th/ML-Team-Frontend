@@ -10,50 +10,40 @@ import { Button, Col, Form, Input, Radio, Row } from 'antd';
 import { StdTypoBody1, StdTypoBody2 } from '@shared/styled/Typography';
 import 'twin.macro';
 import TextArea from 'antd/es/input/TextArea';
-import { StudyCardStyle } from '@components/MyStudy/StudyCard';
 import { StudyCardSelectable } from '@components/MyStudy/StudyCardSelectable';
-import { camel2Under } from '@shared/utils';
-import { ajax } from 'rxjs/ajax';
 import { useLocalStorage } from '@rehooks/local-storage';
-import { API_ENDPOINT } from '@shared/common';
+import { ICreateStudyRequest, StudyCardStyle } from '@shared/types';
+import useUser from '../../../hooks/useUser';
+import createStudyRoom from '../../../hooks/apis/createStudyRoom';
+import { STUDY_ROOM_END_POINT } from '../../../hooks/useStudyRoom';
+import { MY_STUDY_ROOM_END_POINT } from '../../../hooks/useMyStudyRoom';
+import { useHistory } from 'react-router';
+import { mutate } from 'swr';
 
 interface IStudyCardSelectableControlProps {
   value?: StudyCardStyle;
   onChange?: (value: StudyCardStyle) => void;
 }
 
-interface ICreateStudyRequest {
-  style: StudyCardStyle;
-  title: string;
-  description?: string;
-  isPublic: boolean;
-}
-
 const CreateStudy: React.FC = () => {
-  const [form] = Form.useForm<ICreateStudyRequest>();
+  const [form] = Form.useForm<Partial<ICreateStudyRequest>>();
   const [formValues, setFormValues] = useState({});
   const [accessToken] = useLocalStorage('accessToken');
-  const onSubmit = (value: ICreateStudyRequest) => {
-    const keys = Object.keys(value).map((i) => camel2Under(i));
-    const values = Object.values(value);
+  const history = useHistory();
+  const user = useUser();
 
-    const body = keys.reduce((acc, cur, idx) => {
-      return {
-        ...acc,
-        [cur]: values[idx],
-      };
-    }, {});
-    ajax({
-      url: `${API_ENDPOINT}/api/study-rooms`,
-      method: 'POST',
-      body: {
-        ...body,
-        owner_id: 1,
-      },
-      headers: {
-        authorization: `${accessToken}`,
-      },
-    }).subscribe((r) => console.log(r));
+  const onSubmit = (request: Partial<ICreateStudyRequest>) => {
+    const userId = user.data?.id;
+    if (userId) {
+      createStudyRoom(userId, request, accessToken).then(async () => {
+        await mutate(STUDY_ROOM_END_POINT);
+        await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
+
+        history.replace('/app/mystudy');
+      });
+    } else {
+      // 오류
+    }
   };
 
   return (
@@ -66,7 +56,7 @@ const CreateStudy: React.FC = () => {
         >
           <Form
             form={form}
-            onFinish={(v) => onSubmit(v)}
+            onFinish={(v) => onSubmit({ ...v, owner_id: user?.data?.id })}
             onChange={(values) => setFormValues(values)}
           >
             <div
@@ -80,7 +70,7 @@ const CreateStudy: React.FC = () => {
                 <Col span={20} push={4}>
                   <Form.Item
                     name="style"
-                    rules={[{ required: true }]}
+                    rules={[{ required: true, message: '필수 값입니다.' }]}
                     noStyle={true}
                   >
                     <StudyCardSelectableControl />
@@ -124,9 +114,18 @@ const CreateStudy: React.FC = () => {
                   <StdTypoBody1 tw="font-bold mt-2">공부방 설명</StdTypoBody1>
                 </Col>
               </Row>
-              <div>
+              <div
+                css={css`
+                  .ant-col {
+                    display: flex;
+                  }
+                  .ant-radio-group {
+                    align-items: center;
+                  }
+                `}
+              >
                 <Row gutter={10} align="middle">
-                  <Col span={20} push={4}>
+                  <Col span={20} push={4} flex={1}>
                     <Form.Item
                       name="isPublic"
                       rules={[{ required: true }]}
@@ -137,6 +136,13 @@ const CreateStudy: React.FC = () => {
                         <Radio value={false}>비공개</Radio>
                       </Radio.Group>
                     </Form.Item>
+                    {form.isFieldTouched('isPublic') && (
+                      <StdTypoBody2 tw="absolute text-gray-6 top-10">
+                        {form.getFieldValue('isPublic')
+                          ? '모르는 사람이 공부방에 함께 참여할 수 있어요'
+                          : '초대한 사람만 들어올 수 있어요'}
+                      </StdTypoBody2>
+                    )}
                   </Col>
                   <Col span={4} pull={20}>
                     <StdTypoBody1 tw="font-bold">
@@ -145,10 +151,13 @@ const CreateStudy: React.FC = () => {
                     </StdTypoBody1>
                   </Col>
                 </Row>
-                {form.getFieldValue('isPublic') === false && (
-                  <Row gutter={10} align="middle" tw="mt-4">
-                    <Col span={20} push={4}>
-                      <div tw="relative flex items-center">
+              </div>
+
+              {form.isFieldTouched('isPublic') &&
+                !form.getFieldValue('isPublic') && (
+                  <div tw="pt-6">
+                    <Row gutter={10}>
+                      <Col span={20} push={4}>
                         <Form.Item
                           name="password"
                           rules={[{ required: true }]}
@@ -159,25 +168,22 @@ const CreateStudy: React.FC = () => {
                             disabled={form.getFieldValue('isPublic')}
                           />
                         </Form.Item>
-                      </div>
-                      {form.isFieldTouched('isPublic') && (
-                        <StdTypoBody2 tw="absolute text-gray-6 top-14">
-                          {form.getFieldValue('isPublic')
-                            ? '모르는 사람이 공부방에 함께 참여할 수 있어요'
-                            : '초대한 사람만 들어올 수 있어요'}
-                        </StdTypoBody2>
-                      )}
-                    </Col>
-                    <Col span={4} pull={20} />
-                  </Row>
+                      </Col>
+                      <Col span={4} pull={20}>
+                        <StdTypoBody1 tw="font-bold mt-2">
+                          비밀번호
+                          <LabelRequiredCircle />
+                        </StdTypoBody1>
+                      </Col>
+                    </Row>
+                  </div>
                 )}
-              </div>
               <Form.Item shouldUpdate noStyle={true}>
                 {() => (
                   <Button
                     type="primary"
                     size="large"
-                    tw="w-full mt-16"
+                    tw="w-full mt-20"
                     htmlType="submit"
                     disabled={
                       !form.isFieldTouched('style') ||

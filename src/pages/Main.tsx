@@ -5,10 +5,10 @@ import Login from '@pages/Login/Login';
 import ConditionalRoute from '@components/Common/ConditionalRoute';
 import { message } from 'antd';
 import { InnerRedirect } from '@pages/InnerRedirect/InnerRedirect';
-import { useLocalStorage } from '@rehooks/local-storage';
+import useAccessToken from '../hooks/useAccessToken';
 
 export const Main: React.FC = () => {
-  const [accessToken] = useLocalStorage('accessToken');
+  const [accessToken] = useAccessToken();
   const appAccessCondition = useMemo(() => {
     return !!accessToken && accessToken !== '';
   }, [accessToken]);

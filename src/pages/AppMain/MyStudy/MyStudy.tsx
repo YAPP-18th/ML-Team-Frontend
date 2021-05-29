@@ -8,25 +8,14 @@ import MyStudyRoom from '@components/MyStudy/MyStudyRoom';
 import OnAirStudyRoom from '@components/MyStudy/OnAirStudyRoom';
 import { Button } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { ajax } from 'rxjs/ajax';
-import { useLocalStorage } from '@rehooks/local-storage';
-import { API_ENDPOINT } from '@shared/common';
+import useStudyRoom from '../../../hooks/useStudyRoom';
+import useMyStudyRoom from '../../../hooks/useMyStudyRoom';
+import useUser from '../../../hooks/useUser';
 
 export const MyStudy: React.FC = () => {
+  const studyRoom = useStudyRoom({ skip: 0, limit: 5 });
+  const myStudyRoom = useMyStudyRoom();
   const { path } = useRouteMatch();
-  const [accessToken] = useLocalStorage('accessToken');
-
-  useEffect(() => {
-    ajax({
-      url: `${API_ENDPOINT}/api/study-rooms?skip=${0}&limit=${5}`,
-      method: 'GET',
-      headers: {
-        authorization: `${accessToken}`,
-      },
-    }).subscribe((res) => {
-      console.log(res);
-    });
-  }, [accessToken]);
 
   return (
     <MainLayout>
@@ -38,11 +27,11 @@ export const MyStudy: React.FC = () => {
               <Button size="small">공부방 만들기</Button>
             </Link>
           </div>
-          <MyStudyRoom />
+          <MyStudyRoom data={myStudyRoom?.data} />
         </StyledMyStudyCard>
         <StyledMyStudyCard>
           <StdTypoH4>온에어 공부방</StdTypoH4>
-          <OnAirStudyRoom />
+          <OnAirStudyRoom data={studyRoom?.data} />
         </StyledMyStudyCard>
       </StyledRestrictedArea>
     </MainLayout>

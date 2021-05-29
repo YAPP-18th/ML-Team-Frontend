@@ -20,7 +20,7 @@ import GoogleImg from '@assets/images/google.svg';
 import FacebookImg from '@assets/images/facebook.svg';
 import { css, Global } from '@emotion/react';
 import { useLocation } from 'react-router-dom';
-import { API_ENDPOINT } from '@shared/common';
+import { API_END_POINT } from '@shared/common';
 import { setAccessToken } from '../../hooks/useAccessToken';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
@@ -29,7 +29,7 @@ const Login = () => {
 
   const onSuccessGoogleLogin = (res: GoogleLoginResponse) => {
     axios
-      .get(`${API_ENDPOINT}/api/user/signin`, {
+      .get(`${API_END_POINT}/api/user/signin`, {
         headers: {
           authorization: `Bearer ${res.accessToken}`,
         },
