@@ -19,7 +19,7 @@ import { GRAY_1, GRAY_6, GRAY_7, GRAY_9 } from '@shared/styles/colors';
 import { Button, message } from 'antd';
 import { OnBoardingContainer } from '@shared/styled/OnBoarding';
 import { useHistory } from 'react-router-dom';
-import { API_ENDPOINT } from '@shared/common';
+import { API_END_POINT } from '@shared/common';
 
 export const OnBoardingStepTwo: React.FC = () => {
   const [cookies, setCookie] = useCookies(['accessToken']);
@@ -32,7 +32,7 @@ export const OnBoardingStepTwo: React.FC = () => {
       e.preventDefault();
 
       ajax({
-        url: `${API_ENDPOINT}/api/user/signup`,
+        url: `${API_END_POINT}/api/user/signup`,
         method: 'POST',
         body: JSON.stringify({
           provider: 'google',

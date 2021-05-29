@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import tw from 'twin.macro';
 import { useMediaQuery } from 'react-responsive';
 import { useCookies } from 'react-cookie';
-import { API_ENDPOINT } from '@shared/common';
+import { API_END_POINT } from '@shared/common';
 
 //components
 import { Layout, Menu, Button, Modal } from 'antd';

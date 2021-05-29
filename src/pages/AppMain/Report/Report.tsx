@@ -7,7 +7,7 @@ import locale from 'antd/es/date-picker/locale/ko_KR';
 import { Content } from 'antd/es/layout/layout';
 import { ajax, AjaxError } from 'rxjs/ajax';
 import { useLocalStorage } from '@rehooks/local-storage';
-import { API_ENDPOINT } from '@shared/common';
+import { API_END_POINT } from '@shared/common';
 import { ErrMsgStyle } from '@components/OnBoarding/OnBoardingStepTwo';
 
 // components
@@ -49,7 +49,7 @@ export const Report = () => {
     // API 결과에 따라 setReport, setData
 
     ajax({
-      url: `${API_ENDPOINT}/api/reports?date=${dateString}&user_id=${5}`,
+      url: `${API_END_POINT}/api/reports?date=${dateString}&user_id=${5}`,
       method: 'GET',
       headers: {
         authorization: `${accessToken}`,
