@@ -39,6 +39,6 @@ function useUser(): SWRResponse<IUser, AxiosError> {
   return _useSWR;
 }
 
-const USER_END_POINT = `${API_END_POINT}/api/user/get`;
+export const USER_END_POINT = `${API_END_POINT}/api/user/get`;
 
 export default useUser;
