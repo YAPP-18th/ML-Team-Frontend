@@ -16,31 +16,45 @@ import {
 import { GRAY_6, GRAY_7, GRAY_9 } from '@shared/styles/colors';
 
 // components
-import { Button, Alert } from 'antd';
+import { Button, message } from 'antd';
 import { OnBoardingContainer } from '@shared/styled/OnBoarding';
 import { useHistory } from 'react-router-dom';
+import { API_ENDPOINT } from '@shared/common';
 
 export const OnBoardingStepTwo: React.FC = () => {
   const [cookies, setCookie] = useCookies(['accessToken']);
   const [nickname, setNickname] = useState('');
   const history = useHistory();
+
   const sendNickname = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
 
       ajax({
-        url: '/api/user/signup',
+        url: `${API_ENDPOINT}/api/user/signup`,
         method: 'POST',
         body: JSON.stringify({
           provider: 'google',
-          nickname: nickname,
+          nickname,
         }),
         headers: {
           authorization: `${cookies.accessToken}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
-      }).subscribe((res) => {
-        console.log(res);
+      }).subscribe({
+        next: (res) => console.log(res),
+        error: (err: AjaxError) => {
+          if (err.status === 404) {
+            console.log(err);
+            message.error({
+              content: '닉네임 생성에 실패했습니다!',
+              style: {
+                marginTop: '20vh',
+                height: '38px',
+              },
+            });
+          }
+        },
       });
     },
     [cookies, nickname],
@@ -72,14 +86,10 @@ export const OnBoardingStepTwo: React.FC = () => {
       <Button
         type="primary"
         size="large"
-        onClick={() => {
-          if (nickname != '') {
-            sendNickname;
-            history.push('/app/mystudy');
-          } else {
-            // return <Alert message="Error Text" type="error" />;
-            alert('닉네임을 입력해주세요.');
-          }
+        disabled={nickname === ''}
+        onClick={(e) => {
+          sendNickname(e);
+          history.push('/app/mystudy');
         }}
       >
         완료
