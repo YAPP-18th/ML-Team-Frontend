@@ -1,33 +1,28 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import 'twin.macro';
 import { css } from '@emotion/react';
 
 import styled from '@emotion/styled';
-import tw from 'twin.macro';
 import { useMediaQuery } from 'react-responsive';
-import { useCookies } from 'react-cookie';
-import { API_END_POINT } from '@shared/common';
 
 //components
-import { Layout, Menu, Button, Modal } from 'antd';
+import { Button, Layout, Modal } from 'antd';
 import StudyRoomSide from '@components/Study/StudyRoomSide';
-import { StyledRestrictedArea } from '@shared/styled/Common';
-const { Header, Sider, Footer, Content } = Layout;
-
 // typography
 import {
-  StdTypoSubtitle1,
-  StdTypoH3,
   StdTypoH4,
   StdTypoH5,
+  StdTypoSubtitle1,
 } from '@shared/styled/Typography';
 // colors
-import { GRAY_4, GRAY_8, GRAY_10, GRAY_12 } from '@shared/styles/colors';
+import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
 
 // images
 import ExitImg from '@assets/images/exit.svg';
 import PrivateImg from '@assets/images/private.svg';
 import { useHistory } from 'react-router';
+
+const { Header, Sider, Footer, Content } = Layout;
 
 type StudyPageType = 'ready' | 'studyroom';
 
