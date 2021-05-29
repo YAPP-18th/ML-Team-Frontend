@@ -9,6 +9,10 @@ import { IStudyData } from './Report';
 
 // import RectImg from '@assets/images/icons/Rectangle 146';
 
+interface IStudyDataProps {
+  StudyData: IStudyData[];
+}
+
 // typographys
 import {
   StdTypoBody2,
@@ -22,8 +26,8 @@ import { GRAY_1, GRAY_4, GRAY_6, GRAY_10 } from '@shared/styles/colors';
 import { join } from 'node:path';
 import { ReadStream } from 'node:fs';
 
-// export const MyReport = (StudyData: Array<IStudyData>) => {
-export const MyReport = () => {
+export const MyReport = ({ StudyData }: IStudyDataProps) => {
+  // export const MyReport = () => {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [focusDegree, setFocusDegree] = useState(0);
@@ -36,12 +40,7 @@ export const MyReport = () => {
     else if (fd >= 40) return '다음에는 더 잘 할 거에요!😎';
     else if (fd >= 0) return '이런 날도 있는거죠😢';
   };
-  {
-    /*  // 스마트폰에 주의가 필요해요
-            // 졸음엔 스트레칭이 좋대요!
-            // 우리 조금만 더 앉아서 공부해봐요!
-            // 집중력 최고! 대단해요! */
-  }
+
   const makeDistractionComment = () => {
     const max = null; //await // sleep
     // data 내에서 total_count를 통해 max 찾기
@@ -131,6 +130,7 @@ export const MyReport = () => {
                 fontWeight: 'bold',
                 fontSize: 16,
                 fontFamily: 'Spoqa Han Sans Neo',
+                letterSpacing: '-0.08px',
               },
             },
             series: [
@@ -139,7 +139,6 @@ export const MyReport = () => {
                 clockwise: false,
                 width: 'auto',
                 height: '110%',
-                // left: '15%',
                 center: ['50%', '50%'],
                 data: StudyData,
                 tooltip: {
