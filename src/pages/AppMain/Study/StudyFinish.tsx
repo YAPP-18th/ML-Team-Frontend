@@ -70,7 +70,14 @@ export const StudyFinish = ({ currentStudy }: IStudyFinishProps) => {
         >
           내 학습으로 돌아가기
         </Button>
-        <Button css={ResultButtonStyle} tw="text-gray-1" type="primary">
+        <Button
+          css={ResultButtonStyle}
+          tw="text-gray-1"
+          type="primary"
+          onClick={() => {
+            history.push('/app/report');
+          }}
+        >
           학습 레포트보기
         </Button>
       </div>
