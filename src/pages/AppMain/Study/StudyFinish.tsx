@@ -71,6 +71,7 @@ export const StudyFinish = ({ totalData, currentStudy }: IStudyFinishProps) => {
           tw="text-gray-6"
           onClick={() => {
             history.push('/app/mystudy');
+            window.location.reload();
           }}
         >
           내 학습으로 돌아가기
@@ -81,6 +82,7 @@ export const StudyFinish = ({ totalData, currentStudy }: IStudyFinishProps) => {
           type="primary"
           onClick={() => {
             history.push('/app/report');
+            window.location.reload();
           }}
         >
           학습 레포트보기
