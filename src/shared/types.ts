@@ -29,7 +29,7 @@ export interface IStudyRoom {
   is_public: boolean;
   created_at: string;
   description: string;
-  id: string;
+  id: number;
   current_join_counts: number;
   owner_id: number;
 }
