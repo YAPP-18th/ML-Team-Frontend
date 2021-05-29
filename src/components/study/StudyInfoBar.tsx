@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
 import 'twin.macro';
@@ -20,9 +26,18 @@ import TimeImg from '@assets/images/time.svg';
 interface IStudyInfoBarProps {
   isLarge: boolean;
   status?: string;
+  setTotalData: Dispatch<SetStateAction<number[]>>;
 }
 
-const StudyInfoBar = ({ isLarge, status }: IStudyInfoBarProps) => {
+interface ISizeProps {
+  isLarge: boolean;
+}
+
+const StudyInfoBar = ({
+  isLarge,
+  status,
+  setTotalData,
+}: IStudyInfoBarProps) => {
   const [sets, setSets] = useState(1);
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
@@ -60,6 +75,7 @@ const StudyInfoBar = ({ isLarge, status }: IStudyInfoBarProps) => {
       }
       setTotalSeconds(0);
     }
+    setTotalData([sets, totalHours, totalMinutes, totalSeconds]);
   }, 1000);
   useInterval(() => {
     if (seconds > 0) {
@@ -123,7 +139,7 @@ const StudyInfoBar = ({ isLarge, status }: IStudyInfoBarProps) => {
 };
 export default StudyInfoBar;
 
-const StyledStudyInfoBar = styled.div(({ isLarge }: IStudyInfoBarProps) => ({
+const StyledStudyInfoBar = styled.div(({ isLarge }: ISizeProps) => ({
   width: isLarge ? `60%` : '90%',
   height: '128px',
   position: 'absolute',
@@ -137,7 +153,7 @@ const StyledStudyInfoBar = styled.div(({ isLarge }: IStudyInfoBarProps) => ({
   padding: '0px 40px',
   justifyContent: 'space-between',
 }));
-const StyledStudyInfoStatus = styled.div(({ isLarge }: IStudyInfoBarProps) => ({
+const StyledStudyInfoStatus = styled.div(({ isLarge }: ISizeProps) => ({
   backgroundColor: PRIMARY_10,
   display: 'flex',
   justifyContent: 'center',
@@ -146,7 +162,7 @@ const StyledStudyInfoStatus = styled.div(({ isLarge }: IStudyInfoBarProps) => ({
   width: isLarge ? '175px' : '115px',
   height: '56px',
 }));
-const StyledStudyInfoSet = styled.div(({ isLarge }: IStudyInfoBarProps) => ({
+const StyledStudyInfoSet = styled.div(({ isLarge }: ISizeProps) => ({
   //   width: 'auto',
   backgroundColor: GRAY_9,
   display: 'flex',

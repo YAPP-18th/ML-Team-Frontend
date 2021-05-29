@@ -1,11 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { useMediaQuery } from 'react-responsive';
 import 'twin.macro';
 import { css } from '@emotion/react';
 import StudyInfoBar from '@components/Study/StudyInfoBar';
 import { StudyLayout } from '@components/Layouts/study/StudyLayout';
 import { ICurrentStudy } from '@pages/AppMain/Study/Study';
-
+import useUser from '../../../hooks/useUser';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-cpu';
 import * as cocossd from '@tensorflow-models/coco-ssd';
@@ -16,52 +22,54 @@ import {
   smartPhoneDetection,
 } from '@components/Study/userActionDetection';
 import { Spin, Modal, Button } from 'antd';
+import { StudyStep, ITotalStudyData } from './Study';
 
 // typography
 import { StdTypoH4, StdTypoBody1 } from '@shared/styled/Typography';
 
 interface IStudyInfoBarProps {
   status: string;
+  setTotalData: Dispatch<SetStateAction<number[]>>;
 }
 
 interface IStudyRoomProps {
+  setStep: Dispatch<SetStateAction<StudyStep>>;
   currentStudy?: ICurrentStudy;
   isPublic: boolean;
+  setTotalData: Dispatch<SetStateAction<number[]>>;
 }
-
 // images
 import NowSleepImg from '@assets/images/sleeping_modal.svg';
 import NowPhoneImg from '@assets/images/smartphone_modal.svg';
 import NowLeftImg from '@assets/images/left.svg';
 
-export const StudyRoom = ({ currentStudy, isPublic }: IStudyRoomProps) => {
+export const StudyRoom = ({
+  currentStudy,
+  isPublic,
+  setStep,
+  setTotalData,
+}: IStudyRoomProps) => {
   const [loading, setLoading] = useState(true);
   const videoElementRef = useRef<HTMLVideoElement>(null);
   const [curAction, setCurAction] = useState('공부중');
   const [localStream, setLocalStream] = useState<MediaStream>();
-  const [sets, setSets] = useState<number>(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   let prevAction = '';
+  const user = useUser();
 
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-      setLocalStream(stream);
-    });
-  }, []);
-
-  useEffect(() => {
     if (curAction !== '공부중') setIsModalVisible(true);
     console.log(isModalVisible);
     if (prevAction !== curAction) {
-      const logDataArr = [];
-      // logDatArr.push(유저아이디);
-      logDataArr.push(curAction);
-      logDataArr.push(new Date().getTime());
-      //소켓으로 전송
+      // 소켓으로 로그 데이터 전송
+      // const logDataArr = [];
+      // logDataArr.push(user.data?.id);
+      // logDataArr.push(curAction);
+      // logDataArr.push(new Date().getTime());
     }
   }, [curAction]);
 
@@ -97,22 +105,22 @@ export const StudyRoom = ({ currentStudy, isPublic }: IStudyRoomProps) => {
         prevAction = curAction;
         setCurAction(handDetection(results));
       });
+
       await camera.start();
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // console.log(videoElementRef);
     if (videoElementRef?.current) {
       loadModel(videoElementRef.current);
     }
   }, [videoElementRef]);
 
   return (
-    <StudyLayout isPublic={isPublic} page="studyroom">
+    <StudyLayout isPublic={isPublic} setStep={setStep} page="studyroom">
       <div
-        tw="flex flex-col items-center justify-center absolute"
+        tw="flex flex-col items-center justify-center"
         css={css`
           height: 100%;
         `}
@@ -135,14 +143,12 @@ export const StudyRoom = ({ currentStudy, isPublic }: IStudyRoomProps) => {
           muted
           css={css`
             height: 100%;
-            // width: 100%;
           `}
         />
       </div>
       <ResponsiveStyledStudyInfoBar
+        setTotalData={setTotalData}
         status={curAction}
-        // sets={sets}
-        // setSets={setSets}
       />
       {curAction !== '공부중' && (
         <Modal
@@ -221,9 +227,17 @@ export const StudyRoom = ({ currentStudy, isPublic }: IStudyRoomProps) => {
 const ResponsiveStyledStudyInfoBar = (props: IStudyInfoBarProps) => {
   const isLarge = useMediaQuery({ minWidth: 965 });
   return isLarge ? (
-    <StudyInfoBar status={props.status} isLarge={true} />
+    <StudyInfoBar
+      status={props.status}
+      setTotalData={props.setTotalData}
+      isLarge={true}
+    />
   ) : (
-    <StudyInfoBar status={props.status} isLarge={false} />
+    <StudyInfoBar
+      status={props.status}
+      setTotalData={props.setTotalData}
+      isLarge={false}
+    />
   );
 };
 const StatusTable: {
