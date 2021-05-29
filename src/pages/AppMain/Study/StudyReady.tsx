@@ -11,8 +11,7 @@ import {
   handDetection,
   smartPhoneDetection,
 } from '@components/Study/userActionDetection';
-import { userHandDetection } from '@components/Study/userHandDetection';
-import { Spin, Space } from 'antd';
+import { Spin, Space, message } from 'antd';
 
 // components
 import RTCVideo from '@components/Study/RTCVideo';
@@ -21,7 +20,13 @@ import RTCVideo from '@components/Study/RTCVideo';
 import { StdTypoH3 } from '@shared/styled/Typography';
 
 // colors
-import { GRAY_6, GRAY_8, PRIMARY_8 } from '@shared/styles/colors';
+import {
+  GRAY_6,
+  GRAY_8,
+  GRAY_1,
+  GRAY_9,
+  PRIMARY_8,
+} from '@shared/styles/colors';
 import { StudyLayout } from '@components/Layouts/study/StudyLayout';
 import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 
@@ -75,6 +80,7 @@ IStudyReadyProps) => {
     });
 
     if (video) {
+      //camera 못찾을 때 error 핸들링
       const camera = new Camera(video, {
         onFrame: async () => {
           if (video) {
@@ -101,7 +107,12 @@ IStudyReadyProps) => {
         }
         handDetection(results);
       });
-      await camera.start();
+      await camera.start().catch((err) =>
+        message.error({
+          content: '닉네임 생성에 실패했습니다!',
+          style: { ErrMsgStyle },
+        }),
+      );
     }
   };
 
@@ -173,3 +184,12 @@ const StyledStudyReadyStatus = styled.div(({ status }: IReadyStatusProps) => ({
   alignItems: 'center',
   borderRadius: '5px',
 }));
+
+const ErrMsgStyle = css`
+  margin-top: 20vh;
+  background-color: ${GRAY_9};
+  color: ${GRAY_1};
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+`;
