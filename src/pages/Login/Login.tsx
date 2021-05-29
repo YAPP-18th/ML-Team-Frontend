@@ -2,7 +2,11 @@ import React, { useMemo } from 'react';
 import styled from '@emotion/styled';
 import { Button } from 'antd';
 import 'twin.macro';
-import { useGoogleLogin } from 'react-google-login';
+import {
+  GoogleLoginResponse,
+  useGoogleLogin,
+  UseGoogleLoginProps,
+} from 'react-google-login';
 
 // typography
 import { StdTypoCaption1, StdTypoH3 } from '@shared/styled/Typography';
@@ -15,41 +19,36 @@ import LogoImg from '@assets/images/logo.svg';
 import GoogleImg from '@assets/images/google.svg';
 import FacebookImg from '@assets/images/facebook.svg';
 import { css, Global } from '@emotion/react';
-import { ajax, AjaxError } from 'rxjs/ajax';
-import { take } from 'rxjs/operators';
 import { useLocation } from 'react-router-dom';
-import { writeStorage } from '@rehooks/local-storage';
 import { API_ENDPOINT } from '@shared/common';
+import { setAccessToken } from '../../hooks/useAccessToken';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 const Login = () => {
   const location = useLocation<{ redirectUrl: string }>();
 
-  const onSuccessGoogleLogin = (res: any) => {
-    ajax({
-      url: `${API_ENDPOINT}/api/user/signin`,
-      method: 'GET',
-      headers: {
-        authorization: `Bearer ${res.accessToken}`,
-      },
-    })
-      .pipe(take(1))
-      .subscribe({
-        next: (data) => {
-          const accessToken = data.xhr.getResponseHeader('authorization');
-          writeStorage('accessToken', accessToken);
+  const onSuccessGoogleLogin = (res: GoogleLoginResponse) => {
+    axios
+      .get(`${API_ENDPOINT}/api/user/signin`, {
+        headers: {
+          authorization: `Bearer ${res.accessToken}`,
         },
-        error: (err: AjaxError) => {
-          if (err.status === 404) {
-            const accessToken = err.xhr.getResponseHeader('authorization');
-            writeStorage('accessToken', accessToken);
-          }
-        },
+      })
+      .then(({ headers: { authorization } }: AxiosResponse) => {
+        setAccessToken(authorization);
+      })
+      .catch(({ response }: AxiosError) => {
+        if (response?.status === 404) {
+          const accessToken = response.headers?.authorization;
+          setAccessToken(accessToken);
+        }
       });
   };
-  const { signIn, loaded } = useGoogleLogin({
+
+  const { signIn } = useGoogleLogin({
     clientId:
       '424037183060-ddflsa6cg27bg58goel3p0qpt034mobc.apps.googleusercontent.com',
-    onSuccess: onSuccessGoogleLogin,
+    onSuccess: onSuccessGoogleLogin as UseGoogleLoginProps['onSuccess'],
     onFailure: (err) => {
       console.log(err, 'err');
     },
