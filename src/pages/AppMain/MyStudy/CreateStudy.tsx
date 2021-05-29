@@ -6,13 +6,19 @@ import {
   StyledRestrictedArea,
 } from '@shared/styled/Common';
 import { css } from '@emotion/react';
-import { Button, Col, Form, Input, Radio, Row, Space } from 'antd';
+import { Button, Col, Form, Input, Radio, Row } from 'antd';
 import { StdTypoBody1, StdTypoBody2 } from '@shared/styled/Typography';
 import 'twin.macro';
 import TextArea from 'antd/es/input/TextArea';
-import { Controller, useForm } from 'react-hook-form';
-import StudyCard, { StudyCardStyle } from '@components/MyStudy/StudyCard';
 import { StudyCardSelectable } from '@components/MyStudy/StudyCardSelectable';
+import { useLocalStorage } from '@rehooks/local-storage';
+import { ICreateStudyRequest, StudyCardStyle } from '@shared/types';
+import useUser from '../../../hooks/useUser';
+import createStudyRoom from '../../../hooks/apis/createStudyRoom';
+import { STUDY_ROOM_END_POINT } from '../../../hooks/useStudyRoom';
+import { MY_STUDY_ROOM_END_POINT } from '../../../hooks/useMyStudyRoom';
+import { useHistory } from 'react-router';
+import { mutate } from 'swr';
 
 interface IStudyCardSelectableControlProps {
   value?: StudyCardStyle;
@@ -20,8 +26,25 @@ interface IStudyCardSelectableControlProps {
 }
 
 const CreateStudy: React.FC = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<Partial<ICreateStudyRequest>>();
   const [formValues, setFormValues] = useState({});
+  const [accessToken] = useLocalStorage('accessToken');
+  const history = useHistory();
+  const user = useUser();
+
+  const onSubmit = (request: Partial<ICreateStudyRequest>) => {
+    const userId = user.data?.id;
+    if (userId) {
+      createStudyRoom(userId, request, accessToken).then(async () => {
+        await mutate(STUDY_ROOM_END_POINT);
+        await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
+
+        history.replace('/app/mystudy');
+      });
+    } else {
+      // 오류
+    }
+  };
 
   return (
     <MainLayout>
@@ -33,7 +56,7 @@ const CreateStudy: React.FC = () => {
         >
           <Form
             form={form}
-            onFinish={(v) => console.log(v)}
+            onFinish={(v) => onSubmit({ ...v, owner_id: user?.data?.id })}
             onChange={(values) => setFormValues(values)}
           >
             <div
@@ -46,8 +69,8 @@ const CreateStudy: React.FC = () => {
               <Row gutter={10}>
                 <Col span={20} push={4}>
                   <Form.Item
-                    name="cardType"
-                    rules={[{ required: true }]}
+                    name="style"
+                    rules={[{ required: true, message: '필수 값입니다.' }]}
                     noStyle={true}
                   >
                     <StudyCardSelectableControl />
@@ -79,11 +102,7 @@ const CreateStudy: React.FC = () => {
               </Row>
               <Row gutter={10}>
                 <Col span={20} push={4}>
-                  <Form.Item
-                    name="description"
-                    rules={[{ required: true }]}
-                    noStyle={true}
-                  >
+                  <Form.Item name="description" noStyle={true}>
                     <TextArea
                       placeholder="공부방에 대한 설명을 적어주세요"
                       rows={3}
@@ -95,9 +114,18 @@ const CreateStudy: React.FC = () => {
                   <StdTypoBody1 tw="font-bold mt-2">공부방 설명</StdTypoBody1>
                 </Col>
               </Row>
-              <Row gutter={10} align="middle">
-                <Col span={20} push={4}>
-                  <div tw="relative flex items-center">
+              <div
+                css={css`
+                  .ant-col {
+                    display: flex;
+                  }
+                  .ant-radio-group {
+                    align-items: center;
+                  }
+                `}
+              >
+                <Row gutter={10} align="middle">
+                  <Col span={20} push={4} flex={1}>
                     <Form.Item
                       name="isPublic"
                       rules={[{ required: true }]}
@@ -108,31 +136,61 @@ const CreateStudy: React.FC = () => {
                         <Radio value={false}>비공개</Radio>
                       </Radio.Group>
                     </Form.Item>
+                    {form.isFieldTouched('isPublic') && (
+                      <StdTypoBody2 tw="absolute text-gray-6 top-10">
+                        {form.getFieldValue('isPublic')
+                          ? '모르는 사람이 공부방에 함께 참여할 수 있어요'
+                          : '초대한 사람만 들어올 수 있어요'}
+                      </StdTypoBody2>
+                    )}
+                  </Col>
+                  <Col span={4} pull={20}>
+                    <StdTypoBody1 tw="font-bold">
+                      방 공개
+                      <LabelRequiredCircle />
+                    </StdTypoBody1>
+                  </Col>
+                </Row>
+              </div>
+
+              {form.isFieldTouched('isPublic') &&
+                !form.getFieldValue('isPublic') && (
+                  <div tw="pt-6">
+                    <Row gutter={10}>
+                      <Col span={20} push={4}>
+                        <Form.Item
+                          name="password"
+                          rules={[{ required: true }]}
+                          noStyle={true}
+                        >
+                          <Input
+                            placeholder="비밀번호를 입력해주세요."
+                            disabled={form.getFieldValue('isPublic')}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={4} pull={20}>
+                        <StdTypoBody1 tw="font-bold mt-2">
+                          비밀번호
+                          <LabelRequiredCircle />
+                        </StdTypoBody1>
+                      </Col>
+                    </Row>
                   </div>
-                  {form.isFieldTouched('isPublic') && (
-                    <StdTypoBody2 tw="absolute text-gray-6 top-10">
-                      {form.getFieldValue('isPublic')
-                        ? '모르는 사람이 공부방에 함께 참여할 수 있어요'
-                        : '초대한 사람만 들어올 수 있어요'}
-                    </StdTypoBody2>
-                  )}
-                </Col>
-                <Col span={4} pull={20}>
-                  <StdTypoBody1 tw="font-bold">
-                    방 공개
-                    <LabelRequiredCircle />
-                  </StdTypoBody1>
-                </Col>
-              </Row>
+                )}
               <Form.Item shouldUpdate noStyle={true}>
                 {() => (
                   <Button
                     type="primary"
                     size="large"
-                    tw="w-full mt-16"
+                    tw="w-full mt-20"
                     htmlType="submit"
                     disabled={
-                      !form.isFieldsTouched(true) ||
+                      !form.isFieldTouched('style') ||
+                      !form.isFieldTouched('title') ||
+                      !form.isFieldTouched('isPublic') ||
+                      (!form.getFieldValue('isPublic') &&
+                        !form.isFieldTouched('password')) ||
                       form
                         .getFieldsError()
                         .filter(({ errors }) => errors?.length).length > 0

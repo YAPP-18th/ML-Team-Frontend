@@ -14,44 +14,32 @@ import StudyRoomImg4 from '@assets/images/studyroom-4.svg';
 import MoreIcon from '@assets/icons/more.svg';
 import DeleteIcon from '@assets/icons/delete.svg';
 import { Dropdown, Menu } from 'antd';
+import { IStudyRoom, studyCardStyleList } from '@shared/types';
+import deleteStudyRoom from '../../hooks/apis/deleteStudyRoom';
+import useAccessToken from '../../hooks/useAccessToken';
+import useStudyRoom, { STUDY_ROOM_END_POINT } from '../../hooks/useStudyRoom';
+import useMyStudyRoom, {
+  MY_STUDY_ROOM_END_POINT,
+} from '../../hooks/useMyStudyRoom';
+import { mutate } from 'swr';
+import useUser from '../../hooks/useUser';
 
-export type StudyCardStyle = 'style_1' | 'style_2' | 'style_3' | 'style_4';
+const StudyCard: React.FC<IStudyRoom> = ({ id, style, title, description }) => {
+  const [accessToken] = useAccessToken();
+  const user = useUser();
 
-export const studyCardStyleList: {
-  [key in StudyCardStyle]: SerializedStyles;
-} = {
-  style_1: css`
-    background: url(${StudyRoomImg1}) center;
-    background-size: cover;
-  `,
-  style_2: css`
-    background: url(${StudyRoomImg2}) center;
-    background-size: cover;
-  `,
-  style_3: css`
-    background: url(${StudyRoomImg3}) center;
-    background-size: cover;
-  `,
-  style_4: css`
-    background: url(${StudyRoomImg4}) center;
-    background-size: cover;
-  `,
-};
+  function onClickDelete(_id: string) {
+    deleteStudyRoom(_id, accessToken).then(async (r) => {
+      console.log(r, user.data?.id);
 
-interface IStudyCardProps {
-  style: StudyCardStyle;
-  title?: string;
-  description?: string;
-}
+      await mutate(STUDY_ROOM_END_POINT);
+      await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
+    });
+  }
 
-const StudyCard: React.FC<IStudyCardProps> = ({
-  style,
-  title,
-  description,
-}) => {
   const menu = (
     <Menu>
-      <Menu.Item key="0">
+      <Menu.Item key="0" onClick={() => onClickDelete(id)}>
         <div tw="flex items-center space-x-1">
           <img src={DeleteIcon} alt="삭제하기 아이콘" />
           <StdTypoBody2

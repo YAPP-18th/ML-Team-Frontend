@@ -4,11 +4,7 @@ import './App.css';
 import { Main } from '@pages/Main';
 
 const App: React.FC = () => {
-  return (
-    <>
-      <Main />
-    </>
-  );
+  return <Main />;
 };
 
 export default App;

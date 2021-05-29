@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyledRestrictedArea } from '@shared/styled/Common';
 import { StdTypoH4 } from '@shared/styled/Typography';
 import styled from '@emotion/styled';
@@ -8,8 +8,13 @@ import MyStudyRoom from '@components/MyStudy/MyStudyRoom';
 import OnAirStudyRoom from '@components/MyStudy/OnAirStudyRoom';
 import { Button } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
+import useStudyRoom from '../../../hooks/useStudyRoom';
+import useMyStudyRoom from '../../../hooks/useMyStudyRoom';
+import useUser from '../../../hooks/useUser';
 
 export const MyStudy: React.FC = () => {
+  const studyRoom = useStudyRoom({ skip: 0, limit: 5 });
+  const myStudyRoom = useMyStudyRoom();
   const { path } = useRouteMatch();
 
   return (
@@ -22,11 +27,11 @@ export const MyStudy: React.FC = () => {
               <Button size="small">공부방 만들기</Button>
             </Link>
           </div>
-          <MyStudyRoom />
+          <MyStudyRoom data={myStudyRoom?.data} />
         </StyledMyStudyCard>
         <StyledMyStudyCard>
           <StdTypoH4>온에어 공부방</StdTypoH4>
-          <OnAirStudyRoom />
+          <OnAirStudyRoom data={studyRoom?.data} />
         </StyledMyStudyCard>
       </StyledRestrictedArea>
     </MainLayout>

@@ -2,7 +2,6 @@
   "name": "yapp_ml_2021",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://27.96.131.49:8000",
   "dependencies": {
     "@craco/craco": "6.1.1",
     "@emotion/babel-preset-css-prop": "^11.2.0",
@@ -12,6 +11,7 @@
     "@mediapipe/camera_utils": "^0.3.1620247984",
     "@mediapipe/drawing_utils": "^0.3.1620248257",
     "@mediapipe/hands": "^0.3.1620248595",
+    "@rehooks/local-storage": "2.4.0",
     "@tensorflow-models/coco-ssd": "^2.2.2",
     "@tensorflow/tfjs": "^3.6.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -23,6 +23,7 @@
     "@types/react-responsive": "8.0.2",
     "antd": "^4.15.4",
     "anymatch": "2.0.0",
+    "axios": "^0.21.1",
     "craco-less": "^1.17.1",
     "firebase": "9.0.0-beta.1",
     "moment": "^2.29.1",
@@ -40,6 +41,7 @@
     "react-scripts": "^4.0.3",
     "redux": "4.0.5",
     "rxjs": "^7.0.0",
+    "swr": "^0.5.6",
     "twin.macro": "2.3.0",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
