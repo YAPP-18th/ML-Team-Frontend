@@ -25,25 +25,26 @@ import NowPhoneImg from '@assets/images/smartphone_modal.svg';
 import NowLeftImg from '@assets/images/left.svg';
 
 interface IStatusModalProps {
-  status: StudyStatusType;
+  // status: StudyStatusType;
+  status: string;
 }
 
-type StudyStatusType = 'SLEEPING' | 'SMARTPHONE' | 'LEFT';
+type StudyStatusType = '공부중' | '조는중' | '스마트폰' | '자리비움';
 
 const StatusTable: {
   [key: string]: { image: string; title: string; body: string };
 } = {
-  SLEEPING: {
+  조는중: {
     image: NowSleepImg,
     title: '혹시 졸고 계신가요?',
     body: '5분동안 움직임이 없어서 공부가 중단됐어요.',
   },
-  SMARTPHONE: {
+  스마트폰: {
     image: NowPhoneImg,
     title: '혹시 스마트폰을 사용하시나요?',
     body: '화면에 스마트폰이 보여서 공부가 중단됐어요. ',
   },
-  LEFT: {
+  자리비움: {
     image: NowLeftImg,
     title: '혹시 자리를 비우셨나요?',
     body: '화면에 두 손이 보이지 않아 공부가 중단됐어요. ',
@@ -51,6 +52,7 @@ const StatusTable: {
 };
 
 const StatusModal = ({ status }: IStatusModalProps) => {
+  console.log(status);
   return (
     <div
       tw="bg-gray-10 flex flex-col items-center justify-center"
@@ -89,7 +91,6 @@ const StatusModal = ({ status }: IStatusModalProps) => {
           공부중이라고 알려주면 다시 공부가 시작돼요.{' '}
         </StdTypoBody1>
       </div>
-
       <Button
         css={css`
           width: 146px;
