@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu } from 'antd';
+import { Button, Layout, Menu } from 'antd';
 import { Content, Footer, Header } from 'antd/es/layout/layout';
 import Logo from '@assets/images/logo.svg';
 import 'twin.macro';
@@ -13,6 +13,7 @@ import { MenuItemProps } from 'antd/lib/menu/MenuItem';
 import { MenuClickEventHandler } from 'rc-menu/lib/interface';
 import { useHistory, useRouteMatch } from 'react-router';
 import { Link } from 'react-router-dom';
+import { deleteFromStorage } from '@rehooks/local-storage';
 
 const FooterStyle = css`
   width: 100%;
@@ -31,13 +32,14 @@ const StyledFooterInner = styled.div`
 const MenuStyle = css`
   margin-left: 45px;
   background: transparent !important;
+  flex: 1;
 `;
 
 type MenuKey = 'mystudy' | 'report';
 type MenuItemMap = {
   [key in MenuKey]: MenuItem;
 };
-type MenuItem = { linkTo: string; title: string };
+type MenuItem = { linkTo: string; title: string; disabled?: boolean };
 
 const menuItemMap: MenuItemMap = {
   mystudy: {
@@ -47,6 +49,7 @@ const menuItemMap: MenuItemMap = {
   report: {
     linkTo: '/app/report',
     title: '학습레포트',
+    disabled: true,
   },
 };
 
@@ -57,6 +60,10 @@ export const MainLayout: React.FC = ({ children }) => {
 
   const onMenuClick: MenuClickEventHandler = ({ key }) => {
     history.push(menuItemMap[key as MenuKey]?.linkTo);
+  };
+
+  const logout = () => {
+    deleteFromStorage('accessToken');
   };
 
   useEffect(() => {
@@ -75,8 +82,8 @@ export const MainLayout: React.FC = ({ children }) => {
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
           `}
         >
-          <StyledRestrictedArea tw="flex">
-            <Link to="/" tw="inline-flex">
+          <StyledRestrictedArea tw="flex items-center">
+            <Link to="/" tw="inline-flex flex-shrink-0">
               <img src={Logo} tw="self-center" alt="STUDEEP" />
             </Link>
             <Menu
@@ -87,9 +94,19 @@ export const MainLayout: React.FC = ({ children }) => {
               onClick={onMenuClick}
             >
               {Object.entries(menuItemMap).map((i) => (
-                <MenuItemOverride key={i[0]}>{i[1].title}</MenuItemOverride>
+                <MenuItemOverride key={i[0]} disabled={i[1]?.disabled}>
+                  {i[1].title}
+                </MenuItemOverride>
               ))}
             </Menu>
+            <Button
+              type="primary"
+              size="small"
+              tw="justify-self-end flex-shrink-0"
+              onClick={logout}
+            >
+              로그아웃
+            </Button>
           </StyledRestrictedArea>
         </Header>
         <Content
