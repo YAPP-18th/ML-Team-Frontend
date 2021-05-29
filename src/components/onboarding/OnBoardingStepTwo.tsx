@@ -24,6 +24,7 @@ import { API_ENDPOINT } from '@shared/common';
 export const OnBoardingStepTwo: React.FC = () => {
   const [cookies, setCookie] = useCookies(['accessToken']);
   const [nickname, setNickname] = useState('');
+  const [over, setOver] = useState(false);
   const history = useHistory();
 
   const sendNickname = useCallback(
@@ -74,6 +75,7 @@ export const OnBoardingStepTwo: React.FC = () => {
         placeholder="닉네임을 입력해주세요"
         value={nickname}
         css={inputStyle}
+        maxLength={8}
         onChange={(e) => setNickname(e.target.value)}
         required
       />
@@ -83,7 +85,7 @@ export const OnBoardingStepTwo: React.FC = () => {
       <Button
         type="primary"
         size="large"
-        disabled={nickname === ''}
+        disabled={nickname === '' || nickname.length >= 8}
         onClick={(e) => {
           sendNickname(e);
           history.push('/app/mystudy');
