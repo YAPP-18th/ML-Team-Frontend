@@ -13,7 +13,7 @@ import {
 } from '@shared/styled/Typography';
 
 // colors
-import { GRAY_6, GRAY_7, GRAY_9 } from '@shared/styles/colors';
+import { GRAY_1, GRAY_6, GRAY_7, GRAY_9 } from '@shared/styles/colors';
 
 // components
 import { Button, message } from 'antd';
@@ -48,10 +48,7 @@ export const OnBoardingStepTwo: React.FC = () => {
             console.log(err);
             message.error({
               content: '닉네임 생성에 실패했습니다!',
-              style: {
-                marginTop: '20vh',
-                height: '38px',
-              },
+              style: { ErrMsgStyle },
             });
           }
         },
@@ -111,4 +108,13 @@ const inputStyle = css`
   height: 60px;
   text-align: center;
   border-radius: 5px;
+`;
+
+export const ErrMsgStyle = css`
+  margin-top: 20vh;
+  background-color: ${GRAY_9};
+  color: ${GRAY_1};
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
 `;
