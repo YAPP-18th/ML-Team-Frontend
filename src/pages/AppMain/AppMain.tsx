@@ -6,6 +6,8 @@ import { NotFound } from '@pages/NotFound/NotFound';
 import MyStudyRoot from '@pages/AppMain/MyStudy/MyStudyRoot';
 import useUser from '../../hooks/useUser';
 import { useHistory } from 'react-router';
+import { Report } from '@pages/AppMain/Report/Report';
+import { NoReport } from '@pages/AppMain/Report/NoReport';
 
 export const AppMain: React.FC = () => {
   const { path } = useRouteMatch();
@@ -27,6 +29,8 @@ export const AppMain: React.FC = () => {
         </Route>
         <Route path={`${path}/mystudy`} component={MyStudyRoot} />
         <Route path={`${path}/study`} component={Study} />
+        <Route path={`${path}/noreport`} component={NoReport} />
+        <Route path={`${path}/report`} component={Report} />
         <Route path={`${path}/onboarding`} component={OnBoarding} />
         <Route path={`${path}/*`} component={NotFound} />
       </Switch>

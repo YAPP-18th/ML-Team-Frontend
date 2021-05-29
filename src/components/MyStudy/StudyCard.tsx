@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css } from '@emotion/react';
 import { SerializedStyles } from '@emotion/serialize';
 import styled from '@emotion/styled';
@@ -53,7 +53,31 @@ const StudyCard: React.FC<IStudyRoom> = ({ id, style, title, description }) => {
       </Menu.Item>
     </Menu>
   );
-
+  const checkIsPublic = (res: any) => {
+    ajax({
+      url: '/api/study-rooms/3d37627c-d87d-469e-8bf3-db7e796838cf',
+      method: 'GET',
+      headers: {
+        is_public: `boolean`,
+      },
+    })
+      .pipe(take(1))
+      .subscribe({
+        next: (data) => {
+          const result = data.xhr.getResponseHeader('is_public'); //지금 null뜸
+          setPublic(false);
+          history.push({
+            pathname: `/app/study`,
+            state: { isPublic: isPublic },
+          });
+        },
+        error: (err: AjaxError) => {
+          if (err.status === 404) {
+            console.log('checkPublic is failed!');
+          }
+        },
+      });
+  };
   return (
     <StudyCardWrapper>
       <StudyCardInnerWrapper css={studyCardStyleList[style]}>
@@ -65,7 +89,7 @@ const StudyCard: React.FC<IStudyRoom> = ({ id, style, title, description }) => {
         </div>
       </StudyCardInnerWrapper>
       <StudyCardHover className="study-card-hover">
-        <EnterButton>
+        <EnterButton onClick={checkIsPublic}>
           <img src={EnterIcon} alt="enter icon" />
           <StdTypoSubtitle1>입장하기</StdTypoSubtitle1>
         </EnterButton>

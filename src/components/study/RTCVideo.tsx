@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { css } from '@emotion/react';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-cpu';
@@ -6,53 +13,57 @@ import * as cocossd from '@tensorflow-models/coco-ssd';
 import { HAND_CONNECTIONS, Hands, Results } from '@mediapipe/hands';
 import { Camera } from '@mediapipe/camera_utils';
 import { handDetection, smartPhoneDetection } from './userActionDetection';
+import { userHandDetection } from './userHandDetection';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import { Spin, Space } from 'antd';
 
 interface RTCVideoProps {
-  mediaStream: MediaStream | undefined;
-  width?: number | string;
-  height?: number | string;
+  // mediaStream: MediaStream | undefined;
+  setHand: Dispatch<SetStateAction<boolean>>;
+  // setCurAction: Dispatch<SetStateAction<string>>;
 }
 
-const RTCVideo = ({ mediaStream }: RTCVideoProps) => {
+const RTCVideo = ({ setHand }: RTCVideoProps) => {
+  const [loading, setLoading] = useState(true);
   const canvasElementRef = useRef<HTMLCanvasElement>(null);
   const videoElementRef = useRef<HTMLVideoElement>(null);
 
-  const onResults = useCallback(
-    (results: Results) => {
-      const canvasElement = canvasElementRef?.current;
-      const canvasCtx = canvasElement?.getContext('2d');
-      // console.log(canvasCtx, canvasElement);
+  // const onResults = useCallback(
+  //   (results: Results) => {
+  //     const canvasElement = canvasElementRef?.current;
+  //     const canvasCtx = canvasElement?.getContext('2d');
+  //     // console.log(canvasCtx, canvasElement);
 
-      if (canvasCtx && canvasElement) {
-        canvasCtx.save();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        canvasCtx.drawImage(
-          results.image,
-          0,
-          0,
-          canvasElement.width,
-          canvasElement.height,
-        );
-        if (results.multiHandLandmarks) {
-          for (const landmarks of results.multiHandLandmarks) {
-            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
-              color: '#00FF00',
-              lineWidth: 5,
-            });
-            drawLandmarks(canvasCtx, landmarks, {
-              color: '#FF0000',
-              lineWidth: 2,
-            });
-          }
-        }
-        canvasCtx?.restore();
-      }
-    },
-    [canvasElementRef],
-  );
+  //     if (canvasCtx && canvasElement) {
+  //       canvasCtx.save();
+  //       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  //       canvasCtx.drawImage(
+  //         results.image,
+  //         0,
+  //         0,
+  //         canvasElement.width,
+  //         canvasElement.height,
+  //       );
+  //       if (results.multiHandLandmarks) {
+  //         for (const landmarks of results.multiHandLandmarks) {
+  //           drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+  //             color: '#00FF00',
+  //             lineWidth: 5,
+  //           });
+  //           drawLandmarks(canvasCtx, landmarks, {
+  //             color: '#FF0000',
+  //             lineWidth: 2,
+  //           });
+  //         }
+  //       }
+  //       canvasCtx?.restore();
+  //     }
+  //   },
+  //   [canvasElementRef],
+  // );
 
   const loadModel = async function (video: HTMLVideoElement) {
+    setLoading(true);
     const coco = await cocossd.load();
     const hand = new Hands({
       locateFile: (file) =>
@@ -60,8 +71,8 @@ const RTCVideo = ({ mediaStream }: RTCVideoProps) => {
     });
     hand.setOptions({
       maxNumHands: 2,
-      minDetectionConfidence: 0.85,
-      minTrackingConfidence: 0.85,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.3,
     });
 
     if (video) {
@@ -79,10 +90,21 @@ const RTCVideo = ({ mediaStream }: RTCVideoProps) => {
       });
 
       hand.onResults((results: Results) => {
-        handDetection(results);
-        onResults(results);
+        if (
+          results.multiHandedness !== undefined &&
+          results.multiHandedness.length === 2
+        ) {
+          console.log('손 인식');
+          setHand(true);
+        } else {
+          console.log('손 인식 실패 ');
+          setHand(false);
+        }
+        handDetection(results); //공부방에서만 호출되도록
+        // onResults(results);
       });
       await camera.start();
+      setLoading(false);
     }
   };
 
@@ -100,25 +122,26 @@ const RTCVideo = ({ mediaStream }: RTCVideoProps) => {
         height: 100%;
       `}
     >
+      {loading == true && (
+        <div
+          css={css`
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          <Spin size="large" />
+        </div>
+      )}
+
       <video
         ref={videoElementRef}
-        style={{
-          position: 'relative',
-          top: '0',
-          left: '0',
-          right: '0',
-          bottom: '0',
-        }}
-      />
-      <canvas
-        ref={canvasElementRef}
-        style={{
-          position: 'absolute',
-          left: '0',
-          top: '0',
-          width: '1280px',
-          height: '720px',
-        }}
+        muted
+        css={css`
+          height: 100%;
+          // width: 100%;
+        `}
       />
     </div>
   );

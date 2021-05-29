@@ -14,7 +14,7 @@ const OnBoardingWrapper = styled.div`
   flex-wrap: wrap;
 `;
 
-type OnBoardingStepType = 1 | 2 | 3;
+export type OnBoardingStepType = 1 | 2 | 3;
 
 export const OnBoardingBoxWrapper = styled.div`
   display: block;
@@ -22,16 +22,18 @@ export const OnBoardingBoxWrapper = styled.div`
   max-width: 768px;
   width: 100%;
   border-radius: 20px;
-  padding: 20px;
 `;
 
 const OnBoarding = () => {
   const [step, setStep] = useState<OnBoardingStepType>(1);
+  // id를 주고 nickname이 있으면 온보딩에 성공한 것으로 판단
+  // 로그인 한 순간에만 getUser를 호출해서 최상단recoil store에 넣어둘 것
+  // 여기서 그 store에 저장된 것을 받아 쓸 예정
 
   return (
     <OnBoardingWrapper>
       <OnBoardingBoxWrapper>
-        {step === 1 && <OnBoardingStepOne />}
+        {step === 1 && <OnBoardingStepOne setStep={setStep} />}
         {step === 2 && <OnBoardingStepTwo />}
         {step === 3 && <OnBoardingStepThree />}
       </OnBoardingBoxWrapper>

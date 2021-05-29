@@ -1,143 +1,98 @@
-import React from 'react';
-import { StyledRestrictedArea } from '@shared/styled/Common';
-import styled from '@emotion/styled';
-import { css } from '@emotion/react';
-import 'twin.macro';
-
-// typographys
-import {
-  StdTypoH2,
-  StdTypoH3,
-  StdTypoH5,
-  StdTypoSubtitle1,
-  StdTypoBody2,
-} from '@shared/styled/Typography';
-
-// colors
-import { GRAY_5, GRAY_11, PRIMARY_10 } from '@shared/styles/colors';
+import React, { useEffect, useMemo, useState } from 'react';
+import { MyReport } from '@pages/AppMain/Report/MyReport';
+import { NoReport } from '@pages/AppMain/Report/NoReport';
+import { Moment } from 'moment';
+import tw from 'twin.macro';
+import locale from 'antd/es/date-picker/locale/ko_KR';
+import { Content } from 'antd/es/layout/layout';
+import { ajax, AjaxError } from 'rxjs/ajax';
+import { useLocalStorage } from '@rehooks/local-storage';
+import { API_ENDPOINT } from '@shared/common';
+import { ErrMsgStyle } from '@components/OnBoarding/OnBoardingStepTwo';
 
 // components
-import { Button, Calendar } from 'antd';
+import { message, DatePicker, Space } from 'antd';
 import { MainLayout } from '@components/Layouts/main/MainLayout';
+import { StyledRestrictedArea } from '@shared/styled/Common';
 
-export const Report: React.FC = () => {
+// typographys
+import { StdTypoH2 } from '@shared/styled/Typography';
+
+export interface IStudyData {
+  value: number;
+  name: string;
+}
+// { value: number; name: string }[]
+// export interface IArrStudyData extends Array<IStudyData> {}
+
+export const Report = () => {
+  const [accessToken] = useLocalStorage('accessToken');
+  const [report, setReport] = useState<boolean>(true);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [date, setDate] = useState(new Date().getDate());
+  const [data, setData] = useState<Array<IStudyData>>([
+    { value: 8, name: '스마트폰' },
+    { value: 3, name: '조는중' },
+    { value: 2, name: '자리비움' },
+  ]);
+
+  function onChange(value: Moment | null, dateString: string) {
+    console.log(dateString);
+
+    const dateArr = dateString.split('');
+    setYear(Number(dateArr[0] + dateArr[1] + dateArr[2] + dateArr[3]));
+    setMonth(Number(dateArr[5] + dateArr[6]));
+    setDate(Number(dateArr[8] + dateArr[9]));
+    // API요청해서 결과가 404/detail => noreport 반환
+    // else (200) => report 반환
+    // API 결과에 따라 setReport, setData
+
+    ajax({
+      url: `${API_ENDPOINT}/api/reports?date=${dateString}&user_id=${5}`,
+      method: 'GET',
+      headers: {
+        authorization: `${accessToken}`,
+      },
+    }).subscribe({
+      next: (res) => {
+        console.log(res);
+        //data가 들어오면 setReport(true) ➡ 들어오는 데이터로 Data 설정하기
+        //detail이 들어오면 setReport(false)
+      },
+      error: (err: AjaxError) => {
+        if (err.status === 404) {
+          console.log(err);
+          message.error({
+            content: '학습레포트를 불러오는 데 실패했습니다',
+            style: { ErrMsgStyle },
+          });
+        }
+      },
+    });
+  }
+
   return (
     <MainLayout>
-      <div
-        css={css`
-          height: 153px;
-        `}
-      >
-        {/* <Calendar /> */}
-      </div>
       <StyledRestrictedArea>
-        <StdTypoH2 tw="mb-6">$월 $$일</StdTypoH2>
-        <div
-          tw="bg-gray-11"
-          css={css`
-            width: 100%;
-            height: 189px;
-            border-radius: 10px;
-            padding: 20px;
-          `}
-        >
-          <StdTypoH5>타임라인</StdTypoH5>
+        <div tw="flex justify-between items-center mt-20 mb-7 ">
+          <StdTypoH2 tw="text-gray-1 ">
+            {year}년 {month}월 {date}일
+          </StdTypoH2>
+          <Space direction="vertical">
+            <DatePicker
+              locale={locale}
+              tw="mb-6"
+              style={{ width: '300px' }}
+              onChange={onChange}
+            />
+          </Space>
         </div>
-        <div tw="flex w-full">
-          <div
-            css={css`
-              width: 44%;
-            `}
-          >
-            <StyledElementBlock>
-              <StdTypoH5>순수 공부시간</StdTypoH5>
-              <StdTypoH3>$$시간 $$분</StdTypoH3>
-            </StyledElementBlock>
-            <StyledElementBlock>
-              <StdTypoH5>오늘의 달성률</StdTypoH5>
-              <div tw="flex flex-col justify-center items-center">
-                <StdTypoH3>$$%</StdTypoH3>
-                <StdTypoSubtitle1 tw="text-gray-4">
-                  이런 날도 있는거죠😢
-                </StdTypoSubtitle1>
-              </div>
-            </StyledElementBlock>
-            <StyledElementBlock>
-              <StdTypoH5>오늘의 집중도</StdTypoH5>
-              <div tw="flex flex-col justify-center items-center">
-                <StdTypoH3>$$%</StdTypoH3>
-                <StdTypoSubtitle1 tw="text-gray-4">
-                  다음에는 더 잘 할 거예요!😎
-                </StdTypoSubtitle1>
-              </div>
-            </StyledElementBlock>
-          </div>
-          <div
-            tw="bg-gray-11"
-            css={css`
-              width: 56%;
-              // width: 686px;
-              margin: 13px 0;
-              margin-left: 13px;
-              border-radius: 10px;
-              padding: 20px;
-            `}
-          >
-            <StdTypoH5 tw="text-gray-1">집중 분산요인</StdTypoH5>
-            <StdTypoBody2
-              tw="text-gray-1"
-              css={css`
-                margin-top: 8px;
-              `}
-            >
-              총 $회 집중이 분산됐어요
-            </StdTypoBody2>
-          </div>
-        </div>
+        <Content>
+          {report == true ? <MyReport StudyData={data} /> : <NoReport />}
+          {/* {report == true ? <MyReport /> : <NoReport />} */}
+        </Content>
       </StyledRestrictedArea>
     </MainLayout>
   );
 };
-
-const StyledElementBlock = styled.div`
-  background-color: ${GRAY_11};
-  width: 100%;
-  // width: 482px;
-  height: 140px;
-  margin: 13px 0;
-  margin-right: 13px;
-  color: ${GRAY_5};
-  border-radius: 10px;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-// const Calendar = () => {
-//   const now = new Date();
-//   const date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-//   const makeWeekArr = (date: Date) => {
-//     const day = date.getDate();
-//     const week = [];
-//     for (let i = 0; i < 7; i++) {
-//       const newDate = new Date(date.valueOf() + 864000000 * (i - day));
-//       week.push(newDate);
-//     }
-//     console.log(week);
-//     return week;
-//   };
-//   const week: Date[] = makeWeekArr(date);
-//   return (
-//     // { week.map((value:Date, index:number)=> {<div
-//     //   css={css`
-//     //     width: 142px;
-//     //     height: 98px;
-//     //     background-color: pink;
-//     //   `}
-//     // >
-//     //   123
-//     // </div>})}
-//     <h1>hi</h1>
-//   );
-// };
