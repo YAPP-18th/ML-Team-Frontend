@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import 'twin.macro';
 import { css } from '@emotion/react';
 
@@ -7,22 +7,21 @@ import tw from 'twin.macro';
 import { useMediaQuery } from 'react-responsive';
 import { useCookies } from 'react-cookie';
 import { API_END_POINT } from '@shared/common';
+import { StudyStep } from '@pages/AppMain/Study/Study';
 
 //components
-import { Layout, Menu, Button, Modal } from 'antd';
+import { Layout, Button, Modal } from 'antd';
 import StudyRoomSide from '@components/Study/StudyRoomSide';
-import { StyledRestrictedArea } from '@shared/styled/Common';
 const { Header, Sider, Footer, Content } = Layout;
 
 // typography
 import {
   StdTypoSubtitle1,
-  StdTypoH3,
   StdTypoH4,
   StdTypoH5,
 } from '@shared/styled/Typography';
 // colors
-import { GRAY_4, GRAY_8, GRAY_10, GRAY_12 } from '@shared/styles/colors';
+import { GRAY_8, GRAY_10, GRAY_12 } from '@shared/styles/colors';
 
 // images
 import ExitImg from '@assets/images/exit.svg';
@@ -35,12 +34,14 @@ interface IStudyLayoutProps {
   page: StudyPageType;
   children: React.ReactNode;
   isPublic: boolean;
+  setStep: Dispatch<SetStateAction<StudyStep>>;
 }
 
 export const StudyLayout: React.FC<IStudyLayoutProps> = ({
   children,
   page,
   isPublic,
+  setStep,
 }) => {
   const history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -52,10 +53,7 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
     if (page == 'ready') {
       history.push(`/app/mystudy`);
     } else {
-      history.push({
-        pathname: `/app/finish`,
-        // state:{set:}
-      });
+      setStep(StudyStep.STUDY_FINISH);
     }
   };
   const handleCancel = () => {
