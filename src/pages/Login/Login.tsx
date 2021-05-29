@@ -26,7 +26,7 @@ const Login = () => {
 
   const onSuccessGoogleLogin = (res: any) => {
     ajax({
-      url: `${API_ENDPOINT}/api/user/signin`,
+      url: `${API_ENDPOINT}/api/user/signin`, //ajax 사용하는 곳에 이렇게 수정
       method: 'GET',
       headers: {
         authorization: `Bearer ${res.accessToken}`,
