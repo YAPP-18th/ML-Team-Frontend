@@ -164,6 +164,7 @@ const CreateStudy: React.FC = () => {
                           noStyle={true}
                         >
                           <Input
+                            type="password"
                             placeholder="비밀번호를 입력해주세요."
                             disabled={form.getFieldValue('isPublic')}
                           />
