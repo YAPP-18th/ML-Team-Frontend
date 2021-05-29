@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
 import 'twin.macro';
-import { RouteComponentProps } from 'react-router-dom'; //npm install react-router-dom
+import '@tensorflow/tfjs-backend-webgl';
+import '@tensorflow/tfjs-backend-cpu';
+import * as cocossd from '@tensorflow-models/coco-ssd';
+import { HAND_CONNECTIONS, Hands, Results } from '@mediapipe/hands';
+import { Camera } from '@mediapipe/camera_utils';
+import {
+  handDetection,
+  smartPhoneDetection,
+} from '@components/Study/userActionDetection';
+import { userHandDetection } from '@components/Study/userHandDetection';
+import { Spin, Space } from 'antd';
 
 // components
 import RTCVideo from '@components/Study/RTCVideo';
@@ -22,11 +32,21 @@ interface IReadyStatusProps {
 interface IStudyReadyProps {
   currentStudy?: ICurrentStudy;
   isPublic: boolean;
+  // timer: number;
+  // setTimer: Dispatch<SetStateAction<number>>;
 }
 
-export const StudyReady = ({ currentStudy, isPublic }: IStudyReadyProps) => {
+export const StudyReady = ({
+  currentStudy,
+  isPublic,
+}: // timer,
+// setTimer,
+IStudyReadyProps) => {
+  const [loading, setLoading] = useState(true);
+  const [hand, setHand] = useState<boolean>(false);
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [timer, setTimer] = useState(5);
+  const videoElementRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -34,7 +54,6 @@ export const StudyReady = ({ currentStudy, isPublic }: IStudyReadyProps) => {
     });
   }, []);
 
-  //모델에서 손 인식한 후
   useEffect(() => {
     const countdown = setInterval(() => {
       if (timer > 0) setTimer(timer - 1);
@@ -42,25 +61,101 @@ export const StudyReady = ({ currentStudy, isPublic }: IStudyReadyProps) => {
     return () => clearInterval(countdown);
   }, [timer]);
 
+  const loadModel = async function (video: HTMLVideoElement) {
+    setLoading(true);
+    const coco = await cocossd.load();
+    const hand = new Hands({
+      locateFile: (file) =>
+        `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+    });
+    hand.setOptions({
+      maxNumHands: 2,
+      minDetectionConfidence: 0.8,
+      minTrackingConfidence: 0.5,
+    });
+
+    if (video) {
+      const camera = new Camera(video, {
+        onFrame: async () => {
+          if (video) {
+            await hand.send({
+              image: video,
+            });
+            await smartPhoneDetection(coco, video);
+          }
+        },
+        width: 1280,
+        height: 720,
+      });
+      setLoading(false);
+
+      hand.onResults((results: Results) => {
+        if (
+          results.multiHandedness !== undefined &&
+          results.multiHandedness.length === 2
+        ) {
+          setHand(true);
+        } else {
+          setHand(false);
+          setTimer(5);
+        }
+        handDetection(results);
+      });
+      await camera.start();
+    }
+  };
+
+  useEffect(() => {
+    // console.log(videoElementRef);
+    if (videoElementRef?.current) {
+      loadModel(videoElementRef.current);
+    }
+  }, [videoElementRef]);
+
   return (
     <StudyLayout isPublic={isPublic} page="ready">
       <StdTypoH3 tw="from-gray-1 mt-16 font-medium">
         정확한 집중도 분석을 위해
       </StdTypoH3>
       <StdTypoH3 tw="from-gray-1">화면에 두 손이 나오게 준비해주세요</StdTypoH3>
-      {/* 현재 손의 준비 상태에 따라 둘 중에 하나 리턴 */}
-      {/* <StyledStudyReadyStatus status="준비중">
-            준비중
-          </StyledStudyReadyStatus> */}
+
+      {hand == false ? (
+        <StyledStudyReadyStatus status="준비중">준비중</StyledStudyReadyStatus>
+      ) : (
+        <div>
+          <StyledStudyReadyStatus status="준비완료">
+            준비완료
+          </StyledStudyReadyStatus>
+          <div tw="mb-6">{timer}초 뒤 자동입장</div>
+        </div>
+      )}
       <div>
-        {/* 반영 보완 */}
-        <StyledStudyReadyStatus status="준비완료">
-          준비완료
-        </StyledStudyReadyStatus>
-        <div tw="mb-6">{timer}초 뒤 자동입장</div>
-      </div>
-      <div>
-        <RTCVideo mediaStream={localStream} />
+        <div
+          tw="flex flex-col items-center justify-center"
+          css={css`
+            height: 100%;
+          `}
+        >
+          {loading == true && (
+            <div
+              css={css`
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              `}
+            >
+              <Spin size="large" />
+            </div>
+          )}
+          <video
+            ref={videoElementRef}
+            muted
+            css={css`
+              height: 100%;
+            `}
+          />
+        </div>
       </div>
     </StudyLayout>
   );
