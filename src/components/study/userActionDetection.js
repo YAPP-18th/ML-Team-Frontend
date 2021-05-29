@@ -1,14 +1,14 @@
-var previousUserAction = 'study';
-var currentUserAction = 'study';
-var startTime = Date.now();
-var userActions = {
-  userAction: {
-    study: { time: 0, count: 0 },
-    drowsiness: { time: 0, count: 0 },
-    smartPhone: { time: 0, count: 0 },
-    leave: { time: 0, count: 0 },
-  },
-};
+// var previousUserAction = 'study';
+var currentUserAction = '공부중';
+// var startTime = Date.now();
+// var userActions = {
+//   userAction: {
+//     study: { time: 0, count: 0 },
+//     drowsiness: { time: 0, count: 0 },
+//     smartPhone: { time: 0, count: 0 },
+//     leave: { time: 0, count: 0 },
+//   },
+// };
 
 var isHandExist = true;
 var isUsingSmartPhone = false;
@@ -18,20 +18,24 @@ var RightTargetLandmark = [];
 
 async function smartPhoneDetection(network, image) {
   const detections = await network.detect(image);
+
   isUsingSmartPhone = false;
   detections.forEach((prediction) => {
     const text = prediction['class'];
 
     if (text === 'cell phone' && isHandExist) {
       isUsingSmartPhone = true;
-      currentUserAction = 'smartPhone';
-      if (previousUserAction !== currentUserAction) {
-        userActionTimer(startTime, currentUserAction);
-        userActions['userAction'][currentUserAction]['count'] += 1;
-        previousUserAction = currentUserAction;
-      }
+      currentUserAction = '스마트폰';
+      console.log('smartPhoneDetection 스마트폰중!' + new Date().getTime());
+      // if (previousUserAction !== currentUserAction) {
+      // userActionTimer(startTime, currentUserAction);
+      // userActions['userAction'][currentUserAction]['count'] += 1;
+      //   previousUserAction = currentUserAction;
+      // }
     }
   });
+
+  return currentUserAction;
 }
 
 function handDetection(results) {
@@ -39,17 +43,19 @@ function handDetection(results) {
     isHandExist = true;
     if (!isUsingSmartPhone) {
       drowsinessDetection(results);
-    } else {
     }
   } else {
-    currentUserAction = 'leave';
+    currentUserAction = '자리비움';
+    console.log('handDetection 자리비움!' + new Date().getTime());
     isHandExist = false;
-    if (previousUserAction !== currentUserAction) {
-      userActionTimer(startTime, currentUserAction);
-      userActions['userAction'][currentUserAction]['count'] += 1;
-      previousUserAction = currentUserAction;
-    }
+    // if (previousUserAction !== currentUserAction) {
+    // userActionTimer(startTime, currentUserAction);
+    // userActions['userAction'][currentUserAction]['count'] += 1;
+    // previousUserAction = currentUserAction;
+    // }
   }
+
+  return currentUserAction;
 }
 
 function drowsinessDetection(handInfo) {
@@ -103,19 +109,21 @@ function drowsinessDetection(handInfo) {
 
     bothFingerDetection = rightFingerDetection && leftFingerDetection;
     if (bothFingerDetection) {
-      currentUserAction = 'study';
-      if (previousUserAction !== currentUserAction) {
-        userActionTimer(startTime, currentUserAction);
-        userActions['userAction'][currentUserAction]['count'] += 1;
-        previousUserAction = currentUserAction;
-      }
+      currentUserAction = '공부중';
+      console.log('drowsinessDetection 공부중!' + new Date().getTime());
+      // if (previousUserAction !== currentUserAction) {
+      // userActionTimer(startTime, currentUserAction);
+      // userActions['userAction'][currentUserAction]['count'] += 1;
+      // previousUserAction = currentUserAction;
+      // }
     } else {
-      currentUserAction = 'drowsiness';
-      if (previousUserAction !== currentUserAction) {
-        userActionTimer(startTime, currentUserAction);
-        userActions['userAction'][currentUserAction]['count'] += 1;
-        previousUserAction = currentUserAction;
-      }
+      currentUserAction = '조는중';
+      console.log('drowsinessDetection 졸고있음!' + new Date().getTime());
+      // if (previousUserAction !== currentUserAction) {
+      // userActionTimer(startTime, currentUserAction);
+      // userActions['userAction'][currentUserAction]['count'] += 1;
+      // previousUserAction = currentUserAction;
+      // }
     }
 
     RightTargetLandmark = handInfo.multiHandLandmarks[0];
@@ -143,12 +151,12 @@ function drowsinessDetection(handInfo) {
       }
 
       if (!leftFingerDetection) {
-        currentUserAction = 'drowsiness';
-        if (previousUserAction !== currentUserAction) {
-          userActionTimer(startTime, currentUserAction);
-          userActions['userAction'][currentUserAction]['count'] += 1;
-          previousUserAction = currentUserAction;
-        }
+        currentUserAction = '조는중';
+        // if (previousUserAction !== currentUserAction) {
+        // userActionTimer(startTime, currentUserAction);
+        // userActions['userAction'][currentUserAction]['count'] += 1;
+        // previousUserAction = currentUserAction;
+        // }
       }
       LeftTargetLandmark = handInfo.multiHandLandmarks[0];
     } else {
@@ -173,12 +181,13 @@ function drowsinessDetection(handInfo) {
       }
 
       if (!rightFingerDetection) {
-        currentUserAction = 'drowsiness';
-        if (previousUserAction !== currentUserAction) {
-          userActionTimer(startTime, currentUserAction);
-          userActions['userAction'][currentUserAction]['count'] += 1;
-          previousUserAction = currentUserAction;
-        }
+        currentUserAction = '조는중';
+        console.log('drowsinessDetection 졸고있음!' + new Date().getTime());
+        // if (previousUserAction !== currentUserAction) {
+        // userActionTimer(startTime, currentUserAction);
+        // userActions['userAction'][currentUserAction]['count'] += 1;
+        // previousUserAction = currentUserAction;
+        // }
       }
 
       RightTargetLandmark = handInfo.multiHandLandmarks[0];
@@ -186,13 +195,13 @@ function drowsinessDetection(handInfo) {
   }
 }
 
-function userActionTimer(startTime, currentUserAction) {
-  const endTime = Date.now();
-  const Time = endTime - startTime;
-  userActions['userAction'][currentUserAction]['time'] += Math.round(
-    Time / 1000,
-  );
-  startTime = Date.now();
-}
+// function userActionTimer(startTime, currentUserAction) {
+//   const endTime = Date.now();
+//   const Time = endTime - startTime;
+//   userActions['userAction'][currentUserAction]['time'] += Math.round(
+//     Time / 1000,
+//   );
+//   startTime = Date.now();
+// }
 
 export { smartPhoneDetection, handDetection };
