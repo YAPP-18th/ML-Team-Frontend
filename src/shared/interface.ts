@@ -8,7 +8,7 @@ import StudyRoomImg4 from '@assets/images/studyroom-4.svg';
 export interface IUser {
   id: number;
   provider: 'google';
-  social_id: string;
+  socialId: string;
   nickname: string;
   goal: {
     MON: number;
@@ -24,20 +24,20 @@ export interface IUser {
 export interface IStudyRoom {
   title: string;
   style: StudyCardStyle;
-  is_public: boolean;
-  created_at: string;
+  isPublic: boolean;
+  createdAt: string;
   description: string;
   id: number;
-  current_join_counts: number;
-  owner_id: number;
+  currentJoinCounts: number;
+  ownerId: number;
 }
 
 export interface IMyStudy {
   id: number;
-  started_at: string;
-  ended_at: string;
-  total_time: number;
-  study_room_id: string;
+  startedAt: string;
+  endedAt: string;
+  totalTime: number;
+  studyRoomId: string;
   title: string;
   disturbances: {
     id: number;
@@ -71,7 +71,7 @@ export const studyCardStyleList: {
 };
 
 export interface ICreateStudyRequest {
-  owner_id: number;
+  ownerId: number;
   style: StudyCardStyle;
   title: string;
   description?: string;
