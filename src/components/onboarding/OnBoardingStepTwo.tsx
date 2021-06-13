@@ -20,42 +20,43 @@ import { Button, message } from 'antd';
 import { OnBoardingContainer } from '@shared/styled/OnBoarding';
 import { useHistory } from 'react-router-dom';
 import { API_END_POINT } from '@shared/common';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import useAccessToken, { setAccessToken } from '../../hooks/useAccessToken';
 
 export const OnBoardingStepTwo: React.FC = () => {
-  const [cookies, setCookie] = useCookies(['accessToken']);
   const [nickname, setNickname] = useState('');
-  const [over, setOver] = useState(false);
+  const [accessToken] = useAccessToken();
   const history = useHistory();
 
   const sendNickname = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-
-      ajax({
-        url: `${API_END_POINT}/api/user/signup`,
-        method: 'POST',
-        body: JSON.stringify({
-          provider: 'google',
-          nickname,
-        }),
-        headers: {
-          authorization: `${cookies.accessToken}`,
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-      }).subscribe({
-        next: (res) => console.log(res),
-        error: (err: AjaxError) => {
-          if (err.status === 404) {
-            console.log(err);
-            message.error({
-              content: '닉네임 생성에 실패했습니다!',
-              style: { ErrMsgStyle },
-            });
-          }
-        },
-      });
+    (nickname: string) => {
+      console.log(nickname, accessToken);
+      axios
+        .post(
+          `${API_END_POINT}/api/user/signup`,
+          {
+            provider: 'google',
+            nickname,
+          },
+          {
+            headers: {
+              authorization: accessToken,
+              'Content-type': 'application/json; charset=UTF-8',
+            },
+          },
+        )
+        .then(({ headers: { authorization } }: AxiosResponse) => {
+          setAccessToken(authorization);
+          history.replace('/app');
+        })
+        .catch(({ response }: AxiosError) => {
+          message.error({
+            content: '닉네임 생성에 실패했습니다!',
+            style: { ErrMsgStyle },
+          });
+        });
     },
-    [cookies, nickname],
+    [accessToken],
   );
 
   return (
@@ -85,10 +86,8 @@ export const OnBoardingStepTwo: React.FC = () => {
       <Button
         type="primary"
         size="large"
-        disabled={nickname === '' || nickname.length >= 8}
-        onClick={(e) => {
-          sendNickname(e);
-          history.push('/app/mystudy');
+        onClick={() => {
+          sendNickname(nickname);
         }}
       >
         완료

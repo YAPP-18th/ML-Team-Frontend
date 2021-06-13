@@ -1,37 +1,65 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
-import { SerializedStyles } from '@emotion/serialize';
 import styled from '@emotion/styled';
 import { StdTypoBody2, StdTypoSubtitle1 } from '@shared/styled/Typography';
 import UserIcon from '@assets/icons/user.svg';
 import EnterIcon from '@assets/icons/enter.svg';
 import 'twin.macro';
 import { GRAY_10 } from '@shared/styles/colors';
-import StudyRoomImg1 from '@assets/images/studyroom-1.svg';
-import StudyRoomImg2 from '@assets/images/studyroom-2.svg';
-import StudyRoomImg3 from '@assets/images/studyroom-3.svg';
-import StudyRoomImg4 from '@assets/images/studyroom-4.svg';
 import MoreIcon from '@assets/icons/more.svg';
 import DeleteIcon from '@assets/icons/delete.svg';
-import { Dropdown, Menu } from 'antd';
+import { Button, Dropdown, Form, Input, Menu, message, Modal } from 'antd';
 import { IStudyRoom, studyCardStyleList } from '@shared/types';
 import deleteStudyRoom from '../../hooks/apis/deleteStudyRoom';
 import useAccessToken from '../../hooks/useAccessToken';
-import useStudyRoom, { STUDY_ROOM_END_POINT } from '../../hooks/useStudyRoom';
-import useMyStudyRoom, {
-  MY_STUDY_ROOM_END_POINT,
-} from '../../hooks/useMyStudyRoom';
+import { STUDY_ROOM_END_POINT } from '../../hooks/useStudyRoom';
+import { MY_STUDY_ROOM_END_POINT } from '../../hooks/useMyStudyRoom';
 import { mutate } from 'swr';
 import useUser from '../../hooks/useUser';
+import joinStudyRoom from '../../hooks/apis/joinStudyRoom';
 
-const StudyCard: React.FC<IStudyRoom> = ({ id, style, title, description }) => {
+const StudyCard: React.FC<IStudyRoom> = ({
+  id,
+  style,
+  title,
+  description,
+  is_public,
+  owner_id,
+}) => {
+  const [passwordForm] = Form.useForm<{ password?: string }>();
+  const [formValues, setFormValues] = useState({});
+
   const [accessToken] = useAccessToken();
   const user = useUser();
 
-  function onClickDelete(_id: string) {
-    deleteStudyRoom(_id, accessToken).then(async (r) => {
-      console.log(r, user.data?.id);
+  const [isEnterModalVisible, setIsEnterModalVisible] = useState(false);
 
+  const isMine = useMemo(() => {
+    return user.data?.id === owner_id;
+  }, [user]);
+
+  const onClickEnter = useCallback(() => {
+    if (!is_public) {
+      setIsEnterModalVisible(true);
+    } else {
+      enterStudyRoom(id);
+    }
+  }, [id]);
+
+  const enterStudyRoom = (id: number, password?: string) => {
+    joinStudyRoom(id, accessToken, password)
+      .then((r) => {
+        message.success('공부방에 입장했습니다.');
+      })
+      .catch((err) => {
+        message.error(
+          '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
+        );
+      });
+  };
+
+  function onClickDelete(_id: number) {
+    deleteStudyRoom(_id, accessToken).then(async (r) => {
       await mutate(STUDY_ROOM_END_POINT);
       await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
     });
@@ -54,25 +82,65 @@ const StudyCard: React.FC<IStudyRoom> = ({ id, style, title, description }) => {
     </Menu>
   );
   return (
-    <StudyCardWrapper>
-      <StudyCardInnerWrapper css={studyCardStyleList[style]}>
-        <StdTypoSubtitle1>{title}</StdTypoSubtitle1>
-        <StdTypoBody2>{description}</StdTypoBody2>
-        <div tw="flex items-center space-x-1.5">
-          <img src={UserIcon} alt="User" />
-          <StdTypoBody2>1/6</StdTypoBody2>
-        </div>
-      </StudyCardInnerWrapper>
-      <StudyCardHover className="study-card-hover">
-        <EnterButton>
-          <img src={EnterIcon} alt="enter icon" />
-          <StdTypoSubtitle1>입장하기</StdTypoSubtitle1>
-        </EnterButton>
-      </StudyCardHover>
-      <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
-        <MoreButton src={MoreIcon} onClick={(e) => e.preventDefault()} />
-      </Dropdown>
-    </StudyCardWrapper>
+    <>
+      <StudyCardWrapper>
+        <StudyCardInnerWrapper css={studyCardStyleList[style]}>
+          <StdTypoSubtitle1>{title}</StdTypoSubtitle1>
+          <StdTypoBody2>{description}</StdTypoBody2>
+          <div tw="flex items-center space-x-1.5">
+            <img src={UserIcon} alt="User" />
+            <StdTypoBody2>1/6</StdTypoBody2>
+          </div>
+        </StudyCardInnerWrapper>
+        <StudyCardHover className="study-card-hover" onClick={onClickEnter}>
+          <EnterButton>
+            <img src={EnterIcon} alt="enter icon" />
+            <StdTypoSubtitle1>입장하기</StdTypoSubtitle1>
+          </EnterButton>
+        </StudyCardHover>
+        {isMine && (
+          <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+            <MoreButton src={MoreIcon} onClick={(e) => e.preventDefault()} />
+          </Dropdown>
+        )}
+      </StudyCardWrapper>
+      <Modal
+        title="비밀번호를 입력해주세요."
+        visible={isEnterModalVisible}
+        footer={null}
+        onCancel={() => setIsEnterModalVisible(false)}
+      >
+        <Form
+          form={passwordForm}
+          onChange={(values) => setFormValues(values)}
+          onFinish={(v) => enterStudyRoom(id, v.password)}
+        >
+          <Form.Item name="password" noStyle>
+            <Input placeholder="비밀번호를 입력해주세요." type="password" />
+          </Form.Item>
+          <Form.Item shouldUpdate noStyle={true}>
+            {() => (
+              <div tw="flex justify-end">
+                <Button
+                  type="primary"
+                  tw="mt-6"
+                  htmlType="submit"
+                  disabled={
+                    !passwordForm.isFieldTouched('password') ||
+                    !passwordForm.getFieldValue('password') ||
+                    passwordForm
+                      .getFieldsError()
+                      .filter(({ errors }) => errors?.length).length > 0
+                  }
+                >
+                  입장하기
+                </Button>
+              </div>
+            )}
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

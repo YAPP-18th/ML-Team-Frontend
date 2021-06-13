@@ -13,7 +13,7 @@ import useMyStudyRoom from '../../../hooks/useMyStudyRoom';
 import useUser from '../../../hooks/useUser';
 
 export const MyStudy: React.FC = () => {
-  const studyRoom = useStudyRoom({ skip: 0, limit: 5 });
+  const studyRoom = useStudyRoom(); //{ skip: 0, limit: 5 }
   const myStudyRoom = useMyStudyRoom();
   const { path } = useRouteMatch();
 
