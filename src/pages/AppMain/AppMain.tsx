@@ -9,7 +9,7 @@ import { useHistory } from 'react-router';
 import { Report } from '@pages/AppMain/Report/Report';
 import { NoReport } from '@pages/AppMain/Report/NoReport';
 import { message } from 'antd';
-import ConditionalRoute from '@components/Common/ConditionalRoute';
+import ConditionalRoute from '@components/atoms/ConditionalRoute';
 
 export const AppMain: React.FC = () => {
   const { path } = useRouteMatch();

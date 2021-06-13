@@ -1,20 +1,22 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { Button, Dropdown, Form, Input, Menu, message, Modal } from 'antd';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { StdTypoBody2, StdTypoSubtitle1 } from '@shared/styled/Typography';
+import { mutate } from 'swr';
+import 'twin.macro';
+
 import UserIcon from '@assets/icons/user.svg';
 import EnterIcon from '@assets/icons/enter.svg';
-import 'twin.macro';
-import { GRAY_10 } from '@shared/styles/colors';
 import MoreIcon from '@assets/icons/more.svg';
 import DeleteIcon from '@assets/icons/delete.svg';
-import { Button, Dropdown, Form, Input, Menu, message, Modal } from 'antd';
+
+import { GRAY_10 } from '@shared/styles/colors';
+import { StdTypoBody2, StdTypoSubtitle1 } from '@shared/styled/Typography';
 import { IStudyRoom, studyCardStyleList } from '@shared/types';
 import deleteStudyRoom from '../../hooks/apis/deleteStudyRoom';
 import useAccessToken from '../../hooks/useAccessToken';
 import { STUDY_ROOM_END_POINT } from '../../hooks/useStudyRoom';
 import { MY_STUDY_ROOM_END_POINT } from '../../hooks/useMyStudyRoom';
-import { mutate } from 'swr';
 import useUser from '../../hooks/useUser';
 import joinStudyRoom from '../../hooks/apis/joinStudyRoom';
 

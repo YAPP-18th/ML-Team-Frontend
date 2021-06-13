@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import 'twin.macro';
 import { css } from '@emotion/react';
 
 import styled from '@emotion/styled';
 import { useMediaQuery } from 'react-responsive';
+import { StudyStep } from '@pages/AppMain/Study/Study';
 
 //components
 import { Button, Layout, Modal } from 'antd';
@@ -30,12 +31,14 @@ interface IStudyLayoutProps {
   page: StudyPageType;
   children: React.ReactNode;
   isPublic: boolean;
+  setStep: Dispatch<SetStateAction<StudyStep>>;
 }
 
 export const StudyLayout: React.FC<IStudyLayoutProps> = ({
   children,
   page,
   isPublic,
+  setStep,
 }) => {
   const history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -47,10 +50,7 @@ export const StudyLayout: React.FC<IStudyLayoutProps> = ({
     if (page == 'ready') {
       history.push(`/app/mystudy`);
     } else {
-      history.push({
-        pathname: `/app/finish`,
-        // state:{set:}
-      });
+      setStep(StudyStep.STUDY_FINISH);
     }
   };
   const handleCancel = () => {
