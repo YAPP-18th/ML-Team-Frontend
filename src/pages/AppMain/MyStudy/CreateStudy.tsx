@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MainLayout } from '@components/Layouts/main/MainLayout';
+import { MainLayout } from '@components/templates/MainLayout';
 import {
   LabelRequiredCircle,
   StyledBoxWrapper,
@@ -10,7 +10,7 @@ import { Button, Col, Form, Input, Radio, Row } from 'antd';
 import { StdTypoBody1, StdTypoBody2 } from '@shared/styled/Typography';
 import 'twin.macro';
 import TextArea from 'antd/es/input/TextArea';
-import { StudyCardSelectable } from '@components/MyStudy/StudyCardSelectable';
+import { StudyCardSelectable } from '@components/atoms/StudyCardSelectable';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { ICreateStudyRequest, StudyCardStyle } from '@shared/types';
 import useUser from '../../../hooks/useUser';

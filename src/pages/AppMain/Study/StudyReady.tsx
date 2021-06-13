@@ -16,25 +16,25 @@ import { Camera } from '@mediapipe/camera_utils';
 import {
   handDetection,
   smartPhoneDetection,
-} from '@components/Study/userActionDetection';
+} from '../../../ml/userActionDetection';
 import { Spin, Space, message } from 'antd';
 import { StudyStep } from './Study';
 
 // components
-import RTCVideo from '@components/Study/RTCVideo';
+import RTCVideo from '@components/organisms/RTCVideo';
 
 // typography
 import { StdTypoH3 } from '@shared/styled/Typography';
 
 // colors
+import { StudyLayout } from '@components/templates/StudyLayout';
 import {
   GRAY_6,
   GRAY_8,
-  GRAY_1,
   GRAY_9,
+  GRAY_1,
   PRIMARY_8,
 } from '@shared/styles/colors';
-import { StudyLayout } from '@components/Layouts/study/StudyLayout';
 import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 
 interface IReadyStatusProps {

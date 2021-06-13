@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { OnBoardingStepOne } from '@components/OnBoarding/OnBoardingStepOne';
-import { OnBoardingStepThree } from '@components/OnBoarding/OnBoardingStepThree';
-import { OnBoardingStepTwo } from '@components/OnBoarding/OnBoardingStepTwo';
+import { OnBoardingStepOne } from '@components/organisms/OnBoardingStepOne';
+import { OnBoardingStepThree } from '@components/organisms/OnBoardingStepThree';
+import { OnBoardingStepTwo } from '@components/organisms/OnBoardingStepTwo';
 import { GRAY_10 } from '@shared/styles/colors';
 
 const OnBoardingWrapper = styled.div`

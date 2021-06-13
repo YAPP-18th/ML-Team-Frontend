@@ -3,7 +3,7 @@ import { StdTypoSubtitle1 } from '@shared/styled/Typography';
 import { Button } from 'antd';
 import { StyledEmptyCardWrapper } from '@shared/styled/Common';
 import 'twin.macro';
-import StudyCard from '@components/MyStudy/StudyCard';
+import StudyCard from '@components/atoms/StudyCard';
 import { css } from '@emotion/react';
 import { IStudyRoom } from '@shared/types';
 import { Link, useRouteMatch } from 'react-router-dom';

@@ -8,8 +8,8 @@ import React, {
 import { useMediaQuery } from 'react-responsive';
 import 'twin.macro';
 import { css } from '@emotion/react';
-import StudyInfoBar from '@components/Study/StudyInfoBar';
-import { StudyLayout } from '@components/Layouts/study/StudyLayout';
+import StudyInfoBar from '@components/organisms/StudyInfoBar';
+import { StudyLayout } from '@components/templates/StudyLayout';
 import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 import useUser from '../../../hooks/useUser';
 import '@tensorflow/tfjs-backend-webgl';
@@ -20,7 +20,7 @@ import { Camera } from '@mediapipe/camera_utils';
 import {
   handDetection,
   smartPhoneDetection,
-} from '@components/Study/userActionDetection';
+} from '../../../ml/userActionDetection';
 import { Spin, Modal, Button } from 'antd';
 import { StudyStep, ITotalStudyData } from './Study';
 

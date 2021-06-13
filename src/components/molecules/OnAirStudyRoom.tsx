@@ -6,7 +6,7 @@ import { Button } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { IStudyRoom } from '@shared/types';
 import { css } from '@emotion/react';
-import StudyCard from '@components/MyStudy/StudyCard';
+import StudyCard from '@components/atoms/StudyCard';
 
 interface IOnAirStudyRoomProps {
   data?: IStudyRoom[];
