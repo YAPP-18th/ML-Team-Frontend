@@ -20,10 +20,11 @@ import { useHistory } from 'react-router';
 import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 
 interface IStudyFinishProps {
+  totalData: number[];
   currentStudy?: ICurrentStudy;
 }
 
-export const StudyFinish = ({ currentStudy }: IStudyFinishProps) => {
+export const StudyFinish = ({ totalData, currentStudy }: IStudyFinishProps) => {
   const history = useHistory();
 
   return (
@@ -50,13 +51,17 @@ export const StudyFinish = ({ currentStudy }: IStudyFinishProps) => {
         <div tw="flex">
           <StyledResultContent>
             <StdTypoSubtitle1 tw="text-gray-4">누적 공부시간</StdTypoSubtitle1>
-            <StdTypoH3 tw="text-gray-2">$$:$$:$$</StdTypoH3>
+            <StdTypoH3 tw="text-gray-2">
+              {totalData[1] < 10 ? `0${totalData[1]}` : totalData[1]}:
+              {totalData[2] < 10 ? `0${totalData[2]}` : totalData[2]}:
+              {totalData[3] < 10 ? `0${totalData[3]}` : totalData[3]}
+            </StdTypoH3>
           </StyledResultContent>
           <StyledResultContent>
             <StdTypoSubtitle1 tw="text-gray-4">
-              목표까지 남은세트
+              지금까지 공부한 세트
             </StdTypoSubtitle1>
-            <StdTypoH3 tw="text-gray-2">$ set</StdTypoH3>
+            <StdTypoH3 tw="text-gray-2">{totalData[0]} set</StdTypoH3>
           </StyledResultContent>
         </div>
       </StyledResult>
@@ -66,6 +71,7 @@ export const StudyFinish = ({ currentStudy }: IStudyFinishProps) => {
           tw="text-gray-6"
           onClick={() => {
             history.push('/app/mystudy');
+            window.location.reload();
           }}
         >
           내 학습으로 돌아가기
@@ -76,6 +82,7 @@ export const StudyFinish = ({ currentStudy }: IStudyFinishProps) => {
           type="primary"
           onClick={() => {
             history.push('/app/report');
+            window.location.reload();
           }}
         >
           학습 레포트보기

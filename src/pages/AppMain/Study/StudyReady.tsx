@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import styled from '@emotion/styled';
 import { jsx, css } from '@emotion/react';
 import 'twin.macro';
@@ -11,8 +17,8 @@ import {
   handDetection,
   smartPhoneDetection,
 } from '@components/Study/userActionDetection';
-import { userHandDetection } from '@components/Study/userHandDetection';
-import { Spin, Space } from 'antd';
+import { Spin, Space, message } from 'antd';
+import { StudyStep } from './Study';
 
 // components
 import RTCVideo from '@components/Study/RTCVideo';
@@ -21,7 +27,13 @@ import RTCVideo from '@components/Study/RTCVideo';
 import { StdTypoH3 } from '@shared/styled/Typography';
 
 // colors
-import { GRAY_6, GRAY_8, PRIMARY_8 } from '@shared/styles/colors';
+import {
+  GRAY_6,
+  GRAY_8,
+  GRAY_1,
+  GRAY_9,
+  PRIMARY_8,
+} from '@shared/styles/colors';
 import { StudyLayout } from '@components/Layouts/study/StudyLayout';
 import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 
@@ -30,18 +42,16 @@ interface IReadyStatusProps {
 }
 
 interface IStudyReadyProps {
+  setStep: Dispatch<SetStateAction<StudyStep>>;
   currentStudy?: ICurrentStudy;
   isPublic: boolean;
-  // timer: number;
-  // setTimer: Dispatch<SetStateAction<number>>;
 }
 
 export const StudyReady = ({
+  setStep,
   currentStudy,
   isPublic,
-}: // timer,
-// setTimer,
-IStudyReadyProps) => {
+}: IStudyReadyProps) => {
   const [loading, setLoading] = useState(true);
   const [hand, setHand] = useState<boolean>(false);
   const [localStream, setLocalStream] = useState<MediaStream>();
@@ -58,6 +68,7 @@ IStudyReadyProps) => {
     const countdown = setInterval(() => {
       if (timer > 0) setTimer(timer - 1);
     }, 1000);
+    if (timer == 0) setStep(StudyStep.STUDY_ROOM);
     return () => clearInterval(countdown);
   }, [timer]);
 
@@ -75,6 +86,7 @@ IStudyReadyProps) => {
     });
 
     if (video) {
+      //camera 못찾을 때 error 핸들링
       const camera = new Camera(video, {
         onFrame: async () => {
           if (video) {
@@ -101,7 +113,12 @@ IStudyReadyProps) => {
         }
         handDetection(results);
       });
-      await camera.start();
+      await camera.start().catch((err) =>
+        message.error({
+          content: '닉네임 생성에 실패했습니다!',
+          style: { ErrMsgStyle },
+        }),
+      );
     }
   };
 
@@ -113,7 +130,7 @@ IStudyReadyProps) => {
   }, [videoElementRef]);
 
   return (
-    <StudyLayout isPublic={isPublic} page="ready">
+    <StudyLayout setStep={setStep} isPublic={isPublic} page="ready">
       <StdTypoH3 tw="from-gray-1 mt-16 font-medium">
         정확한 집중도 분석을 위해
       </StdTypoH3>
@@ -173,3 +190,12 @@ const StyledStudyReadyStatus = styled.div(({ status }: IReadyStatusProps) => ({
   alignItems: 'center',
   borderRadius: '5px',
 }));
+
+const ErrMsgStyle = css`
+  margin-top: 20vh;
+  background-color: ${GRAY_9};
+  color: ${GRAY_1};
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+`;
