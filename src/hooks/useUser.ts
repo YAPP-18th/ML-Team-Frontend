@@ -4,6 +4,7 @@ import useAccessToken from './useAccessToken';
 import axios, { AxiosError } from 'axios';
 import { IUser } from '@shared/interface';
 import { SWRResponse } from 'swr/dist/types';
+import { getResponseObj } from '@shared/utils';
 
 function fetcher(url: string, accessToken?: string | null) {
   return axios
@@ -13,7 +14,7 @@ function fetcher(url: string, accessToken?: string | null) {
       },
     })
     .then((res) => {
-      return res.data?.data;
+      return getResponseObj(res.data?.data);
     })
     .catch((err: AxiosError) => {
       throw err;
