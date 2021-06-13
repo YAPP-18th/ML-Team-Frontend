@@ -12,7 +12,7 @@ import 'twin.macro';
 import TextArea from 'antd/es/input/TextArea';
 import { StudyCardSelectable } from '@components/atoms/StudyCardSelectable';
 import { useLocalStorage } from '@rehooks/local-storage';
-import { ICreateStudyRequest, StudyCardStyle } from '@shared/types';
+import { ICreateStudyRequest, StudyCardStyle } from '@shared/interface';
 import useUser from '../../../hooks/useUser';
 import createStudyRoom from '../../../hooks/apis/createStudyRoom';
 import { STUDY_ROOM_END_POINT } from '../../../hooks/useStudyRoom';

@@ -5,7 +5,7 @@ import { StyledEmptyCardWrapper } from '@shared/styled/Common';
 import 'twin.macro';
 import StudyCard from '@components/atoms/StudyCard';
 import { css } from '@emotion/react';
-import { IStudyRoom } from '@shared/types';
+import { IStudyRoom } from '@shared/interface';
 import { Link, useRouteMatch } from 'react-router-dom';
 
 interface IMyStudyRoomProps {

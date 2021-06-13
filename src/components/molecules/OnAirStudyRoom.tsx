@@ -4,7 +4,7 @@ import { StyledEmptyCardWrapper } from '@shared/styled/Common';
 import 'twin.macro';
 import { Button } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { IStudyRoom } from '@shared/types';
+import { IStudyRoom } from '@shared/interface';
 import { css } from '@emotion/react';
 import StudyCard from '@components/atoms/StudyCard';
 

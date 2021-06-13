@@ -1,11 +1,9 @@
-import { AxiosError } from 'axios';
 import { SerializedStyles } from '@emotion/serialize';
 import { css } from '@emotion/react';
 import StudyRoomImg1 from '@assets/images/studyroom-1.svg';
 import StudyRoomImg2 from '@assets/images/studyroom-2.svg';
 import StudyRoomImg3 from '@assets/images/studyroom-3.svg';
 import StudyRoomImg4 from '@assets/images/studyroom-4.svg';
-import { SWRResponse } from 'swr/dist/types';
 
 export interface IUser {
   id: number;

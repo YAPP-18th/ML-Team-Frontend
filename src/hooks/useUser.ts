@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { API_END_POINT } from '@shared/common';
 import useAccessToken from './useAccessToken';
 import axios, { AxiosError } from 'axios';
-import { IUser } from '@shared/types';
+import { IUser } from '@shared/interface';
 import { SWRResponse } from 'swr/dist/types';
 
 function fetcher(url: string, accessToken?: string | null) {

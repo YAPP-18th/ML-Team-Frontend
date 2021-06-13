@@ -12,7 +12,7 @@ import DeleteIcon from '@assets/icons/delete.svg';
 
 import { GRAY_10 } from '@shared/styles/colors';
 import { StdTypoBody2, StdTypoSubtitle1 } from '@shared/styled/Typography';
-import { IStudyRoom, studyCardStyleList } from '@shared/types';
+import { IStudyRoom, studyCardStyleList } from '@shared/interface';
 import deleteStudyRoom from '../../hooks/apis/deleteStudyRoom';
 import useAccessToken from '../../hooks/useAccessToken';
 import { STUDY_ROOM_END_POINT } from '../../hooks/useStudyRoom';

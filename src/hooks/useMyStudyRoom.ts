@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { API_END_POINT } from '@shared/common';
 import useAccessToken from './useAccessToken';
 import axios from 'axios';
-import { IStudyRoom } from '@shared/types';
+import { IStudyRoom } from '@shared/interface';
 import useUser from './useUser';
 import { SWRResponse } from 'swr/dist/types';
 
