@@ -1,19 +1,46 @@
 import React from 'react';
-import { StdTypoSubtitle1 } from '@shared/styled/Typography';
-import { Button } from 'antd';
+import { StdTypoBody2, StdTypoSubtitle1 } from '@shared/styled/Typography';
+import { Button, Menu } from 'antd';
 import { StyledEmptyCardWrapper } from '@shared/styled/Common';
 import 'twin.macro';
 import StudyCard from '@components/atoms/StudyCard';
 import { css } from '@emotion/react';
 import { IStudyRoom } from '@shared/interface';
 import { Link, useRouteMatch } from 'react-router-dom';
+import DeleteIcon from '@assets/icons/delete.svg';
 
 interface IMyStudyRoomProps {
   data?: IStudyRoom[];
+  myUserId?: number;
+  onEnterRoom: (id: number, pw?: string) => void;
+  onDelete: (id: number) => void;
 }
 
-const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({ data }) => {
+const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
+  data,
+  myUserId,
+  onEnterRoom,
+  onDelete,
+}) => {
   const { path } = useRouteMatch();
+
+  const generateMenu = (id: number) => (
+    <Menu>
+      <Menu.Item key="0" onClick={() => onDelete(id)}>
+        <div tw="flex items-center space-x-1">
+          <img src={DeleteIcon} alt="삭제하기 아이콘" />
+          <StdTypoBody2
+            css={css`
+              color: #d6686e;
+            `}
+          >
+            삭제하기
+          </StdTypoBody2>
+        </div>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
       {data?.length ? (
@@ -24,7 +51,13 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({ data }) => {
           `}
         >
           {data.map((card) => (
-            <StudyCard key={card.id} {...card} />
+            <StudyCard
+              key={card.id}
+              {...card}
+              myUserId={myUserId}
+              onEnterRoom={onEnterRoom}
+              dropdown={generateMenu(card.ownerId)}
+            />
           ))}
         </div>
       ) : (

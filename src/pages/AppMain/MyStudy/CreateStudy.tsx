@@ -56,7 +56,7 @@ const CreateStudy: React.FC = () => {
         >
           <Form
             form={form}
-            onFinish={(v) => onSubmit({ ...v, owner_id: user?.data?.id })}
+            onFinish={(v) => onSubmit({ ...v, ownerId: user?.data?.id })}
             onChange={(values) => setFormValues(values)}
           >
             <div

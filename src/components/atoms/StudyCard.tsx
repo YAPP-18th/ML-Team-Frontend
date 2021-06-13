@@ -1,88 +1,63 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Button, Dropdown, Form, Input, Menu, message, Modal } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { Button, Dropdown, Form, Input, Menu, Modal } from 'antd';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { mutate } from 'swr';
 import 'twin.macro';
 
 import UserIcon from '@assets/icons/user.svg';
 import EnterIcon from '@assets/icons/enter.svg';
 import MoreIcon from '@assets/icons/more.svg';
-import DeleteIcon from '@assets/icons/delete.svg';
 
 import { GRAY_10 } from '@shared/styles/colors';
 import { StdTypoBody2, StdTypoSubtitle1 } from '@shared/styled/Typography';
 import { IStudyRoom, studyCardStyleList } from '@shared/interface';
-import deleteStudyRoom from '../../hooks/apis/deleteStudyRoom';
 import useAccessToken from '../../hooks/useAccessToken';
-import { STUDY_ROOM_END_POINT } from '../../hooks/useStudyRoom';
-import { MY_STUDY_ROOM_END_POINT } from '../../hooks/useMyStudyRoom';
-import useUser from '../../hooks/useUser';
-import joinStudyRoom from '../../hooks/apis/joinStudyRoom';
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 
-const StudyCard: React.FC<IStudyRoom> = ({
+const StudyCard: React.FC<
+  IStudyRoom & {
+    myUserId?: number;
+    onEnterRoom: (id: number, pw?: string) => void;
+    dropdown?: ReactJSXElement;
+  }
+> = ({
   id,
   style,
   title,
   description,
-  is_public,
-  owner_id,
+  isPublic,
+  ownerId,
+  myUserId,
+  onEnterRoom,
+  dropdown,
 }) => {
   const [passwordForm] = Form.useForm<{ password?: string }>();
   const [formValues, setFormValues] = useState({});
 
-  const [accessToken] = useAccessToken();
-  const user = useUser();
-
   const [isEnterModalVisible, setIsEnterModalVisible] = useState(false);
 
-  const isMine = useMemo(() => {
-    return user.data?.id === owner_id;
-  }, [user]);
+  const isMine = myUserId === ownerId;
 
   const onClickEnter = useCallback(() => {
-    if (!is_public) {
+    if (!isPublic && !isMine) {
       setIsEnterModalVisible(true);
     } else {
-      enterStudyRoom(id);
+      onEnterRoom(id);
     }
   }, [id]);
 
-  const enterStudyRoom = (id: number, password?: string) => {
-    joinStudyRoom(id, accessToken, password)
-      .then((r) => {
-        message.success('공부방에 입장했습니다.');
-      })
-      .catch((err) => {
-        message.error(
-          '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
-        );
-      });
-  };
+  // const enterStudyRoom = (id: number, password?: string) => {
+  //   joinStudyRoom(id, accessToken, password)
+  //     .then((r) => {
+  //       message.success('공부방에 입장했습니다.');
+  //     })
+  //     .catch((err) => {
+  //       message.error(
+  //         '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
+  //       );
+  //     });
+  // };
 
-  function onClickDelete(_id: number) {
-    deleteStudyRoom(_id, accessToken).then(async (r) => {
-      await mutate(STUDY_ROOM_END_POINT);
-      await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
-    });
-  }
-
-  const menu = (
-    <Menu>
-      <Menu.Item key="0" onClick={() => onClickDelete(id)}>
-        <div tw="flex items-center space-x-1">
-          <img src={DeleteIcon} alt="삭제하기 아이콘" />
-          <StdTypoBody2
-            css={css`
-              color: #d6686e;
-            `}
-          >
-            삭제하기
-          </StdTypoBody2>
-        </div>
-      </Menu.Item>
-    </Menu>
-  );
   return (
     <>
       <StudyCardWrapper>
@@ -100,8 +75,12 @@ const StudyCard: React.FC<IStudyRoom> = ({
             <StdTypoSubtitle1>입장하기</StdTypoSubtitle1>
           </EnterButton>
         </StudyCardHover>
-        {isMine && (
-          <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+        {dropdown && (
+          <Dropdown
+            overlay={dropdown}
+            trigger={['click']}
+            placement="bottomRight"
+          >
             <MoreButton src={MoreIcon} onClick={(e) => e.preventDefault()} />
           </Dropdown>
         )}
@@ -115,7 +94,7 @@ const StudyCard: React.FC<IStudyRoom> = ({
         <Form
           form={passwordForm}
           onChange={(values) => setFormValues(values)}
-          onFinish={(v) => enterStudyRoom(id, v.password)}
+          onFinish={(v) => onEnterRoom(id, v.password)}
         >
           <Form.Item name="password" noStyle>
             <Input placeholder="비밀번호를 입력해주세요." type="password" />

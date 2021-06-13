@@ -10,9 +10,13 @@ import StudyCard from '@components/atoms/StudyCard';
 
 interface IOnAirStudyRoomProps {
   data?: IStudyRoom[];
+  onEnterRoom: (id: number, pw?: string) => void;
 }
 
-const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({ data }) => {
+const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({
+  data,
+  onEnterRoom,
+}) => {
   const { path } = useRouteMatch();
   return (
     <>
@@ -24,7 +28,7 @@ const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({ data }) => {
           `}
         >
           {data.map((card) => (
-            <StudyCard key={card.id} {...card} />
+            <StudyCard key={card.id} {...card} onEnterRoom={onEnterRoom} />
           ))}
         </div>
       ) : (
