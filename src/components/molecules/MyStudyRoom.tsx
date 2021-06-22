@@ -12,8 +12,8 @@ import DeleteIcon from '@assets/icons/delete.svg';
 interface IMyStudyRoomProps {
   data?: IStudyRoom[];
   myUserId?: number;
-  onEnterRoom: (id: number, pw?: string) => void;
-  onDelete: (id: number) => void;
+  onEnterRoom: (id: number, userId?: number, pw?: string) => void;
+  onDelete: (roomId: number, userId: number) => void;
 }
 
 const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
@@ -24,22 +24,25 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
 }) => {
   const { path } = useRouteMatch();
 
-  const generateMenu = (id: number) => (
-    <Menu>
-      <Menu.Item key="0" onClick={() => onDelete(id)}>
-        <div tw="flex items-center space-x-1">
-          <img src={DeleteIcon} alt="삭제하기 아이콘" />
-          <StdTypoBody2
-            css={css`
-              color: #d6686e;
-            `}
-          >
-            삭제하기
-          </StdTypoBody2>
-        </div>
-      </Menu.Item>
-    </Menu>
-  );
+  const generateMenu = (roomId: number, userId?: number) => {
+    if (!userId) return;
+    return (
+      <Menu>
+        <Menu.Item key="0" onClick={() => onDelete(roomId, userId)}>
+          <div tw="flex items-center space-x-1">
+            <img src={DeleteIcon} alt="삭제하기 아이콘" />
+            <StdTypoBody2
+              css={css`
+                color: #d6686e;
+              `}
+            >
+              삭제하기
+            </StdTypoBody2>
+          </div>
+        </Menu.Item>
+      </Menu>
+    );
+  };
 
   return (
     <>
@@ -56,7 +59,7 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
               {...card}
               myUserId={myUserId}
               onEnterRoom={onEnterRoom}
-              dropdown={generateMenu(card.ownerId)}
+              dropdown={generateMenu(card.id, myUserId)}
             />
           ))}
         </div>

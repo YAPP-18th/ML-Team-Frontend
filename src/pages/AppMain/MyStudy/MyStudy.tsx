@@ -19,6 +19,7 @@ import joinStudyRoom from '../../../hooks/apis/joinStudyRoom';
 import { useLocalStorage } from '@rehooks/local-storage';
 import deleteStudyRoom from '../../../hooks/apis/deleteStudyRoom';
 import { mutate } from 'swr';
+import { useHistory } from 'react-router';
 
 export const MyStudy: React.FC = () => {
   const studyRoom = useStudyRoom(); //{ skip: 0, limit: 5 }
@@ -26,26 +27,34 @@ export const MyStudy: React.FC = () => {
   const { path } = useRouteMatch();
   const user = useUser();
   const [accessToken] = useLocalStorage('accessToken');
+  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
 
-  const onEnterRoom = (id: number, pw?: string) => {
-    joinStudyRoom(id, accessToken, pw)
-      .then((r) => {
-        message.success('공부방에 입장했습니다.');
-      })
-      .catch((err) => {
-        message.error(
-          '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
-        );
-      });
+  const onEnterRoom = (id: number, userId?: number, pw?: string) => {
+    userId &&
+      joinStudyRoom(id, accessToken, userId, pw)
+        .then((r) => {
+          message.success('공부방에 입장했습니다.');
+          history.push('./study');
+        })
+        .catch((err) => {
+          message.error(
+            '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
+          );
+        });
   };
 
-  function onDelete(_id: number) {
-    deleteStudyRoom(_id, accessToken).then(async (r) => {
-      await mutate(STUDY_ROOM_END_POINT);
-      await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
-    });
+  function onDelete(roomId: number, userId: number) {
+    deleteStudyRoom(roomId, userId, accessToken)
+      .then(async (r) => {
+        await mutate(STUDY_ROOM_END_POINT);
+        await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
+        message.success('공부방이 삭제되었습니다.');
+      })
+      .catch(() => {
+        message.error('공부방 삭제에 실패했습니다.');
+      });
   }
 
   return (

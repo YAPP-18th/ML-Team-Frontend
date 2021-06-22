@@ -10,7 +10,7 @@ import StudyCard from '@components/atoms/StudyCard';
 
 interface IOnAirStudyRoomProps {
   data?: IStudyRoom[];
-  onEnterRoom: (id: number, pw?: string) => void;
+  onEnterRoom: (id: number, userId?: number, pw?: string) => void;
 }
 
 const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({
