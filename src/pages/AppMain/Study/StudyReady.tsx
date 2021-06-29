@@ -115,7 +115,7 @@ export const StudyReady = ({
       });
       await camera.start().catch((err) =>
         message.error({
-          content: '닉네임 생성에 실패했습니다!',
+          content: '손 인식에 실패했습니다!',
           style: { ErrMsgStyle },
         }),
       );
