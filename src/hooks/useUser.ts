@@ -35,6 +35,7 @@ function useUser(): SWRResponse<IUser, AxiosError> {
       if (retryCount >= 3) return;
       setTimeout(() => revalidate({ retryCount }), 5000);
     },
+    revalidateOnFocus: false,
   });
 
   return _useSWR;
