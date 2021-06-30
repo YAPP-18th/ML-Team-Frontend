@@ -1,9 +1,9 @@
 import React, {
-  useState,
-  useEffect,
-  useRef,
   Dispatch,
   SetStateAction,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import 'twin.macro';
@@ -15,17 +15,22 @@ import useUser from '../../../hooks/useUser';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-cpu';
 import * as cocossd from '@tensorflow-models/coco-ssd';
-import { HAND_CONNECTIONS, Hands, Results } from '@mediapipe/hands';
+import { Hands, Results } from '@mediapipe/hands';
 import { Camera } from '@mediapipe/camera_utils';
 import {
   handDetection,
   smartPhoneDetection,
 } from '../../../ml/userActionDetection';
-import { Spin, Modal, Button } from 'antd';
-import { StudyStep, ITotalStudyData } from './Study';
+import { Button, Modal, Spin } from 'antd';
+import { StudyStep } from './Study';
 
 // typography
-import { StdTypoH4, StdTypoBody1 } from '@shared/styled/Typography';
+import { StdTypoBody1, StdTypoH4 } from '@shared/styled/Typography';
+
+// images
+import NowSleepImg from '@assets/images/sleeping_modal.svg';
+import NowPhoneImg from '@assets/images/smartphone_modal.svg';
+import NowLeftImg from '@assets/images/left.svg';
 
 interface IStudyInfoBarProps {
   status: string;
@@ -38,10 +43,6 @@ interface IStudyRoomProps {
   isPublic: boolean;
   setTotalData: Dispatch<SetStateAction<number[]>>;
 }
-// images
-import NowSleepImg from '@assets/images/sleeping_modal.svg';
-import NowPhoneImg from '@assets/images/smartphone_modal.svg';
-import NowLeftImg from '@assets/images/left.svg';
 
 export const StudyRoom = ({
   currentStudy,
@@ -52,10 +53,8 @@ export const StudyRoom = ({
   const [loading, setLoading] = useState(true);
   const videoElementRef = useRef<HTMLVideoElement>(null);
   const [curAction, setCurAction] = useState('공부중');
-  const [localStream, setLocalStream] = useState<MediaStream>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   let prevAction = '';
-  const user = useUser();
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -118,109 +117,110 @@ export const StudyRoom = ({
   }, [videoElementRef]);
 
   return (
-    <StudyLayout isPublic={isPublic} setStep={setStep} page="studyroom">
-      <div
-        tw="flex flex-col items-center justify-center"
-        css={css`
-          height: 100%;
-        `}
-      >
-        {loading == true && (
-          <div
-            css={css`
-              width: 100%;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            `}
-          >
-            <Spin size="large" />
-          </div>
-        )}
-
-        <video
-          ref={videoElementRef}
-          muted
-          css={css`
-            height: 100%;
-          `}
-        />
-      </div>
-      <ResponsiveStyledStudyInfoBar
-        setTotalData={setTotalData}
-        status={curAction}
-      />
-      {curAction !== '공부중' && (
-        <Modal
-          visible={isModalVisible}
-          closable={false}
-          onCancel={handleCancel}
-          keyboard={false}
-          bodyStyle={{
-            height: '330px',
-            borderRadius: '20px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            // backgroundColor: `${GRAY_10}`,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-          width={620}
-          footer={
-            <div
-              tw="flex justify-center items-center"
-              css={css`
-                width: 100%;
-                padding-bottom: 42px;
-                margin: 0;
-                border-bottom-right-radius: 20px;
-                border-bottom-left-radius: 20px;
-              `}
-            >
-              <Button
-                css={css`
-                  width: 146px;
-                  height: 44px;
-                `}
-                type="primary"
-                role="Cancle"
-              >
-                <StdTypoBody1>공부중이에요!</StdTypoBody1>
-              </Button>
-            </div>
-          }
-        >
-          <img
-            css={css`
-              margin-bottom: 15px;
-              width: 160px;
-              height: 160px;
-            `}
-            src={StatusTable[curAction].image}
-          />
-          <StdTypoH4
-            tw="text-gray-2"
-            css={css`
-              margin: 15px 0;
-            `}
-          >
-            {StatusTable[curAction].title}
-          </StdTypoH4>
-          <div tw="text-gray-4">
-            <StdTypoBody1
-              css={css`
-                white-space: pre-wrap;
-              `}
-            >
-              {StatusTable[curAction].body}
-            </StdTypoBody1>
-            <StdTypoBody1>
-              공부중이라고 알려주면 다시 공부가 시작돼요.
-            </StdTypoBody1>
-          </div>
-        </Modal>
-      )}
-    </StudyLayout>
+    // <StudyLayout isPublic={isPublic} setStep={setStep} page="studyroom">
+    //   <div
+    //     tw="flex flex-col items-center justify-center"
+    //     css={css`
+    //       height: 100%;
+    //     `}
+    //   >
+    //     {loading == true && (
+    //       <div
+    //         css={css`
+    //           width: 100%;
+    //           display: flex;
+    //           justify-content: center;
+    //           align-items: center;
+    //         `}
+    //       >
+    //         <Spin size="large" />
+    //       </div>
+    //     )}
+    //
+    //     <video
+    //       ref={videoElementRef}
+    //       muted
+    //       css={css`
+    //         height: 100%;
+    //       `}
+    //     />
+    //   </div>
+    //   <ResponsiveStyledStudyInfoBar
+    //     setTotalData={setTotalData}
+    //     status={curAction}
+    //   />
+    //   {curAction !== '공부중' && (
+    //     <Modal
+    //       visible={isModalVisible}
+    //       closable={false}
+    //       onCancel={handleCancel}
+    //       keyboard={false}
+    //       bodyStyle={{
+    //         height: '330px',
+    //         borderRadius: '20px',
+    //         justifyContent: 'center',
+    //         alignItems: 'center',
+    //         // backgroundColor: `${GRAY_10}`,
+    //         display: 'flex',
+    //         flexDirection: 'column',
+    //       }}
+    //       width={620}
+    //       footer={
+    //         <div
+    //           tw="flex justify-center items-center"
+    //           css={css`
+    //             width: 100%;
+    //             padding-bottom: 42px;
+    //             margin: 0;
+    //             border-bottom-right-radius: 20px;
+    //             border-bottom-left-radius: 20px;
+    //           `}
+    //         >
+    //           <Button
+    //             css={css`
+    //               width: 146px;
+    //               height: 44px;
+    //             `}
+    //             type="primary"
+    //             role="Cancle"
+    //           >
+    //             <StdTypoBody1>공부중이에요!</StdTypoBody1>
+    //           </Button>
+    //         </div>
+    //       }
+    //     >
+    //       <img
+    //         css={css`
+    //           margin-bottom: 15px;
+    //           width: 160px;
+    //           height: 160px;
+    //         `}
+    //         src={StatusTable[curAction].image}
+    //       />
+    //       <StdTypoH4
+    //         tw="text-gray-2"
+    //         css={css`
+    //           margin: 15px 0;
+    //         `}
+    //       >
+    //         {StatusTable[curAction].title}
+    //       </StdTypoH4>
+    //       <div tw="text-gray-4">
+    //         <StdTypoBody1
+    //           css={css`
+    //             white-space: pre-wrap;
+    //           `}
+    //         >
+    //           {StatusTable[curAction].body}
+    //         </StdTypoBody1>
+    //         <StdTypoBody1>
+    //           공부중이라고 알려주면 다시 공부가 시작돼요.
+    //         </StdTypoBody1>
+    //       </div>
+    //     </Modal>
+    //   )}
+    // </StudyLayout>
+    <></>
   );
 };
 
