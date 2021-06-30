@@ -1,68 +1,50 @@
 import React, {
-  useState,
-  useEffect,
-  useRef,
   Dispatch,
   SetStateAction,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 import styled from '@emotion/styled';
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import 'twin.macro';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-cpu';
 import * as cocossd from '@tensorflow-models/coco-ssd';
-import { HAND_CONNECTIONS, Hands, Results } from '@mediapipe/hands';
+import { Hands, Results } from '@mediapipe/hands';
 import { Camera } from '@mediapipe/camera_utils';
 import {
   handDetection,
   smartPhoneDetection,
 } from '../../../ml/userActionDetection';
-import { Spin, Space, message } from 'antd';
+import { message, Spin } from 'antd';
 import { StudyStep } from './Study';
-
-// components
-import RTCVideo from '@components/organisms/RTCVideo';
 
 // typography
 import { StdTypoH3 } from '@shared/styled/Typography';
 
 // colors
-import { StudyLayout } from '@components/templates/StudyLayout';
 import {
+  GRAY_1,
   GRAY_6,
   GRAY_8,
   GRAY_9,
-  GRAY_1,
   PRIMARY_8,
 } from '@shared/styles/colors';
-import { ICurrentStudy } from '@pages/AppMain/Study/Study';
 
 interface IReadyStatusProps {
-  status: string;
+  status: 'AWAIT' | 'READY';
 }
 
 interface IStudyReadyProps {
   setStep: Dispatch<SetStateAction<StudyStep>>;
-  currentStudy?: ICurrentStudy;
-  isPublic: boolean;
 }
 
-export const StudyReady = ({
-  setStep,
-  currentStudy,
-  isPublic,
-}: IStudyReadyProps) => {
+export const StudyReady = ({ setStep }: IStudyReadyProps) => {
   const [loading, setLoading] = useState(true);
   const [hand, setHand] = useState<boolean>(false);
-  const [localStream, setLocalStream] = useState<MediaStream>();
   const [timer, setTimer] = useState(5);
   const videoElementRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-      setLocalStream(stream);
-    });
-  }, []);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -79,6 +61,7 @@ export const StudyReady = ({
       locateFile: (file) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
     });
+
     hand.setOptions({
       maxNumHands: 2,
       minDetectionConfidence: 0.8,
@@ -86,7 +69,7 @@ export const StudyReady = ({
     });
 
     if (video) {
-      //camera 못찾을 때 error 핸들링
+      // camera 못찾을 때 error 핸들링
       const camera = new Camera(video, {
         onFrame: async () => {
           if (video) {
@@ -99,7 +82,6 @@ export const StudyReady = ({
         width: 1280,
         height: 720,
       });
-      setLoading(false);
 
       hand.onResults((results: Results) => {
         if (
@@ -113,79 +95,58 @@ export const StudyReady = ({
         }
         handDetection(results);
       });
-      await camera.start().catch((err) =>
-        message.error({
-          content: '닉네임 생성에 실패했습니다!',
-          style: { ErrMsgStyle },
-        }),
-      );
+
+      camera
+        .start()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((_) =>
+          message.error({
+            content: '연결된 카메라가 없거나 불러오는 대에 실패했습니다.',
+            style: { ErrMsgStyle },
+          }),
+        );
     }
   };
 
   useEffect(() => {
-    // console.log(videoElementRef);
     if (videoElementRef?.current) {
       loadModel(videoElementRef.current);
     }
   }, [videoElementRef]);
 
   return (
-    <StudyLayout setStep={setStep} isPublic={isPublic} page="ready">
+    <div tw="text-center flex flex-col justify-center items-center">
       <StdTypoH3 tw="from-gray-1 mt-16 font-medium">
         정확한 집중도 분석을 위해
       </StdTypoH3>
       <StdTypoH3 tw="from-gray-1">화면에 두 손이 나오게 준비해주세요</StdTypoH3>
 
-      {hand == false ? (
-        <StyledStudyReadyStatus status="준비중">준비중</StyledStudyReadyStatus>
-      ) : (
-        <div>
-          <StyledStudyReadyStatus status="준비완료">
-            준비완료
-          </StyledStudyReadyStatus>
-          <div tw="mb-6">{timer}초 뒤 자동입장</div>
-        </div>
-      )}
-      <div>
-        <div
-          tw="flex flex-col items-center justify-center"
-          css={css`
-            height: 100%;
-          `}
-        >
-          {loading == true && (
-            <div
-              css={css`
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              `}
-            >
-              <Spin size="large" />
-            </div>
-          )}
-          <video
-            ref={videoElementRef}
-            muted
-            css={css`
-              height: 100%;
-            `}
-          />
-        </div>
+      <div tw="relative pt-6 mb-20">
+        <StyledStudyReadyStatus status={!hand ? 'AWAIT' : 'READY'}>
+          {!hand ? '준비 중' : '준비 완료'}
+        </StyledStudyReadyStatus>
+        {hand && (
+          <p tw="absolute -bottom-12 left-0 right-0">{timer}초 뒤 자동입장</p>
+        )}
       </div>
-    </StudyLayout>
+
+      <div tw="flex-1 flex justify-center items-center">
+        <Spin spinning={loading} size="large" delay={500}>
+          <video tw="rounded-xl" ref={videoElementRef} muted />
+        </Spin>
+      </div>
+    </div>
   );
 };
 
-const StyledStudyReadyStatus = styled.div(({ status }: IReadyStatusProps) => ({
+const StyledStudyReadyStatus = styled.span(({ status }: IReadyStatusProps) => ({
   width: '119px',
   height: '40px',
-  marginTop: '30px',
-  marginBottom: status == '준비중' ? '78px' : '20px',
-  backgroundColor: status == '준비중' ? GRAY_8 : PRIMARY_8,
-  color: status == '준비중' ? GRAY_6 : 'white',
-  display: 'flex',
+  backgroundColor: status == 'AWAIT' ? GRAY_8 : PRIMARY_8,
+  color: status == 'AWAIT' ? GRAY_6 : 'white',
+  display: 'inline-flex',
   justifyContent: 'center',
   alignItems: 'center',
   borderRadius: '5px',
