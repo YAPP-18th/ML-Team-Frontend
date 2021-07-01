@@ -7,11 +7,8 @@ import React, {
 } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import 'twin.macro';
-import { css } from '@emotion/react';
 import StudyInfoBar from '@components/organisms/StudyInfoBar';
-import { StudyLayout } from '@components/templates/StudyLayout';
 import { ICurrentStudy } from '@pages/AppMain/Study/Study';
-import useUser from '../../../hooks/useUser';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-cpu';
 import * as cocossd from '@tensorflow-models/coco-ssd';
@@ -21,11 +18,9 @@ import {
   handDetection,
   smartPhoneDetection,
 } from '../../../ml/userActionDetection';
-import { Button, Modal, Spin } from 'antd';
 import { StudyStep } from './Study';
 
 // typography
-import { StdTypoBody1, StdTypoH4 } from '@shared/styled/Typography';
 
 // images
 import NowSleepImg from '@assets/images/sleeping_modal.svg';
