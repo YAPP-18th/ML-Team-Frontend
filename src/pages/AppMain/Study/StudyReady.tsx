@@ -38,6 +38,9 @@ interface IReadyStatusProps {
 
 interface IStudyReadyProps {
   setStep: Dispatch<SetStateAction<StudyStep>>;
+  socket: Socket;
+  user: IUser;
+  doJoinStudyRoom: () => void;
 }
 
 export const StudyReady = ({ setStep }: IStudyReadyProps) => {

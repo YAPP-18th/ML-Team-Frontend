@@ -5,7 +5,7 @@ import useUser from '../../../hooks/useUser';
 import { Socket } from 'socket.io-client/build/socket';
 import { useHistory } from 'react-router';
 import { css } from '@emotion/react';
-import { Button, Layout, Modal } from 'antd';
+import { Button, Layout, Modal, Spin } from 'antd';
 import {
   StdTypoH4,
   StdTypoH5,
@@ -15,6 +15,7 @@ import ExitImg from '@assets/images/exit.svg';
 import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
 import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
+import SocketContext from '../../../context/socket/SocketContext';
 
 export enum StudyStep {
   NOTHING = 'NOTHING',
@@ -32,6 +33,7 @@ export interface ICurrentStudy {
 export const Study = () => {
   const [step, setStep] = useState<StudyStep>(StudyStep.NOTHING);
   const [socket, setSocket] = useState<Socket>();
+  const [connected, setConnected] = useState(false);
   const user = useUser();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -62,6 +64,7 @@ export const Study = () => {
         reconnectionAttempts: 3,
       });
       _socket.on('response', (res) => {
+        setConnected(_socket.connected);
         console.log(res);
       });
       _socket.on('disconnect', function () {
@@ -77,6 +80,13 @@ export const Study = () => {
   //     socket.emit('joinRoom', 'f83e317a-9a0d-44c6-8e92-249f9a75fdb9');
   //   }
   // }, [socket]);
+
+  function doJoinStudyRoom() {
+    if (socket) {
+      console.log('Do Join Room');
+      socket.emit('joinRoom', 'f83e317a-9a0d-44c6-8e92-249f9a75fdb9');
+    }
+  }
 
   return (
     <Layout
@@ -141,7 +151,16 @@ export const Study = () => {
         </Modal>
       </Header>
 
-      <StudyReady setStep={setStep} />
+      <Spin spinning={!(socket && connected && !!user?.data)} size="large">
+        {socket && connected && user?.data && (
+          <StudyReady
+            setStep={setStep}
+            socket={socket}
+            user={user.data}
+            doJoinStudyRoom={doJoinStudyRoom}
+          />
+        )}
+      </Spin>
       {/*{socket?.connected ? (*/}
       {/*  <>*/}
       {/*  </>*/}
