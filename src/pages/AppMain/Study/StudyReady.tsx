@@ -1,6 +1,7 @@
 import React, {
   Dispatch,
   SetStateAction,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -31,6 +32,18 @@ import {
   GRAY_9,
   PRIMARY_8,
 } from '@shared/styles/colors';
+import SocketContext from '../../../context/socket/SocketContext';
+import { Socket } from 'socket.io-client/build/socket';
+import { IUser } from '@shared/interface';
+import { interval, Subject, timer } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 
 interface IReadyStatusProps {
   status: 'AWAIT' | 'READY';
@@ -43,19 +56,19 @@ interface IStudyReadyProps {
   doJoinStudyRoom: () => void;
 }
 
-export const StudyReady = ({ setStep }: IStudyReadyProps) => {
-  const [loading, setLoading] = useState(true);
-  const [hand, setHand] = useState<boolean>(false);
-  const [timer, setTimer] = useState(5);
-  const videoElementRef = useRef<HTMLVideoElement>(null);
+const DEFAULT_LEFT_TIME = 5;
 
-  useEffect(() => {
-    const countdown = setInterval(() => {
-      if (timer > 0) setTimer(timer - 1);
-    }, 1000);
-    if (timer == 0) setStep(StudyStep.STUDY_ROOM);
-    return () => clearInterval(countdown);
-  }, [timer]);
+export const StudyReady = ({
+  setStep,
+  socket,
+  user,
+  doJoinStudyRoom,
+}: IStudyReadyProps) => {
+  const [loading, setLoading] = useState(true);
+  const [hand, setHand] = useState(false);
+  const [leftTime, setLeftTime] = useState(DEFAULT_LEFT_TIME);
+  const videoElementRef = useRef<HTMLVideoElement>(null);
+  const detection$ = new Subject<boolean>();
 
   const loadModel = async function (video: HTMLVideoElement) {
     setLoading(true);
@@ -91,10 +104,9 @@ export const StudyReady = ({ setStep }: IStudyReadyProps) => {
           results.multiHandedness !== undefined &&
           results.multiHandedness.length === 2
         ) {
-          setHand(true);
+          detection$.next(true);
         } else {
-          setHand(false);
-          setTimer(5);
+          detection$.next(false);
         }
         handDetection(results);
       });
@@ -114,6 +126,37 @@ export const StudyReady = ({ setStep }: IStudyReadyProps) => {
   };
 
   useEffect(() => {
+    const detectionSubscription = detection$
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(300),
+        tap((detected) => {
+          setLeftTime(DEFAULT_LEFT_TIME);
+          setHand(detected);
+        }),
+        switchMap(() =>
+          interval(1000).pipe(
+            take(DEFAULT_LEFT_TIME),
+            map((v) => DEFAULT_LEFT_TIME - 1 - v),
+          ),
+        ),
+      )
+      .subscribe({
+        next: (time) => {
+          setLeftTime(time);
+          console.log(time);
+          // Timeout 시
+          if (time === 0) {
+            doJoinStudyRoom();
+          }
+        },
+      });
+    return () => {
+      detectionSubscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     if (videoElementRef?.current) {
       loadModel(videoElementRef.current);
     }
@@ -131,7 +174,9 @@ export const StudyReady = ({ setStep }: IStudyReadyProps) => {
           {!hand ? '준비 중' : '준비 완료'}
         </StyledStudyReadyStatus>
         {hand && (
-          <p tw="absolute -bottom-12 left-0 right-0">{timer}초 뒤 자동입장</p>
+          <p tw="absolute -bottom-12 left-0 right-0">
+            {leftTime}초 뒤 자동입장
+          </p>
         )}
       </div>
 
