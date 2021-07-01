@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import { Button } from 'antd';
 import { useHistory } from 'react-router';
 import { Main } from '@pages/Main';
+import { useMediaQuery } from 'react-responsive';
 // typography
 import {
   StdTypoH1,
@@ -26,10 +27,12 @@ import RestCardImg from '@assets/images/rest-card.svg';
 import AwaitCardImg from '@assets/images/await-card.svg';
 import SleepCardImg from '@assets/images/sleep-card.svg';
 import SmartphoneCardImg from '@assets/images/smartphone-card.svg';
-import LogoImg from '@assets/images/logo-circle.svg';
-import RectangleImg from '@assets/images/rectangle.svg';
+import LogoIcon from '@assets/icons/icon-logo.svg';
+import CamIcon from '@assets/icons/icon-cam.svg';
+import ReportIcon from '@assets/icons/icon-report.svg';
 
 export const Landing: React.FC = () => {
+  const isSmall = useMediaQuery({ minWidth: 769 });
   const history = useHistory();
   return (
     <LandingLayout>
@@ -37,7 +40,7 @@ export const Landing: React.FC = () => {
         tw="flex flex-col items-center justify-center"
         css={css`
           padding-top: 140px;
-          padding-bottom: 290px;
+          padding-bottom: 140px;
         `}
       >
         <div
@@ -61,27 +64,22 @@ export const Landing: React.FC = () => {
           <StdTypoH5>스터딥 시작</StdTypoH5>
         </Button>
       </div>
-      <div tw="grid grid-flow-col grid-cols-2 auto-rows-max flex">
-        <div
-          tw="relative"
-          css={css`
-            margin-right: 65px;
-          `}
-        >
+      <div
+        css={css`
+          display: flex;
+          flex-direction: ${isSmall ? `row` : `column`};
+        `}
+      >
+        <div tw="relative">
           <img src={StudyroomImg} alt="공부방 예시" />
           <div
             tw="flex absolute"
             css={css`
-              bottom: -7%;
-              // bottom: -80px;
-              left: 46px;
+              bottom: -16%;
+              left: 140px;
             `}
           >
-            <div
-              css={css`
-                backgroundcolor: 'pink';
-              `}
-            ></div>
+            <div></div>
             <StyledStatusCardImg src={StudyCardImg} alt="공부중" />
             <StyledStatusCardImg src={RestCardImg} alt="휴식중" />
             <StyledStatusCardImg src={AwaitCardImg} alt="자리비움" />
@@ -89,19 +87,13 @@ export const Landing: React.FC = () => {
             <StyledStatusCardImg src={SmartphoneCardImg} alt="스마트폰" />
           </div>
         </div>
-        <div>
+        <div css={TextContentStyle(isSmall, `16%`, `45px`)}>
           <StdTypoH5 tw="text-primary-4 mb-5">공부방</StdTypoH5>
-          <StdTypoH2 tw="mb-10">공부방 특징</StdTypoH2>
-          <StyledFeatureContainer tw="mb-5">
+          <StdTypoH2>따로, 또 같이</StdTypoH2>
+          <StdTypoH2 tw="mb-10">몰입하는 공부방</StdTypoH2>
+          <div css={FeatureContainerStyle(isSmall)} tw="mb-5">
             <div tw="flex">
-              <img
-                src={LogoImg}
-                css={css`
-                  width: 26px;
-                  height: 26px;
-                  margin-right: 10px;
-                `}
-              />
+              <StyledIcon src={LogoIcon} />
               <StdTypoH5 tw="mb-4 text-gray-3">
                 5초면 만들 수 있는 몰입 환경{' '}
               </StdTypoH5>
@@ -112,53 +104,36 @@ export const Landing: React.FC = () => {
               자리를 비웠는지, 졸고 있는지 실시간으로 상태를 확인해서 몰입을
               도와드려요.{' '}
             </StdTypoBody1>
-          </StyledFeatureContainer>
-          <StyledFeatureContainer>
+          </div>
+          <div css={FeatureContainerStyle(isSmall)}>
             <div tw="flex">
-              <img
-                src={RectangleImg}
-                css={css`
-                  width: 26px;
-                  height: 26px;
-                  margin-right: 10px;
-                `}
-              />
+              <StyledIcon src={CamIcon} />
               <StdTypoH5 tw="mb-4 text-gray-3">
                 실시간으로 함께, 부담없는 캠스터디
               </StdTypoH5>
             </div>
-
             <StdTypoBody1 tw="text-gray-6">
               서로의 얼굴이 보이지 않아도, 실시간으로 함께 공부할 수 있어요.
             </StdTypoBody1>
-          </StyledFeatureContainer>
+          </div>
         </div>
       </div>
       <div
-        tw="grid grid-flow-col grid-cols-2 auto-rows-max"
-        css={css`
-          margin-top: 233px;
-          margin-bottom: 164px;
-        `}
+        css={[
+          ReportContentWrapperStyle,
+          css`
+            flex-direction: ${isSmall ? `row` : `column-reverse`};
+          `,
+        ]}
       >
-        <div tw="justify-self-end">
+        <div css={TextContentStyle(isSmall, 0, `60px`)}>
           <StdTypoH5 tw="text-primary-4 mb-5">학습 레포트</StdTypoH5>
-          <StdTypoH2 tw="mb-10">학습 레포트 특징</StdTypoH2>
+          <StdTypoH2>내 공부 습관을 분석해주는</StdTypoH2>
+          <StdTypoH2 tw="mb-10">학습 레포트</StdTypoH2>
 
-          <StyledFeatureContainer
-            css={css`
-              margin-right: 65px;
-            `}
-          >
+          <div css={FeatureContainerStyle(isSmall)}>
             <div tw="flex">
-              <img
-                src={RectangleImg}
-                css={css`
-                  width: 26px;
-                  height: 26px;
-                  margin-right: 10px;
-                `}
-              />
+              <StyledIcon src={ReportIcon} />
               <StdTypoH5 tw="mb-4 text-gray-3">
                 한눈에 보는 나의 학습태도
               </StdTypoH5>
@@ -169,7 +144,7 @@ export const Landing: React.FC = () => {
               달성률은 기본, 집중 분산 요인을 파악해서 더 나은 공부 습관을
               만들어나가요.
             </StdTypoBody1>
-          </StyledFeatureContainer>
+          </div>
         </div>
         <div>
           <img src={ReportImg} alt="공부방 예시" />
@@ -200,16 +175,41 @@ export const Landing: React.FC = () => {
     </LandingLayout>
   );
 };
+const ReportContentWrapperStyle = () => {
+  return css`
+    margin-top: 233px;
+    margin-bottom: 164px;
+    float: right;
+    display: flex;
+  `;
+};
 
 const StyledStatusCardImg = styled.img`
-  // width: 180px;
-  // height: 204px;
   width: 20%;
   height: auto;
 `;
-const StyledFeatureContainer = styled.div`
-  background-color: ${GRAY_10};
-  padding: 25px;
-  border-radius: 10px;
-  width: 481px;
+const TextContentStyle = (
+  isSmall: boolean,
+  mt: string | number,
+  mx: string | number,
+) => {
+  return css`
+    margin-left: ${isSmall ? mx : `50px`};
+    margin-right: ${isSmall ? mx : `50px`};
+    margin-top: ${isSmall ? `0` : mt};
+  `;
+};
+const FeatureContainerStyle = (isSmall: boolean) => {
+  return css`
+    width: ${isSmall ? `481px` : `668px`};
+    background-color: ${GRAY_10};
+    padding: 25px;
+    border-radius: 10px;
+  `;
+};
+
+const StyledIcon = styled.img`
+  width: 26px;
+  height: 26px;
+  margin-right: 10px;
 `;
