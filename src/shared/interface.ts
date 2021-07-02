@@ -34,17 +34,8 @@ export interface IStudyRoom {
 
 export interface IMyStudy {
   id: number;
-  startedAt: string;
-  endedAt: string;
+  date: string;
   totalTime: number;
-  studyRoomId: string;
-  title: string;
-  disturbances: {
-    id: number;
-    type: string;
-    count: number;
-    time: number;
-  }[];
 }
 
 export type StudyCardStyle = 'style_1' | 'style_2' | 'style_3' | 'style_4';

@@ -35,7 +35,7 @@ async function fetcher(
     });
 }
 
-function useStudyRoom(
+function useStudyRooms(
   option?: IStudyRoomFetchOption,
 ): SWRResponse<IStudyRoom[], AxiosError> {
   const [accessToken] = useAccessToken();
@@ -48,4 +48,4 @@ function useStudyRoom(
 
 export const STUDY_ROOM_END_POINT = `${API_END_POINT}/api/study-rooms`;
 
-export default useStudyRoom;
+export default useStudyRooms;

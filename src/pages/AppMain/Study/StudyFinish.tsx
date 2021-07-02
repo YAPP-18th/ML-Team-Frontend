@@ -1,31 +1,30 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import 'twin.macro';
-import { RouteComponentProps } from 'react-router-dom'; //npm install react-router-dom
-
 // components
 import { Button } from 'antd';
 
 // typography
 import {
-  StdTypoSubtitle1,
   StdTypoH3,
   StdTypoH5,
+  StdTypoSubtitle1,
 } from '@shared/styled/Typography';
 
 // colors
 import { GRAY_10 } from '@shared/styles/colors';
 import { useHistory } from 'react-router';
-import { IStudyRoom } from '@shared/interface';
+import { IMyStudy, IStudyRoom } from '@shared/interface';
 
 interface IStudyFinishProps {
-  totalData: number[];
-  study?: IStudyRoom;
+  studyRoom: IStudyRoom;
+  myStudy: IMyStudy;
 }
 
-export const StudyFinish = ({ totalData, study }: IStudyFinishProps) => {
+export const StudyFinish = ({ studyRoom, myStudy }: IStudyFinishProps) => {
   const history = useHistory();
+  console.log(myStudy);
 
   return (
     <div tw="flex h-full flex-col items-center justify-center">
@@ -46,22 +45,26 @@ export const StudyFinish = ({ totalData, study }: IStudyFinishProps) => {
             border-radius: 10px;
           `}
         >
-          <StdTypoH5 tw="text-gray-4">공부방 이름</StdTypoH5>
+          <StdTypoH5 tw="text-gray-4">{studyRoom.title}</StdTypoH5>
         </div>
         <div tw="flex">
           <StyledResultContent>
             <StdTypoSubtitle1 tw="text-gray-4">누적 공부시간</StdTypoSubtitle1>
             <StdTypoH3 tw="text-gray-2">
-              {totalData[1] < 10 ? `0${totalData[1]}` : totalData[1]}:
-              {totalData[2] < 10 ? `0${totalData[2]}` : totalData[2]}:
-              {totalData[3] < 10 ? `0${totalData[3]}` : totalData[3]}
+              {myStudy?.totalTime
+                ? new Date(myStudy.totalTime * 1000).toISOString().substr(11, 8)
+                : '계산 불가'}
             </StdTypoH3>
           </StyledResultContent>
           <StyledResultContent>
             <StdTypoSubtitle1 tw="text-gray-4">
               지금까지 공부한 세트
             </StdTypoSubtitle1>
-            <StdTypoH3 tw="text-gray-2">{totalData[0]} set</StdTypoH3>
+            <StdTypoH3 tw="text-gray-2">
+              {myStudy?.totalTime
+                ? `${Math.floor(myStudy.totalTime / 1800)}세트`
+                : '계산 불가'}
+            </StdTypoH3>
           </StyledResultContent>
         </div>
       </StyledResult>
