@@ -18,6 +18,8 @@ import 'twin.macro';
 import { useRecoilState } from 'recoil';
 import { studyState } from '../../../atoms/studyState';
 import { StudyRoom } from '@pages/AppMain/Study/StudyRoom';
+import StudyRoomSide from '@components/organisms/StudyRoomSide';
+import Sider from 'antd/es/layout/Sider';
 
 export enum StudyStep {
   STUDY_READY = 'STUDY_READY',
@@ -89,7 +91,9 @@ export const Study = () => {
             }
             break;
           case 'joinRoom':
-            setStep(StudyStep.STUDY_ROOM);
+            if (message === 'SUCCESS') {
+              setStep(StudyStep.STUDY_ROOM);
+            }
             break;
           default:
             return;
