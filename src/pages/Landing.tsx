@@ -32,7 +32,7 @@ import CamIcon from '@assets/icons/icon-cam.svg';
 import ReportIcon from '@assets/icons/icon-report.svg';
 
 export const Landing: React.FC = () => {
-  const isSmall = useMediaQuery({ minWidth: 769 });
+  const isSmall = useMediaQuery({ minWidth: 1239 });
   const history = useHistory();
   return (
     <LandingLayout>
@@ -75,11 +75,10 @@ export const Landing: React.FC = () => {
           <div
             tw="flex absolute"
             css={css`
-              bottom: -16%;
+              bottom: ${useMediaQuery({ minWidth: 1280 }) ? `-16%` : `-5%`};
               left: 140px;
             `}
           >
-            <div></div>
             <StyledStatusCardImg src={StudyCardImg} alt="공부중" />
             <StyledStatusCardImg src={RestCardImg} alt="휴식중" />
             <StyledStatusCardImg src={AwaitCardImg} alt="자리비움" />
@@ -120,7 +119,7 @@ export const Landing: React.FC = () => {
       </div>
       <div
         css={[
-          ReportContentWrapperStyle,
+          ReportContentWrapperStyle(isSmall),
           css`
             flex-direction: ${isSmall ? `row` : `column-reverse`};
           `,
@@ -146,14 +145,17 @@ export const Landing: React.FC = () => {
             </StdTypoBody1>
           </div>
         </div>
-        <div>
-          <img src={ReportImg} alt="공부방 예시" />
-        </div>
+        <img
+          css={css`
+            float: ${!isSmall && `right`};
+          `}
+          src={ReportImg}
+          alt="학습레포트 예시"
+        />
       </div>
       <div
-        tw="flex flex-col justify-center items-center"
+        tw="flex flex-col justify-center items-center w-full"
         css={css`
-          width: 100%;
           height: 331px;
           background: linear-gradient(to right, #f8a9cf, #878edd);
         `}
@@ -175,11 +177,11 @@ export const Landing: React.FC = () => {
     </LandingLayout>
   );
 };
-const ReportContentWrapperStyle = () => {
+const ReportContentWrapperStyle = (isSmall: boolean) => {
   return css`
     margin-top: 233px;
     margin-bottom: 164px;
-    float: right;
+    float: ${isSmall && `right`};
     display: flex;
   `;
 };
@@ -194,14 +196,14 @@ const TextContentStyle = (
   mx: string | number,
 ) => {
   return css`
-    margin-left: ${isSmall ? mx : `50px`};
-    margin-right: ${isSmall ? mx : `50px`};
+    margin-left: ${isSmall ? mx : `80px`};
+    margin-right: ${isSmall ? mx : `80px`};
     margin-top: ${isSmall ? `0` : mt};
   `;
 };
 const FeatureContainerStyle = (isSmall: boolean) => {
   return css`
-    width: ${isSmall ? `481px` : `668px`};
+    width: ${isSmall ? `481px` : `100%`};
     background-color: ${GRAY_10};
     padding: 25px;
     border-radius: 10px;
