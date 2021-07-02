@@ -50,20 +50,12 @@ interface IReadyStatusProps {
 }
 
 interface IStudyReadyProps {
-  setStep: Dispatch<SetStateAction<StudyStep>>;
-  socket: Socket;
-  user: IUser;
   doJoinStudyRoom: () => void;
 }
 
 const DEFAULT_LEFT_TIME = 5;
 
-export const StudyReady = ({
-  setStep,
-  socket,
-  user,
-  doJoinStudyRoom,
-}: IStudyReadyProps) => {
+export const StudyReady = ({ doJoinStudyRoom }: IStudyReadyProps) => {
   const [loading, setLoading] = useState(true);
   const [hand, setHand] = useState(false);
   const [leftTime, setLeftTime] = useState(DEFAULT_LEFT_TIME);
@@ -165,20 +157,24 @@ export const StudyReady = ({
 
   return (
     <div tw="text-center flex flex-col justify-center items-center">
-      <StdTypoH3 tw="from-gray-1 mt-16 font-medium">
-        정확한 집중도 분석을 위해
-      </StdTypoH3>
-      <StdTypoH3 tw="from-gray-1">화면에 두 손이 나오게 준비해주세요</StdTypoH3>
+      <div tw="flex-shrink-0">
+        <StdTypoH3 tw="from-gray-1 mt-16 font-medium">
+          정확한 집중도 분석을 위해
+        </StdTypoH3>
+        <StdTypoH3 tw="from-gray-1">
+          화면에 두 손이 나오게 준비해주세요
+        </StdTypoH3>
 
-      <div tw="relative pt-6 mb-20">
-        <StyledStudyReadyStatus status={!hand ? 'AWAIT' : 'READY'}>
-          {!hand ? '준비 중' : '준비 완료'}
-        </StyledStudyReadyStatus>
-        {hand && (
-          <p tw="absolute -bottom-12 left-0 right-0">
-            {leftTime}초 뒤 자동입장
-          </p>
-        )}
+        <div tw="relative pt-6 mb-20">
+          <StyledStudyReadyStatus status={!hand ? 'AWAIT' : 'READY'}>
+            {!hand ? '준비 중' : '준비 완료'}
+          </StyledStudyReadyStatus>
+          {hand && (
+            <p tw="absolute -bottom-12 left-0 right-0">
+              {leftTime}초 뒤 자동입장
+            </p>
+          )}
+        </div>
       </div>
 
       <div tw="flex-1 flex justify-center items-center">

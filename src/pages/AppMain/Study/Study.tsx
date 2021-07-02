@@ -15,21 +15,13 @@ import ExitImg from '@assets/images/exit.svg';
 import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
 import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
-import SocketContext from '../../../context/socket/SocketContext';
 import { useRecoilState } from 'recoil';
 import { studyState } from '../../../atoms/studyState';
 
 export enum StudyStep {
-  NOTHING = 'NOTHING',
   STUDY_READY = 'STUDY_READY',
   STUDY_ROOM = 'STUDY_ROOM',
   STUDY_FINISH = 'STUDY_FINISH',
-}
-
-export interface ICurrentStudy {
-  studyId: number;
-  title: string;
-  description: string;
 }
 
 export const Study = () => {
