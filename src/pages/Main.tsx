@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { AppMain } from '@pages/AppMain/AppMain';
 import Login from '@pages/Login/Login';
+import { Landing } from './Landing';
 import ConditionalRoute from '@components/atoms/ConditionalRoute';
 import { message } from 'antd';
 import { InnerRedirect } from '@pages/InnerRedirect/InnerRedirect';
@@ -16,6 +17,7 @@ export const Main: React.FC = () => {
   return (
     <>
       <Switch>
+        <Route path="/landing" component={Landing} />
         <ConditionalRoute
           path="/auth"
           redirectPath="/app"
@@ -37,11 +39,10 @@ export const Main: React.FC = () => {
         >
           <AppMain />
         </ConditionalRoute>
-
         <Route path="/redirect" component={InnerRedirect} />
-
         <Route path="*">
-          <Redirect to="/app" />
+          {/* <Redirect to="/app" /> */}
+          <Redirect to="/landing" />
         </Route>
       </Switch>
     </>

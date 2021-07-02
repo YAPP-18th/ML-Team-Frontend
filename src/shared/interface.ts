@@ -77,3 +77,21 @@ export interface ICreateStudyRequest {
   description?: string;
   isPublic: boolean;
 }
+
+export type DisturbanceCause = 'smartphone' | 'await' | 'sleep';
+export interface IDisturbance {
+  name: DisturbanceCause;
+  value: number;
+  total_time: number;
+}
+export interface IReport {
+  id: number;
+  date: string;
+  achievement: number;
+  concentration: number;
+  totalTime: number;
+  totalStarCount: number;
+  totalStatusCounts: number;
+  statuses: IDisturbance[];
+  maxStatus: string;
+}
