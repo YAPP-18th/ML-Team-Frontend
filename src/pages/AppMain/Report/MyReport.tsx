@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import 'twin.macro';
-import { Moment } from 'moment';
+
 import locale from 'antd/es/date-picker/locale/ko_KR';
 import ReactEcharts from 'echarts-for-react';
-import { IStudyData } from './Report';
-
+import { IReport, IDisturbance } from '@shared/interface';
 // import RectImg from '@assets/images/icons/Rectangle 146';
 
-interface IStudyDataProps {
-  StudyData: IStudyData[];
+interface IReportProps {
+  StudyData?: IReport[];
 }
 
 // typographys
@@ -23,13 +22,28 @@ import {
 
 // colors
 import { GRAY_1, GRAY_4, GRAY_6, GRAY_10 } from '@shared/styles/colors';
+import { createNumericLiteral } from 'typescript';
 
-export const MyReport = ({ StudyData }: IStudyDataProps) => {
-  // export const MyReport = () => {
+export const MyReport = ({ StudyData }: IReportProps) => {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [focusDegree, setFocusDegree] = useState(0);
   const [distraction, setDistraction] = useState(0);
+  const [chartData, setChartData] = useState<IDisturbance[]>([]);
+  const [disturbance, setDisturbance] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (StudyData !== undefined) {
+      const data = StudyData[0];
+
+      setHours(Math.floor(data.totalTime / 3600));
+      setMinutes(Math.floor((data.totalTime / 60) % 60));
+      setFocusDegree(data.concentration);
+      setDistraction(data.totalStatusCounts);
+      setChartData(data.statuses);
+      setDisturbance([data.maxStatus]);
+    }
+  }, [StudyData]);
 
   const makeFocusComment = (focusDegree: number) => {
     const fd = focusDegree;
@@ -38,16 +52,6 @@ export const MyReport = ({ StudyData }: IStudyDataProps) => {
     else if (fd >= 40) return '다음에는 더 잘 할 거에요!😎';
     else if (fd >= 0) return '이런 날도 있는거죠😢';
   };
-
-  const makeDistractionComment = () => {
-    const max = null; //await // sleep
-    // data 내에서 total_count를 통해 max 찾기
-    if (max === 'smartphone') return '스마트폰에 주의가 필요해요';
-    else if (max === 'await') return '우리 조금만 더 앉아서 공부해봐요!';
-    else if (max === 'sleep') return '졸음엔 스트레칭이 좋대요!';
-    else return '집중력 최고! 대단해요!';
-  };
-  // console.log(StudyData);
 
   return (
     <div
@@ -136,9 +140,9 @@ export const MyReport = ({ StudyData }: IStudyDataProps) => {
                 type: 'pie',
                 clockwise: false,
                 width: 'auto',
-                height: '110%',
+                height: '105%',
                 center: ['50%', '50%'],
-                data: StudyData,
+                data: chartData,
                 tooltip: {
                   formatter: `집중 분산요인<br /> {b} {d}%<br/> 총 {c}회`,
                   textStyle: {
@@ -155,17 +159,10 @@ export const MyReport = ({ StudyData }: IStudyDataProps) => {
             ],
           }}
         />
-
         <StdTypoSubtitle1 tw="flex justify-center mt-5">
-          {makeDistractionComment()}
+          {disturbance.join(',')}에 주의가 필요해요
         </StdTypoSubtitle1>
       </div>
     </div>
   );
 };
-
-const StudyData = [
-  { value: 8, name: '스마트폰' },
-  { value: 2, name: '조는중' },
-  { value: 2, name: '자리비움' },
-];
