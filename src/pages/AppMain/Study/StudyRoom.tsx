@@ -52,17 +52,17 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
     setIsModalVisible(false);
   };
 
+  const destroyCam = () => {
+    if (videoElementRef) {
+      const tracks = (videoElementRef.current
+        ?.srcObject as MediaStream)?.getTracks();
+      tracks?.forEach((track) => track.stop());
+    }
+  };
+
   useEffect(() => {
-    if (curAction !== '공부중') setIsModalVisible(true);
-    console.log(isModalVisible);
-    // if (prevAction !== curAction) {
-    // 소켓으로 로그 데이터 전송
-    // const logDataArr = [];
-    // logDataArr.push(user.data?.id);
-    // logDataArr.push(curAction);
-    // logDataArr.push(new Date().getTime());
-    // }
-  }, [curAction]);
+    return destroyCam();
+  }, []);
 
   useEffect(() => {
     const handDetectionSubscription = handDetectionSubject
