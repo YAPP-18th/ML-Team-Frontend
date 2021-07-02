@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StudyReady } from '@pages/AppMain/Study/StudyReady';
 import { io } from 'socket.io-client';
 import useUser from '../../../hooks/useUser';
 import { Socket } from 'socket.io-client/build/socket';
 import { useHistory } from 'react-router';
 import { css } from '@emotion/react';
-import { Button, Layout, Modal, Spin } from 'antd';
+import { Button, Layout, message, Modal, Spin } from 'antd';
 import {
   StdTypoH4,
   StdTypoH5,
@@ -17,6 +17,7 @@ import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
 import { useRecoilState } from 'recoil';
 import { studyState } from '../../../atoms/studyState';
+import { StudyRoom } from '@pages/AppMain/Study/StudyRoom';
 
 export enum StudyStep {
   STUDY_READY = 'STUDY_READY',
@@ -26,7 +27,7 @@ export enum StudyStep {
 
 export const Study = () => {
   const [study, setStudy] = useRecoilState(studyState);
-  const [step, setStep] = useState<StudyStep>(StudyStep.NOTHING);
+  const [step, setStep] = useState<StudyStep>(StudyStep.STUDY_READY);
   const [socket, setSocket] = useState<Socket>();
   const [connected, setConnected] = useState(false);
   const user = useUser();
@@ -38,11 +39,36 @@ export const Study = () => {
   };
   const handleEndStudyOk = () => {
     setIsModalVisible(false);
+    socket?.disconnect();
     history.replace('/');
   };
   const handleEndStudyCancel = () => {
     setIsModalVisible(false);
   };
+
+  const renderedComponent = useMemo(() => {
+    if (study && socket && connected && user?.data) {
+      switch (step) {
+        case StudyStep.STUDY_READY:
+          return (
+            <StudyReady doJoinStudyRoom={() => doJoinStudyRoom(study.id)} />
+          );
+        case StudyStep.STUDY_ROOM:
+          return <StudyRoom study={study} />;
+        // case StudyStep.STUDY_FINISH:
+        //   return <StudyFinish totalData={} />;
+      }
+    } else {
+      return <></>;
+    }
+  }, [step, socket, connected, user?.data]);
+
+  useEffect(() => {
+    if (!study) {
+      message.error('현재 참여 중인 공부방이 없습니다.');
+      history.replace('/');
+    }
+  }, [study]);
 
   useEffect(() => {
     if (user?.data) {
@@ -55,9 +81,19 @@ export const Study = () => {
         transports: ['websocket'],
         reconnectionAttempts: 3,
       });
-      _socket.on('response', (res) => {
-        setConnected(_socket.connected);
-        console.log(res);
+      _socket.on('response', ({ data, eventName, message, statusCode }) => {
+        switch (eventName) {
+          case 'connect':
+            if (message === 'SUCCESS') {
+              setConnected(_socket.connected);
+            }
+            break;
+          case 'joinRoom':
+            setStep(StudyStep.STUDY_ROOM);
+            break;
+          default:
+            return;
+        }
       });
       _socket.on('disconnect', function () {
         console.log('Client disconnected.');
@@ -143,21 +179,8 @@ export const Study = () => {
       </Header>
 
       <Spin spinning={!(socket && connected && !!user?.data)} size="large">
-        {study && socket && connected && user?.data && (
-          <StudyReady
-            setStep={setStep}
-            socket={socket}
-            user={user.data}
-            doJoinStudyRoom={() => doJoinStudyRoom(study.id)}
-          />
-        )}
+        {study && socket && connected && user?.data && renderedComponent}
       </Spin>
-      {/*{socket?.connected ? (*/}
-      {/*  <>*/}
-      {/*  </>*/}
-      {/*) : (*/}
-      {/*  <div>소켓 접속 중</div>*/}
-      {/*)}*/}
     </Layout>
   );
 };
