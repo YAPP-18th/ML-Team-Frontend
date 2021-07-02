@@ -1,12 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
-import { Button } from 'antd';
+import { css, Global } from '@emotion/react';
+import { useLocation } from 'react-router-dom';
+import { API_END_POINT } from '@shared/common';
+import { setAccessToken } from '../../hooks/useAccessToken';
 import 'twin.macro';
 import {
   GoogleLoginResponse,
   useGoogleLogin,
   UseGoogleLoginProps,
 } from 'react-google-login';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+
+// components
+import { Button } from 'antd';
+import PrivacyModal from '@components/organisms/PrivacyModal';
+import ServiceModal from '@components/organisms/ServiceModal';
 
 // typography
 import { StdTypoCaption1, StdTypoH3 } from '@shared/styled/Typography';
@@ -18,14 +27,11 @@ import { GRAY_10, GRAY_12 } from '@shared/styles/colors';
 import LogoImg from '@assets/images/logo.svg';
 import GoogleImg from '@assets/images/google.svg';
 import FacebookImg from '@assets/images/facebook.svg';
-import { css, Global } from '@emotion/react';
-import { useLocation } from 'react-router-dom';
-import { API_END_POINT } from '@shared/common';
-import { setAccessToken } from '../../hooks/useAccessToken';
-import axios, { AxiosError, AxiosResponse } from 'axios';
 
 const Login = () => {
   const location = useLocation<{ redirectUrl: string }>();
+  const [isPrivacyModalVisible, setIsPrivacyModalVisible] = useState(false);
+  const [isServiceModalVisible, setIsServiceModalVisible] = useState(false);
 
   const onSuccessGoogleLogin = (res: GoogleLoginResponse) => {
     axios
@@ -94,11 +100,29 @@ const Login = () => {
             </Button>
           </div>
           <StdTypoCaption1 tw="block text-center mt-5">
-            <a href="#" tw="underline">
-              서비스 이용약관, 개인정보 처리방침
-            </a>
+            {/* hover 시 마우스 포인터 바꾸기 */}
+            <span
+              tw="underline cursor-pointer"
+              onClick={() => setIsServiceModalVisible(true)}
+            >
+              서비스 이용약관
+            </span>
+            <span
+              tw="underline cursor-pointer"
+              onClick={() => setIsPrivacyModalVisible(true)}
+            >
+              , 개인정보 처리방침
+            </span>
             에 동의하는 것으로 간주합니다.
           </StdTypoCaption1>
+          <ServiceModal
+            isModalVisible={isServiceModalVisible}
+            setIsModalVisible={setIsServiceModalVisible}
+          />
+          <PrivacyModal
+            isModalVisible={isPrivacyModalVisible}
+            setIsModalVisible={setIsPrivacyModalVisible}
+          />
         </StyledLoginContent>
       </StyledLoginWrapper>
     </section>
