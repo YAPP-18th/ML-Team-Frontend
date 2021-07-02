@@ -93,7 +93,6 @@ const StyledStudyStatusCard = styled.div`
   align-items: center;
   border-radius: 8px;
   font-size: 12px;
-  margin: 10px;
   padding: 14px 0px;
   position: relative;
 `;

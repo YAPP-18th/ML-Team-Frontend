@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StudyReady } from '@pages/AppMain/Study/StudyReady';
 import { io } from 'socket.io-client';
 import useUser from '../../../hooks/useUser';
 import { Socket } from 'socket.io-client/build/socket';
 import { useHistory } from 'react-router';
 import { css } from '@emotion/react';
-import { Button, Layout, Modal, Spin } from 'antd';
+import { Button, Layout, message, Modal, Spin } from 'antd';
 import {
   StdTypoH4,
   StdTypoH5,
@@ -15,26 +15,21 @@ import ExitImg from '@assets/images/exit.svg';
 import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
 import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
-import SocketContext from '../../../context/socket/SocketContext';
 import { useRecoilState } from 'recoil';
 import { studyState } from '../../../atoms/studyState';
+import { StudyRoom } from '@pages/AppMain/Study/StudyRoom';
+import StudyRoomSide from '@components/organisms/StudyRoomSide';
+import Sider from 'antd/es/layout/Sider';
 
 export enum StudyStep {
-  NOTHING = 'NOTHING',
   STUDY_READY = 'STUDY_READY',
   STUDY_ROOM = 'STUDY_ROOM',
   STUDY_FINISH = 'STUDY_FINISH',
 }
 
-export interface ICurrentStudy {
-  studyId: number;
-  title: string;
-  description: string;
-}
-
 export const Study = () => {
   const [study, setStudy] = useRecoilState(studyState);
-  const [step, setStep] = useState<StudyStep>(StudyStep.NOTHING);
+  const [step, setStep] = useState<StudyStep>(StudyStep.STUDY_READY);
   const [socket, setSocket] = useState<Socket>();
   const [connected, setConnected] = useState(false);
   const user = useUser();
@@ -46,11 +41,36 @@ export const Study = () => {
   };
   const handleEndStudyOk = () => {
     setIsModalVisible(false);
+    socket?.disconnect();
     history.replace('/');
   };
   const handleEndStudyCancel = () => {
     setIsModalVisible(false);
   };
+
+  const renderedComponent = useMemo(() => {
+    if (study && socket && connected && user?.data) {
+      switch (step) {
+        case StudyStep.STUDY_READY:
+          return (
+            <StudyReady doJoinStudyRoom={() => doJoinStudyRoom(study.id)} />
+          );
+        case StudyStep.STUDY_ROOM:
+          return <StudyRoom study={study} />;
+        // case StudyStep.STUDY_FINISH:
+        //   return <StudyFinish totalData={} />;
+      }
+    } else {
+      return <></>;
+    }
+  }, [step, socket, connected, user?.data]);
+
+  useEffect(() => {
+    if (!study) {
+      message.error('현재 참여 중인 공부방이 없습니다.');
+      history.replace('/');
+    }
+  }, [study]);
 
   useEffect(() => {
     if (user?.data) {
@@ -63,9 +83,21 @@ export const Study = () => {
         transports: ['websocket'],
         reconnectionAttempts: 3,
       });
-      _socket.on('response', (res) => {
-        setConnected(_socket.connected);
-        console.log(res);
+      _socket.on('response', ({ data, eventName, message, statusCode }) => {
+        switch (eventName) {
+          case 'connect':
+            if (message === 'SUCCESS') {
+              setConnected(_socket.connected);
+            }
+            break;
+          case 'joinRoom':
+            if (message === 'SUCCESS') {
+              setStep(StudyStep.STUDY_ROOM);
+            }
+            break;
+          default:
+            return;
+        }
       });
       _socket.on('disconnect', function () {
         console.log('Client disconnected.');
@@ -88,19 +120,13 @@ export const Study = () => {
   }
 
   return (
-    <Layout
-      css={css`
-        height: 100%;
-      `}
-    >
+    <Layout tw="h-full">
       <Header css={HeaderStyle}>
-        <div tw="flex">
-          <StdTypoH5>{study?.title || '불러오는 중'}</StdTypoH5>
-          {/*{isPublic == false && <img src={PrivateImg} alt="비밀방" />}*/}
-        </div>
-
+        <StdTypoH5 tw="overflow-hidden whitespace-nowrap overflow-ellipsis pr-6">
+          {study?.title || '불러오는 중'}
+        </StdTypoH5>
         <Button
-          tw="bg-gray-10 border-none flex items-center hover:bg-gray-9"
+          tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 flex-shrink-0"
           shape="round"
           type="primary"
           onClick={showModal}
@@ -117,55 +143,54 @@ export const Study = () => {
           />
           <span>공부 종료하기</span>
         </Button>
-
-        <Modal
-          visible={isModalVisible}
-          closable={false}
-          onOk={handleEndStudyOk}
-          onCancel={handleEndStudyCancel}
-          keyboard={false}
-          bodyStyle={{
-            height: '148px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          css={css`
-            .ant-modal-footer {
-              display: flex;
-              padding: 0;
-              border: none;
-            }
-          `}
-          footer={
-            <div tw="w-full flex">
-              <StyledModalButton role="Cancel" func={handleEndStudyCancel} />
-              <StyledModalButton role="Ok" func={handleEndStudyOk} />
-            </div>
-          }
-        >
-          <div>
-            <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
-          </div>
-        </Modal>
       </Header>
 
-      <Spin spinning={!(socket && connected && !!user?.data)} size="large">
-        {study && socket && connected && user?.data && (
-          <StudyReady
-            setStep={setStep}
-            socket={socket}
-            user={user.data}
-            doJoinStudyRoom={() => doJoinStudyRoom(study.id)}
-          />
-        )}
-      </Spin>
-      {/*{socket?.connected ? (*/}
-      {/*  <>*/}
-      {/*  </>*/}
-      {/*) : (*/}
-      {/*  <div>소켓 접속 중</div>*/}
-      {/*)}*/}
+      <Layout>
+        <Layout
+          css={css`
+            > .ant-spin-nested-loading {
+              height: 100%;
+              > .ant-spin-container {
+                height: 100%;
+              }
+            }
+          `}
+        >
+          <Spin spinning={!(socket && connected && !!user?.data)} size="large">
+            {study && socket && connected && user?.data && renderedComponent}
+          </Spin>
+        </Layout>
+      </Layout>
+      <Modal
+        visible={isModalVisible}
+        closable={false}
+        onOk={handleEndStudyOk}
+        onCancel={handleEndStudyCancel}
+        keyboard={false}
+        bodyStyle={{
+          height: '148px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        css={css`
+          .ant-modal-footer {
+            display: flex;
+            padding: 0;
+            border: none;
+          }
+        `}
+        footer={
+          <div tw="w-full flex">
+            <StyledModalButton role="Cancel" func={handleEndStudyCancel} />
+            <StyledModalButton role="Ok" func={handleEndStudyOk} />
+          </div>
+        }
+      >
+        <div>
+          <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
+        </div>
+      </Modal>
     </Layout>
   );
 };

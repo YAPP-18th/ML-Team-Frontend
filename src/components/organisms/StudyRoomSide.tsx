@@ -45,11 +45,11 @@ export default StudyRoomSide;
 const MemberStatusWrapperStyled = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
 `;
 const StyledSideTitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  padding: 0px 10px;
 `;

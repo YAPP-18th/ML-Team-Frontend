@@ -17,14 +17,14 @@ import {
 // colors
 import { GRAY_10 } from '@shared/styles/colors';
 import { useHistory } from 'react-router';
-import { ICurrentStudy } from '@pages/AppMain/Study/Study';
+import { IStudyRoom } from '@shared/interface';
 
 interface IStudyFinishProps {
   totalData: number[];
-  currentStudy?: ICurrentStudy;
+  study?: IStudyRoom;
 }
 
-export const StudyFinish = ({ totalData, currentStudy }: IStudyFinishProps) => {
+export const StudyFinish = ({ totalData, study }: IStudyFinishProps) => {
   const history = useHistory();
 
   return (
