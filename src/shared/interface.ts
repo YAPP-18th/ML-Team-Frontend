@@ -78,7 +78,13 @@ export interface ICreateStudyRequest {
   isPublic: boolean;
 }
 
-export type DisturbanceCause = 'smartphone' | 'await' | 'sleep';
+export type DisturbanceCause =
+  | 'smartphone'
+  | 'await'
+  | 'sleep'
+  | '스마트폰'
+  | '자리비움'
+  | '졸음';
 export interface IDisturbance {
   name: DisturbanceCause;
   value: number;
@@ -93,5 +99,5 @@ export interface IReport {
   totalStarCount: number;
   totalStatusCounts: number;
   statuses: IDisturbance[];
-  maxStatus: string;
+  maxStatus: DisturbanceCause[];
 }
