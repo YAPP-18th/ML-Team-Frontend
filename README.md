@@ -1,46 +1,59 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+<h1 style="text-align: center">
+  STUDEEP CLIENT
+</h1>
 
-In the project directory, you can run:
+## 🎥 Live Service
 
-### `yarn start`
+- [Go](https://www.studeep.com)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## ✈️ Tech stacks
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Core
 
-### `yarn test`
+- React 17
+- TypeScript
+- RxJS for Reactive Programming
+- OAuth 2.0 for Access-Token handling
+- Recoil.js for State Management
+- React Router
+- Local Storage
+- Craco for customizing CRA
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Networking
 
-### `yarn build`
+- Axios for using RESTful API
+- Socket.IO
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Machine Learning
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- @tensorflow/tfjs
+- @tensorflow-models/coco-ssd
+- @mediapipe
+  - camera_utils
+  - drawing_utils
+  - Hands
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Styling
 
-### `yarn eject`
+- @emotion
+- TailwindCSS
+- twin.macro
+- PostCSS 7
+- autoprefixer
+- node-sass for using SCSS
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Data Visualization
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Antd
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Code Linting
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- ESLint
+- Prettier
+- @emotion/babel-preset-css-prop
 
-## Learn More
+### CI
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Firebase
