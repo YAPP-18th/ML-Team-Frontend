@@ -37,9 +37,11 @@ export const MyStudy: React.FC = () => {
 
   const onEnterRoom = (studyRoom: IStudyRoom, pw?: string) => {
     if (user.data?.id) {
+      setLoading(true);
       joinStudyRoom(studyRoom.id, user.data.id, accessToken, pw)
         .then((r) => {
           setStudy(studyRoom);
+          setLoading(false);
           message.success('공부방에 입장했습니다.');
           history.push('./study');
         })

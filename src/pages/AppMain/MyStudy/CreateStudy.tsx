@@ -28,17 +28,19 @@ interface IStudyCardSelectableControlProps {
 const CreateStudy: React.FC = () => {
   const [form] = Form.useForm<Partial<ICreateStudyRequest>>();
   const [formValues, setFormValues] = useState({});
+  const [btnLoading, setBtnLoading] = useState(false);
   const [accessToken] = useLocalStorage('accessToken');
   const history = useHistory();
   const user = useUser();
 
   const onSubmit = (request: Partial<ICreateStudyRequest>) => {
+    setBtnLoading(true);
     const userId = user.data?.id;
     if (userId) {
       createStudyRoom(userId, request, accessToken).then(async () => {
         await mutate(STUDY_ROOM_END_POINT);
         await mutate(`${MY_STUDY_ROOM_END_POINT}${user.data?.id}`);
-
+        setBtnLoading(false);
         history.replace('/app/mystudy');
       });
     } else {
@@ -187,7 +189,7 @@ const CreateStudy: React.FC = () => {
                     tw="w-full mt-20"
                     htmlType="submit"
                     disabled={
-                      !form.isFieldTouched('style') ||
+                      (btnLoading && !form.isFieldTouched('style')) ||
                       !form.isFieldTouched('title') ||
                       !form.isFieldTouched('isPublic') ||
                       (!form.getFieldValue('isPublic') &&
@@ -196,6 +198,7 @@ const CreateStudy: React.FC = () => {
                         .getFieldsError()
                         .filter(({ errors }) => errors?.length).length > 0
                     }
+                    loading={btnLoading}
                   >
                     공부방 만들기
                   </Button>
