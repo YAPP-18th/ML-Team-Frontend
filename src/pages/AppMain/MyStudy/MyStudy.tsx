@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyledRestrictedArea } from '@shared/styled/Common';
 import { StdTypoH4 } from '@shared/styled/Typography';
 import styled from '@emotion/styled';
@@ -16,7 +16,6 @@ import useMyStudyRoom, {
 } from '../../../hooks/useMyStudyRoom';
 import useUser from '../../../hooks/useUser';
 import joinStudyRoom from '../../../hooks/apis/joinStudyRoom';
-import { useLocalStorage } from '@rehooks/local-storage';
 import deleteStudyRoom from '../../../hooks/apis/deleteStudyRoom';
 import { mutate } from 'swr';
 import { useHistory } from 'react-router';
@@ -45,10 +44,13 @@ export const MyStudy: React.FC = () => {
           history.push('./study');
         })
         .catch((err) => {
-          console.log(err);
-          message.error(
-            '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
-          );
+          if (err?.response?.status === 400) {
+            message.error('이미 접속 중인 공부방입니다.');
+          } else {
+            message.error(
+              '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
+            );
+          }
         });
     } else {
       message.error('유저 정보를 받아올 수 없습니다.');
