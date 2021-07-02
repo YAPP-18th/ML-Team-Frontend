@@ -64,7 +64,7 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
           ))}
         </div>
       ) : (
-        <StyledEmptyCardWrapper tw="text-center space-y-5 py-20">
+        <StyledEmptyCardWrapper>
           <StdTypoSubtitle1 tw="text-gray-6">
             아직 시작한 공부방이 없어요. 공부를 시작해보세요.
           </StdTypoSubtitle1>

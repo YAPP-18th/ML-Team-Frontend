@@ -32,7 +32,7 @@ const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({
           ))}
         </div>
       ) : (
-        <StyledEmptyCardWrapper tw="text-center space-y-5 py-20">
+        <StyledEmptyCardWrapper>
           <StdTypoSubtitle1 tw="text-gray-6">
             지금 진행중인 공부방이 없어요. 공부방을 만들어 공부를 시작해보세요.
           </StdTypoSubtitle1>
