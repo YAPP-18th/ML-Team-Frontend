@@ -5,6 +5,7 @@ import { ICreateStudyRequest } from '@shared/interface';
 
 export default async function joinStudyRoom(
   id: string,
+  userId: number,
   accessToken: string | null,
   password?: string,
 ) {
@@ -12,6 +13,7 @@ export default async function joinStudyRoom(
     `${API_END_POINT}/api/study-rooms/${id}/join-check`,
     {
       password,
+      user_id: userId,
     },
     {
       headers: {

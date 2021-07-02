@@ -23,30 +23,38 @@ import { useHistory } from 'react-router';
 import { useRecoilState } from 'recoil';
 import { studyState } from '../../../atoms/studyState';
 import { IStudyRoom } from '@shared/interface';
+import useAccessToken from '../../../hooks/useAccessToken';
 
 export const MyStudy: React.FC = () => {
   const studyRoom = useStudyRoom(); //{ skip: 0, limit: 5 }
   const myStudyRoom = useMyStudyRoom();
   const { path } = useRouteMatch();
   const user = useUser();
-  const [accessToken] = useLocalStorage('accessToken');
+  const [accessToken, setAccessToken] = useAccessToken();
   const history = useHistory();
   const [study, setStudy] = useRecoilState(studyState);
 
   const [loading, setLoading] = useState(false);
 
   const onEnterRoom = (studyRoom: IStudyRoom, pw?: string) => {
-    joinStudyRoom(studyRoom.id, accessToken, pw)
-      .then((r) => {
-        setStudy(studyRoom);
-        message.success('공부방에 입장했습니다.');
-        history.push('./study');
-      })
-      .catch((err) => {
-        message.error(
-          '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
-        );
-      });
+    if (user.data?.id) {
+      joinStudyRoom(studyRoom.id, user.data.id, accessToken, pw)
+        .then((r) => {
+          setStudy(studyRoom);
+          message.success('공부방에 입장했습니다.');
+          history.push('./study');
+        })
+        .catch((err) => {
+          console.log(err);
+          message.error(
+            '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
+          );
+        });
+    } else {
+      message.error('유저 정보를 받아올 수 없습니다.');
+      setAccessToken(null);
+      history.replace('/');
+    }
   };
 
   function onDelete(roomId: string, userId: number) {
