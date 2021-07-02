@@ -45,7 +45,7 @@ const StudyCard: React.FC<
     } else {
       onEnterRoom();
     }
-  }, [id]);
+  }, [isPublic, isMine]);
 
   return (
     <>
