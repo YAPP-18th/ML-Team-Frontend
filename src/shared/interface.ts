@@ -97,7 +97,7 @@ export interface IReport {
   concentration: number;
   totalTime: number;
   totalStarCount: number;
-  totalStatusCounts: number;
+  totalStatusTime: string;
   statuses: IDisturbance[];
   maxStatus: DisturbanceCause[];
 }
