@@ -23,8 +23,6 @@ import {
 
 // colors
 import { GRAY_1, GRAY_4, GRAY_6, GRAY_10 } from '@shared/styles/colors';
-import { join } from 'node:path';
-import { ReadStream } from 'node:fs';
 
 export const MyReport = ({ StudyData }: IStudyDataProps) => {
   // export const MyReport = () => {

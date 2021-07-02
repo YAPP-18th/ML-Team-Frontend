@@ -1,16 +1,14 @@
-import { AxiosError } from 'axios';
 import { SerializedStyles } from '@emotion/serialize';
 import { css } from '@emotion/react';
 import StudyRoomImg1 from '@assets/images/studyroom-1.svg';
 import StudyRoomImg2 from '@assets/images/studyroom-2.svg';
 import StudyRoomImg3 from '@assets/images/studyroom-3.svg';
 import StudyRoomImg4 from '@assets/images/studyroom-4.svg';
-import { SWRResponse } from 'swr/dist/types';
 
 export interface IUser {
   id: number;
   provider: 'google';
-  social_id: string;
+  socialId: string;
   nickname: string;
   goal: {
     MON: number;
@@ -26,20 +24,20 @@ export interface IUser {
 export interface IStudyRoom {
   title: string;
   style: StudyCardStyle;
-  is_public: boolean;
-  created_at: string;
+  isPublic: boolean;
+  createdAt: string;
   description: string;
-  id: number;
-  current_join_counts: number;
-  owner_id: number;
+  id: string;
+  currentJoinCounts: number;
+  ownerId: number;
 }
 
 export interface IMyStudy {
   id: number;
-  started_at: string;
-  ended_at: string;
-  total_time: number;
-  study_room_id: string;
+  startedAt: string;
+  endedAt: string;
+  totalTime: number;
+  studyRoomId: string;
   title: string;
   disturbances: {
     id: number;
@@ -73,7 +71,7 @@ export const studyCardStyleList: {
 };
 
 export interface ICreateStudyRequest {
-  owner_id: number;
+  ownerId: number;
   style: StudyCardStyle;
   title: string;
   description?: string;

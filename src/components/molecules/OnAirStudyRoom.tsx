@@ -4,15 +4,19 @@ import { StyledEmptyCardWrapper } from '@shared/styled/Common';
 import 'twin.macro';
 import { Button } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { IStudyRoom } from '@shared/types';
+import { IStudyRoom } from '@shared/interface';
 import { css } from '@emotion/react';
-import StudyCard from '@components/MyStudy/StudyCard';
+import StudyCard from '@components/atoms/StudyCard';
 
 interface IOnAirStudyRoomProps {
   data?: IStudyRoom[];
+  onEnterRoom: (studyRoom: IStudyRoom, pw?: string) => void;
 }
 
-const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({ data }) => {
+const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({
+  data,
+  onEnterRoom,
+}) => {
   const { path } = useRouteMatch();
   return (
     <>
@@ -24,11 +28,15 @@ const OnAirStudyRoom: React.FC<IOnAirStudyRoomProps> = ({ data }) => {
           `}
         >
           {data.map((card) => (
-            <StudyCard key={card.id} {...card} />
+            <StudyCard
+              key={card.id}
+              {...card}
+              onEnterRoom={(pw) => onEnterRoom(card, pw)}
+            />
           ))}
         </div>
       ) : (
-        <StyledEmptyCardWrapper tw="text-center space-y-5 py-20">
+        <StyledEmptyCardWrapper>
           <StdTypoSubtitle1 tw="text-gray-6">
             지금 진행중인 공부방이 없어요. 공부방을 만들어 공부를 시작해보세요.
           </StdTypoSubtitle1>

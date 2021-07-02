@@ -1,9 +1,10 @@
 import useSWR from 'swr';
 import { API_END_POINT } from '@shared/common';
 import useAccessToken from './useAccessToken';
-import axios from 'axios';
-import { IStudyRoom } from '@shared/types';
+import axios, { AxiosError } from 'axios';
+import { IStudyRoom } from '@shared/interface';
 import { SWRResponse } from 'swr/dist/types';
+import { getRequestObj, getResponseObj } from '@shared/utils';
 
 interface IStudyRoomFetchOption {
   skip?: number;
@@ -17,19 +18,26 @@ async function fetcher(
   accessToken?: string | null,
   option?: IStudyRoomFetchOption,
 ) {
-  const response = await axios.get(url, {
-    params: option || null,
-    headers: {
-      authorization: accessToken,
-    },
-  });
-
-  return response.data?.data;
+  return axios
+    .get(url, {
+      params: option || null,
+      headers: {
+        authorization: accessToken,
+      },
+    })
+    .then((res) => {
+      return (res.data?.data as [])?.map((i) =>
+        getResponseObj(i),
+      ) as IStudyRoom[];
+    })
+    .catch((err: AxiosError) => {
+      throw err;
+    });
 }
 
 function useStudyRoom(
   option?: IStudyRoomFetchOption,
-): SWRResponse<IStudyRoom[], any> {
+): SWRResponse<IStudyRoom[], AxiosError> {
   const [accessToken] = useAccessToken();
   const _useSWR = useSWR(STUDY_ROOM_END_POINT, (url) =>
     fetcher(url, accessToken, option),

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { GRAY_11, PRIMARY_8 } from '@shared/styles/colors';
+import tw from 'twin.macro';
 
 export const StyledRestrictedArea = styled.section<{ maxWidth?: number }>`
   max-width: ${(props) => props.maxWidth || 1194}px;
@@ -12,6 +13,7 @@ export const StyledEmptyCardWrapper = styled.div`
   width: 100%;
   background: ${GRAY_11};
   border-radius: 5px;
+  ${tw`text-center space-y-5 py-20`}
 `;
 
 export const StyledBoxWrapper = styled.section`

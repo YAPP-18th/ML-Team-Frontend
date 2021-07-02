@@ -4,7 +4,7 @@ import { StdTypoSubtitle1 } from '@shared/styled/Typography';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import 'twin.macro';
-import { MainLayout } from '@components/Layouts/main/MainLayout';
+import { MainLayout } from '@components/templates/MainLayout';
 
 import { Button } from 'antd';
 import { useHistory } from 'react-router';

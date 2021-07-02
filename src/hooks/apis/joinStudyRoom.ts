@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { API_END_POINT } from '@shared/common';
-import { camel2Under } from '@shared/utils';
-import { ICreateStudyRequest } from '@shared/types';
+import { camel2Snake } from '@shared/utils';
+import { ICreateStudyRequest } from '@shared/interface';
 
 export default async function joinStudyRoom(
-  id: number,
+  id: string,
+  userId: number,
   accessToken: string | null,
   password?: string,
 ) {
@@ -12,6 +13,7 @@ export default async function joinStudyRoom(
     `${API_END_POINT}/api/study-rooms/${id}/join-check`,
     {
       password,
+      user_id: userId,
     },
     {
       headers: {

@@ -4,7 +4,6 @@ import { jsx, css } from '@emotion/react';
 import 'twin.macro';
 
 // components
-import { Button } from 'antd';
 import StudyStatusCard from './StudyStatusCard';
 // typography
 import { StdTypoH4, StdTypoCaption1 } from '@shared/styled/Typography';
@@ -12,24 +11,6 @@ import { StdTypoH4, StdTypoCaption1 } from '@shared/styled/Typography';
 import UserImg from '@assets/images/user.svg';
 
 const StudyRoomSide = () => {
-  const doCopy = () => {
-    if (!document.queryCommandSupported('copy')) {
-      return alert('복사하기가 지원되지 않는 브라우저입니다.');
-    }
-    const textarea = document.createElement('textarea');
-    textarea.value = `${origin}/redirect?type=study&id=1213`;
-
-    document.body.appendChild(textarea);
-    // Safari
-    textarea.focus();
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-    alert(
-      '공부방 주소가 클립보드에 복사되었습니다. 친구에게 공유해서 초대해보세요.',
-    );
-  };
-
   return (
     <section
       tw="h-full bg-gray-12"
@@ -47,9 +28,6 @@ const StudyRoomSide = () => {
             <StdTypoCaption1>$/6</StdTypoCaption1>
           </div>
         </div>
-        <Button type="ghost" onClick={() => doCopy()}>
-          초대하기
-        </Button>
       </StyledSideTitleWrapper>
       <MemberStatusWrapperStyled>
         {/* 인원수만큼*/}

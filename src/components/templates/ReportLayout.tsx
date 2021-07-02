@@ -8,14 +8,14 @@ import { Content } from 'antd/es/layout/layout';
 import { ajax, AjaxError } from 'rxjs/ajax';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { API_END_POINT } from '@shared/common';
-import { ErrMsgStyle } from '@components/OnBoarding/OnBoardingStepTwo';
+import { ErrMsgStyle } from '@components/organisms/OnBoardingStepTwo';
 
 // typographys
 import { StdTypoH2 } from '@shared/styled/Typography';
 
 // components
 import { DatePicker, Space, message } from 'antd';
-import { MainLayout } from '@components/Layouts/main/MainLayout';
+import { MainLayout } from '@components/templates/MainLayout';
 import { Moment } from 'moment';
 import { SetStateAction } from 'react';
 import { Dispatch } from 'react';

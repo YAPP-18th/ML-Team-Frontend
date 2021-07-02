@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { PRIMARY_9 } from '@shared/styles/colors';
 import CheckIcon from '@assets/icons/checked.svg';
 import 'twin.macro';
-import { StudyCardStyle, studyCardStyleList } from '@shared/types';
+import { StudyCardStyle, studyCardStyleList } from '@shared/interface';
 
 interface IStudyCardSelectableProps {
   style: StudyCardStyle;

@@ -12,8 +12,11 @@ import '@tensorflow/tfjs-backend-cpu';
 import * as cocossd from '@tensorflow-models/coco-ssd';
 import { HAND_CONNECTIONS, Hands, Results } from '@mediapipe/hands';
 import { Camera } from '@mediapipe/camera_utils';
-import { handDetection, smartPhoneDetection } from './userActionDetection';
-import { userHandDetection } from './userHandDetection';
+import {
+  handDetection,
+  smartPhoneDetection,
+} from '../../ml/userActionDetection';
+import { userHandDetection } from '../../ml/userHandDetection';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { Spin, Space } from 'antd';
 

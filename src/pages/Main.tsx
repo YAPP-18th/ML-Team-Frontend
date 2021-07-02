@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { AppMain } from '@pages/AppMain/AppMain';
 import Login from '@pages/Login/Login';
-import ConditionalRoute from '@components/Common/ConditionalRoute';
+import ConditionalRoute from '@components/atoms/ConditionalRoute';
 import { message } from 'antd';
 import { InnerRedirect } from '@pages/InnerRedirect/InnerRedirect';
 import useAccessToken from '../hooks/useAccessToken';

@@ -1,19 +1,27 @@
 import useSWR from 'swr';
 import { API_END_POINT } from '@shared/common';
 import useAccessToken from './useAccessToken';
-import axios from 'axios';
-import { IStudyRoom } from '@shared/types';
+import axios, { AxiosError } from 'axios';
+import { IStudyRoom } from '@shared/interface';
 import useUser from './useUser';
 import { SWRResponse } from 'swr/dist/types';
+import { getRequestObj, getResponseObj } from '@shared/utils';
 
 async function fetcher(url: string, accessToken?: string | null) {
-  const response = await axios.get(url, {
-    headers: {
-      authorization: accessToken,
-    },
-  });
-
-  return response.data?.data;
+  return axios
+    .get(url, {
+      headers: {
+        authorization: accessToken,
+      },
+    })
+    .then((res) => {
+      return (res.data?.data as [])?.map((i) =>
+        getResponseObj(i),
+      ) as IStudyRoom[];
+    })
+    .catch((err: AxiosError) => {
+      throw err;
+    });
 }
 
 function useMyStudyRoom(): SWRResponse<IStudyRoom[], any> {
