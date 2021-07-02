@@ -26,7 +26,7 @@ import TimeImg from '@assets/images/time.svg';
 interface IStudyInfoBarProps {
   isLarge: boolean;
   status?: string;
-  setTotalData: Dispatch<SetStateAction<number[]>>;
+  // setTotalData: Dispatch<SetStateAction<number[]>>;
 }
 
 interface ISizeProps {
@@ -36,8 +36,8 @@ interface ISizeProps {
 const StudyInfoBar = ({
   isLarge,
   status,
-  setTotalData,
-}: IStudyInfoBarProps) => {
+}: // setTotalData,
+IStudyInfoBarProps) => {
   const [sets, setSets] = useState(1);
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
@@ -75,7 +75,7 @@ const StudyInfoBar = ({
       }
       setTotalSeconds(0);
     }
-    setTotalData([sets, totalHours, totalMinutes, totalSeconds]);
+    // setTotalData([sets, totalHours, totalMinutes, totalSeconds]);
   }, 1000);
   useInterval(() => {
     if (seconds > 0) {
