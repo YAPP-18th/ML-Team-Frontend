@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { LandingLayout } from '@components/templates/LandingLayout';
 import 'twin.macro';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button } from 'antd';
 import { useHistory } from 'react-router';
-import { Main } from '@pages/Main';
 import { useMediaQuery } from 'react-responsive';
+
 // typography
 import {
   StdTypoH1,
@@ -17,7 +17,7 @@ import {
 } from '@shared/styled/Typography';
 
 // colors
-import { GRAY_1, PRIMARY_4, GRAY_6, GRAY_10 } from '@shared/styles/colors';
+import { GRAY_10 } from '@shared/styles/colors';
 
 //images
 import StudyroomImg from '@assets/images/studyroom-page.svg';
@@ -145,13 +145,15 @@ export const Landing: React.FC = () => {
             </StdTypoBody1>
           </div>
         </div>
-        <img
-          css={css`
-            float: ${!isSmall && `right`};
-          `}
-          src={ReportImg}
-          alt="학습레포트 예시"
-        />
+        <div tw="relative">
+          <img
+            css={css`
+              float: ${!isSmall && `right`};
+            `}
+            src={ReportImg}
+            alt="학습레포트 예시"
+          />
+        </div>
       </div>
       <div
         tw="flex flex-col justify-center items-center w-full"
@@ -199,6 +201,7 @@ const TextContentStyle = (
     margin-left: ${isSmall ? mx : `80px`};
     margin-right: ${isSmall ? mx : `80px`};
     margin-top: ${isSmall ? `0` : mt};
+    flex-shrink: 0;
   `;
 };
 const FeatureContainerStyle = (isSmall: boolean) => {

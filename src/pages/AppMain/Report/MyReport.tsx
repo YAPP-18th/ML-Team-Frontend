@@ -5,8 +5,7 @@ import 'twin.macro';
 
 import locale from 'antd/es/date-picker/locale/ko_KR';
 import ReactEcharts from 'echarts-for-react';
-import { IReport, IDisturbance } from '@shared/interface';
-// import RectImg from '@assets/images/icons/Rectangle 146';
+import { IReport, IDisturbance, DisturbanceCause } from '@shared/interface';
 
 interface IReportProps {
   StudyData?: IReport[];
@@ -30,18 +29,31 @@ export const MyReport = ({ StudyData }: IReportProps) => {
   const [focusDegree, setFocusDegree] = useState(0);
   const [distraction, setDistraction] = useState(0);
   const [chartData, setChartData] = useState<IDisturbance[]>([]);
-  const [disturbance, setDisturbance] = useState<string[]>([]);
+  const [disturbance, setDisturbance] = useState<DisturbanceCause[]>([]);
 
   useEffect(() => {
     if (StudyData !== undefined) {
       const data = StudyData[0];
+      const statuses = data.statuses;
+      const maxStatus = data.maxStatus;
 
       setHours(Math.floor(data.totalTime / 3600));
       setMinutes(Math.floor((data.totalTime / 60) % 60));
       setFocusDegree(data.concentration);
       setDistraction(data.totalStatusCounts);
-      setChartData(data.statuses);
-      setDisturbance([data.maxStatus]);
+      statuses.map((status) => {
+        if (status.name === 'smartphone') status.name = '스마트폰';
+        else if (status.name === 'await') status.name = '자리비움';
+        else if (status.name === 'sleep') status.name = '졸음';
+      });
+      for (let i = 0; i < maxStatus.length; i++) {
+        if (maxStatus[i] === 'smartphone') maxStatus[i] = '스마트폰';
+        else if (maxStatus[i] === 'await') maxStatus[i] = '자리비움';
+        else if (maxStatus[i] === 'sleep') maxStatus[i] = '졸음';
+      }
+
+      setChartData(statuses);
+      setDisturbance(maxStatus);
     }
   }, [StudyData]);
 
@@ -123,10 +135,9 @@ export const MyReport = ({ StudyData }: IReportProps) => {
               orient: 'vertical',
               top: 20,
               left: 0,
-              data: ['스마트폰', '조는중', '자리비움'],
+              data: chartData,
               itemGap: 16,
               icon: 'circle',
-              // icon: 'image://http://www.w3.org/2000/Rectangle_146.svg',
               textStyle: {
                 color: GRAY_1,
                 fontWeight: 'bold',

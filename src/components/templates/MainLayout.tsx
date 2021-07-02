@@ -14,6 +14,8 @@ import { MenuClickEventHandler } from 'rc-menu/lib/interface';
 import { useHistory, useRouteMatch } from 'react-router';
 import { Link } from 'react-router-dom';
 import { deleteFromStorage } from '@rehooks/local-storage';
+import PrivacyModal from '@components/organisms/PrivacyModal';
+import ServiceModal from '@components/organisms/ServiceModal';
 
 const FooterStyle = css`
   width: 100%;
@@ -49,12 +51,13 @@ const menuItemMap: MenuItemMap = {
   report: {
     linkTo: '/app/report',
     title: '학습레포트',
-    disabled: false,
   },
 };
 
 export const MainLayout: React.FC = ({ children }) => {
   const [selectedMenu, setSelectedMenu] = useState<MenuKey>();
+  const [isPrivacyModalVisible, setIsPrivacyModalVisible] = useState(false);
+  const [isServiceModalVisible, setIsServiceModalVisible] = useState(false);
   const history = useHistory();
   const match = useRouteMatch<{ current: string }>('/app/:current');
 
@@ -126,9 +129,19 @@ export const MainLayout: React.FC = ({ children }) => {
                 `}
                 alt="STUDEEP"
               />
-              <ul tw="flex space-x-10">
-                <li>서비스 이용약관</li>
-                <li>개인정보 처리방침</li>
+              <ul tw="flex space-x-10 ">
+                <li
+                  tw="cursor-pointer"
+                  onClick={() => setIsServiceModalVisible(true)}
+                >
+                  서비스 이용약관
+                </li>
+                <li
+                  tw="cursor-pointer"
+                  onClick={() => setIsPrivacyModalVisible(true)}
+                >
+                  개인정보 처리방침
+                </li>
               </ul>
             </div>
             <span
@@ -140,6 +153,14 @@ export const MainLayout: React.FC = ({ children }) => {
               © STUDEEP All Rights Reserved.
             </span>
           </StyledFooterInner>
+          <PrivacyModal
+            isModalVisible={isPrivacyModalVisible}
+            setIsModalVisible={setIsPrivacyModalVisible}
+          />
+          <ServiceModal
+            isModalVisible={isServiceModalVisible}
+            setIsModalVisible={setIsServiceModalVisible}
+          />
         </Footer>
       </Layout>
     </>

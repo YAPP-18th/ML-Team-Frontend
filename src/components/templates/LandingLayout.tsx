@@ -15,6 +15,8 @@ import { useHistory, useRouteMatch } from 'react-router';
 import { Link } from 'react-router-dom';
 import { deleteFromStorage } from '@rehooks/local-storage';
 import { StdTypoBody1 } from '@shared/styled/Typography';
+import PrivacyModal from '@components/organisms/PrivacyModal';
+import ServiceModal from '@components/organisms/ServiceModal';
 
 const FooterStyle = css`
   width: 100%;
@@ -54,6 +56,8 @@ const menuItemMap: MenuItemMap = {
 
 export const LandingLayout: React.FC = ({ children }) => {
   const [selectedMenu, setSelectedMenu] = useState<MenuKey>();
+  const [isPrivacyModalVisible, setIsPrivacyModalVisible] = useState(false);
+  const [isServiceModalVisible, setIsServiceModalVisible] = useState(false);
   const history = useHistory();
   const match = useRouteMatch<{ current: string }>('/app/:current');
 
@@ -122,8 +126,18 @@ export const LandingLayout: React.FC = ({ children }) => {
                 alt="STUDEEP"
               />
               <ul tw="flex space-x-10">
-                <li>서비스 이용약관</li>
-                <li>개인정보 처리방침</li>
+                <li
+                  tw="cursor-pointer"
+                  onClick={() => setIsServiceModalVisible(true)}
+                >
+                  서비스 이용약관
+                </li>
+                <li
+                  tw="cursor-pointer"
+                  onClick={() => setIsPrivacyModalVisible(true)}
+                >
+                  개인정보 처리방침
+                </li>
               </ul>
             </div>
             <span
@@ -135,6 +149,14 @@ export const LandingLayout: React.FC = ({ children }) => {
               © STUDEEP All Rights Reserved.
             </span>
           </StyledFooterInner>
+          <PrivacyModal
+            isModalVisible={isPrivacyModalVisible}
+            setIsModalVisible={setIsPrivacyModalVisible}
+          />
+          <ServiceModal
+            isModalVisible={isServiceModalVisible}
+            setIsModalVisible={setIsServiceModalVisible}
+          />
         </Footer>
       </Layout>
     </>
