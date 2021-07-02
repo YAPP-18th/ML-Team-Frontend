@@ -17,7 +17,20 @@ export const Main: React.FC = () => {
   return (
     <>
       <Switch>
-        <Route path="/landing" component={Landing} />
+        <Route path="/" exact={true}>
+          <Redirect to="/landing" />
+        </Route>
+
+        <ConditionalRoute
+          path="/landing"
+          redirectPath="/app"
+          condition={!appAccessCondition}
+          onFalse={() => {
+            message.error('이미 로그인이 되어 있습니다.');
+          }}
+        >
+          <Landing />
+        </ConditionalRoute>
         <ConditionalRoute
           path="/auth"
           redirectPath="/app"
@@ -28,7 +41,6 @@ export const Main: React.FC = () => {
         >
           <Login />
         </ConditionalRoute>
-
         <ConditionalRoute
           path="/app"
           redirectPath="/auth"
@@ -41,8 +53,7 @@ export const Main: React.FC = () => {
         </ConditionalRoute>
         <Route path="/redirect" component={InnerRedirect} />
         <Route path="*">
-          {/* <Redirect to="/app" /> */}
-          <Redirect to="/landing" />
+          <Redirect to="/app" />
         </Route>
       </Switch>
     </>
