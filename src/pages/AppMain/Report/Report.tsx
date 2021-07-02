@@ -19,6 +19,7 @@ import { StyledRestrictedArea } from '@shared/styled/Common';
 // typographys
 import { StdTypoH2 } from '@shared/styled/Typography';
 import getReport from '../../../hooks/apis/getReport';
+import { AxiosError } from 'axios';
 
 export interface IStudyData {
   value: number;
@@ -41,9 +42,17 @@ export const Report = () => {
           user_id: user.data?.id,
         },
         accessToken,
-      ).then((r) => {
-        setReport(r);
-      });
+      )
+        .then((r) => {
+          setReport(r);
+        })
+        .catch((err: AxiosError) => {
+          throw err;
+        })
+        .catch((err) => {
+          setReport([]);
+          throw err;
+        });
     }
   }
   useEffect(() => {
