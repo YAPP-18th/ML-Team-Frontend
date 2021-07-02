@@ -20,6 +20,9 @@ import { useLocalStorage } from '@rehooks/local-storage';
 import deleteStudyRoom from '../../../hooks/apis/deleteStudyRoom';
 import { mutate } from 'swr';
 import { useHistory } from 'react-router';
+import { useRecoilState } from 'recoil';
+import { studyState } from '../../../atoms/studyState';
+import { IStudyRoom } from '@shared/interface';
 
 export const MyStudy: React.FC = () => {
   const studyRoom = useStudyRoom(); //{ skip: 0, limit: 5 }
@@ -28,6 +31,7 @@ export const MyStudy: React.FC = () => {
   const user = useUser();
   const [accessToken] = useLocalStorage('accessToken');
   const history = useHistory();
+  const [study, setStudy] = useRecoilState(studyState);
 
   const [loading, setLoading] = useState(false);
 
