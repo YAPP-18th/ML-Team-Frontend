@@ -1,7 +1,6 @@
 import React, {
   Dispatch,
   SetStateAction,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -39,6 +38,7 @@ import { interval, Subject, timer } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
+  filter,
   map,
   switchMap,
   take,
@@ -134,8 +134,9 @@ export const StudyReady = ({
           setLeftTime(DEFAULT_LEFT_TIME);
           setHand(detected);
         }),
-        switchMap(() =>
+        switchMap((detected) =>
           interval(1000).pipe(
+            filter(() => detected),
             take(DEFAULT_LEFT_TIME),
             map((v) => DEFAULT_LEFT_TIME - 1 - v),
           ),
