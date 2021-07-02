@@ -16,6 +16,8 @@ import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
 import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
 import SocketContext from '../../../context/socket/SocketContext';
+import { useRecoilState } from 'recoil';
+import { studyState } from '../../../atoms/studyState';
 
 export enum StudyStep {
   NOTHING = 'NOTHING',
@@ -31,24 +33,22 @@ export interface ICurrentStudy {
 }
 
 export const Study = () => {
+  const [study, setStudy] = useRecoilState(studyState);
   const [step, setStep] = useState<StudyStep>(StudyStep.NOTHING);
   const [socket, setSocket] = useState<Socket>();
   const [connected, setConnected] = useState(false);
   const user = useUser();
+  const history = useHistory();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const handleOk = () => {
+  const handleEndStudyOk = () => {
     setIsModalVisible(false);
-    // if (page == 'ready') {
-    //   history.push(`/app/mystudy`);
-    // } else {
-    //   setStep(StudyStep.STUDY_FINISH);
-    // }
+    history.replace('/');
   };
-  const handleCancel = () => {
+  const handleEndStudyCancel = () => {
     setIsModalVisible(false);
   };
 
@@ -74,17 +74,16 @@ export const Study = () => {
     }
   }, [user]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     console.log('Do Join Room');
-  //     socket.emit('joinRoom', 'f83e317a-9a0d-44c6-8e92-249f9a75fdb9');
-  //   }
-  // }, [socket]);
+  useEffect(() => {
+    return () => {
+      socket?.disconnect();
+    };
+  }, []);
 
-  function doJoinStudyRoom() {
+  function doJoinStudyRoom(id: string) {
     if (socket) {
       console.log('Do Join Room');
-      socket.emit('joinRoom', 'f83e317a-9a0d-44c6-8e92-249f9a75fdb9');
+      socket.emit('joinRoom', id);
     }
   }
 
@@ -96,7 +95,7 @@ export const Study = () => {
     >
       <Header css={HeaderStyle}>
         <div tw="flex">
-          <StdTypoH5>공부방 이름</StdTypoH5>
+          <StdTypoH5>{study?.title || '불러오는 중'}</StdTypoH5>
           {/*{isPublic == false && <img src={PrivateImg} alt="비밀방" />}*/}
         </div>
 
@@ -122,8 +121,8 @@ export const Study = () => {
         <Modal
           visible={isModalVisible}
           closable={false}
-          onOk={handleOk}
-          onCancel={handleCancel}
+          onOk={handleEndStudyOk}
+          onCancel={handleEndStudyCancel}
           keyboard={false}
           bodyStyle={{
             height: '148px',
@@ -139,10 +138,10 @@ export const Study = () => {
             }
           `}
           footer={
-            <>
-              <StyledModalButton role="Cancel" func={handleCancel} />
-              <StyledModalButton role="Ok" func={handleOk} />
-            </>
+            <div tw="w-full flex">
+              <StyledModalButton role="Cancel" func={handleEndStudyCancel} />
+              <StyledModalButton role="Ok" func={handleEndStudyOk} />
+            </div>
           }
         >
           <div>
@@ -152,12 +151,12 @@ export const Study = () => {
       </Header>
 
       <Spin spinning={!(socket && connected && !!user?.data)} size="large">
-        {socket && connected && user?.data && (
+        {study && socket && connected && user?.data && (
           <StudyReady
             setStep={setStep}
             socket={socket}
             user={user.data}
-            doJoinStudyRoom={doJoinStudyRoom}
+            doJoinStudyRoom={() => doJoinStudyRoom(study.id)}
           />
         )}
       </Spin>
