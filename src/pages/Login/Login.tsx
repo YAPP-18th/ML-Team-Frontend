@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { API_END_POINT } from '@shared/common';
 import { setAccessToken } from '../../hooks/useAccessToken';
 import 'twin.macro';
+import { useHistory } from 'react-router-dom';
 import {
   GoogleLoginResponse,
   useGoogleLogin,
@@ -32,7 +33,7 @@ const Login = () => {
   const location = useLocation<{ redirectUrl: string }>();
   const [isPrivacyModalVisible, setIsPrivacyModalVisible] = useState(false);
   const [isServiceModalVisible, setIsServiceModalVisible] = useState(false);
-
+  const history = useHistory();
   const onSuccessGoogleLogin = (res: GoogleLoginResponse) => {
     axios
       .get(`${API_END_POINT}/api/user/signin`, {
@@ -74,7 +75,13 @@ const Login = () => {
         `}
       />
       <StyledLoginWrapper>
-        <img src={LogoImg} alt="logo" />
+        <img
+          src={LogoImg}
+          alt="logo"
+          onClick={() => {
+            history.push('/landing');
+          }}
+        />
         <StyledLoginContent>
           <StdTypoH3 tw="text-gray-1">
             내 꿈을 향해
