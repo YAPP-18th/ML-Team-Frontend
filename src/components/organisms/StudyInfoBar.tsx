@@ -140,16 +140,13 @@ const StudyInfoBar = ({
 export default StudyInfoBar;
 
 const StyledStudyInfoBar = styled.div(({ isLarge }: ISizeProps) => ({
-  width: isLarge ? `60%` : '90%',
+  width: '100%',
   height: '128px',
-  position: 'absolute',
   color: 'white',
   display: 'flex',
-  top: '75vh',
-  backgroundColor: isLarge ? GRAY_8 : GRAY_11,
+  backgroundColor: GRAY_11,
   opacity: 0.9,
   alignItems: 'center',
-  borderRadius: '20px',
   padding: '0px 40px',
   justifyContent: 'space-between',
 }));

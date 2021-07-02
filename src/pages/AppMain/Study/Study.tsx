@@ -116,19 +116,13 @@ export const Study = () => {
   }
 
   return (
-    <Layout
-      css={css`
-        height: 100%;
-      `}
-    >
+    <Layout tw="h-full">
       <Header css={HeaderStyle}>
-        <div tw="flex">
-          <StdTypoH5>{study?.title || '불러오는 중'}</StdTypoH5>
-          {/*{isPublic == false && <img src={PrivateImg} alt="비밀방" />}*/}
-        </div>
-
+        <StdTypoH5 tw="overflow-hidden whitespace-nowrap overflow-ellipsis pr-6">
+          {study?.title || '불러오는 중'}
+        </StdTypoH5>
         <Button
-          tw="bg-gray-10 border-none flex items-center hover:bg-gray-9"
+          tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 flex-shrink-0"
           shape="round"
           type="primary"
           onClick={showModal}
@@ -145,42 +139,54 @@ export const Study = () => {
           />
           <span>공부 종료하기</span>
         </Button>
-
-        <Modal
-          visible={isModalVisible}
-          closable={false}
-          onOk={handleEndStudyOk}
-          onCancel={handleEndStudyCancel}
-          keyboard={false}
-          bodyStyle={{
-            height: '148px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          css={css`
-            .ant-modal-footer {
-              display: flex;
-              padding: 0;
-              border: none;
-            }
-          `}
-          footer={
-            <div tw="w-full flex">
-              <StyledModalButton role="Cancel" func={handleEndStudyCancel} />
-              <StyledModalButton role="Ok" func={handleEndStudyOk} />
-            </div>
-          }
-        >
-          <div>
-            <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
-          </div>
-        </Modal>
       </Header>
 
-      <Spin spinning={!(socket && connected && !!user?.data)} size="large">
-        {study && socket && connected && user?.data && renderedComponent}
-      </Spin>
+      <Layout>
+        <Layout
+          css={css`
+            > .ant-spin-nested-loading {
+              height: 100%;
+              > .ant-spin-container {
+                height: 100%;
+              }
+            }
+          `}
+        >
+          <Spin spinning={!(socket && connected && !!user?.data)} size="large">
+            {study && socket && connected && user?.data && renderedComponent}
+          </Spin>
+        </Layout>
+      </Layout>
+      <Modal
+        visible={isModalVisible}
+        closable={false}
+        onOk={handleEndStudyOk}
+        onCancel={handleEndStudyCancel}
+        keyboard={false}
+        bodyStyle={{
+          height: '148px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        css={css`
+          .ant-modal-footer {
+            display: flex;
+            padding: 0;
+            border: none;
+          }
+        `}
+        footer={
+          <div tw="w-full flex">
+            <StyledModalButton role="Cancel" func={handleEndStudyCancel} />
+            <StyledModalButton role="Ok" func={handleEndStudyOk} />
+          </div>
+        }
+      >
+        <div>
+          <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
+        </div>
+      </Modal>
     </Layout>
   );
 };
