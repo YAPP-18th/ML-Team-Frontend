@@ -12,8 +12,8 @@ import DeleteIcon from '@assets/icons/delete.svg';
 interface IMyStudyRoomProps {
   data?: IStudyRoom[];
   myUserId?: number;
-  onEnterRoom: (id: number, userId?: number, pw?: string) => void;
-  onDelete: (roomId: number, userId: number) => void;
+  onEnterRoom: (studyRoom: IStudyRoom, pw?: string) => void;
+  onDelete: (roomId: string, userId: number) => void;
 }
 
 const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
@@ -24,7 +24,7 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
 }) => {
   const { path } = useRouteMatch();
 
-  const generateMenu = (roomId: number, userId?: number) => {
+  const generateMenu = (roomId: string, userId?: number) => {
     if (!userId) return;
     return (
       <Menu>
@@ -58,7 +58,7 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
               key={card.id}
               {...card}
               myUserId={myUserId}
-              onEnterRoom={onEnterRoom}
+              onEnterRoom={(pw) => onEnterRoom(card, pw)}
               dropdown={generateMenu(card.id, myUserId)}
             />
           ))}

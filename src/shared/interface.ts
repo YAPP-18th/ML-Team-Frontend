@@ -27,7 +27,7 @@ export interface IStudyRoom {
   isPublic: boolean;
   createdAt: string;
   description: string;
-  id: number;
+  id: string;
   currentJoinCounts: number;
   ownerId: number;
 }

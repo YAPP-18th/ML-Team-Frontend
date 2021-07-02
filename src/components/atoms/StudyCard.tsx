@@ -17,7 +17,7 @@ import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 const StudyCard: React.FC<
   IStudyRoom & {
     myUserId?: number;
-    onEnterRoom: (id: number, userId?: number, pw?: string) => void;
+    onEnterRoom: (pw?: string) => void;
     dropdown?: ReactJSXElement;
   }
 > = ({
@@ -43,7 +43,7 @@ const StudyCard: React.FC<
     if (!isPublic && !isMine) {
       setIsEnterModalVisible(true);
     } else {
-      onEnterRoom(id, myUserId);
+      onEnterRoom();
     }
   }, [id]);
 
@@ -83,7 +83,7 @@ const StudyCard: React.FC<
         <Form
           form={passwordForm}
           onChange={(values) => setFormValues(values)}
-          onFinish={(v) => onEnterRoom(id, myUserId, v.password)}
+          onFinish={(v) => onEnterRoom(v.password)}
         >
           <Form.Item name="password" noStyle>
             <Input placeholder="비밀번호를 입력해주세요." type="password" />

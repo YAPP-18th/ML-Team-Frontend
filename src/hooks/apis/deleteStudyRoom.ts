@@ -3,7 +3,7 @@ import { API_END_POINT } from '@shared/common';
 import useAccessToken from '../useAccessToken';
 
 export default async function deleteStudyRoom(
-  roomId: number,
+  roomId: string,
   userId: number,
   accessToken: string | null,
 ) {

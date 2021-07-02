@@ -31,21 +31,21 @@ export const MyStudy: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const onEnterRoom = (id: number, userId?: number, pw?: string) => {
-    userId &&
-      joinStudyRoom(id, accessToken, userId, pw)
-        .then((r) => {
-          message.success('공부방에 입장했습니다.');
-          history.push('./study');
-        })
-        .catch((err) => {
-          message.error(
-            '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
-          );
-        });
+  const onEnterRoom = (studyRoom: IStudyRoom, pw?: string) => {
+    joinStudyRoom(studyRoom.id, accessToken, pw)
+      .then((r) => {
+        setStudy(studyRoom);
+        message.success('공부방에 입장했습니다.');
+        history.push('./study');
+      })
+      .catch((err) => {
+        message.error(
+          '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
+        );
+      });
   };
 
-  function onDelete(roomId: number, userId: number) {
+  function onDelete(roomId: string, userId: number) {
     deleteStudyRoom(roomId, userId, accessToken)
       .then(async (r) => {
         await mutate(STUDY_ROOM_END_POINT);
