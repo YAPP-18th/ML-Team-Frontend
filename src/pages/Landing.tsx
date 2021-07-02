@@ -199,6 +199,7 @@ const TextContentStyle = (
     margin-left: ${isSmall ? mx : `80px`};
     margin-right: ${isSmall ? mx : `80px`};
     margin-top: ${isSmall ? `0` : mt};
+    flex-shrink: 0;
   `;
 };
 const FeatureContainerStyle = (isSmall: boolean) => {
