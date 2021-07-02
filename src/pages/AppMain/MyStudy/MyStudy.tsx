@@ -68,16 +68,23 @@ export const MyStudy: React.FC = () => {
                 <Button size="small">공부방 만들기</Button>
               </Link>
             </div>
-            <MyStudyRoom
-              data={myStudyRoom?.data}
-              myUserId={user.data?.id}
-              onEnterRoom={onEnterRoom}
-              onDelete={onDelete}
-            />
+            <Spin spinning={myStudyRoom.isValidating}>
+              <MyStudyRoom
+                data={myStudyRoom?.data}
+                myUserId={user.data?.id}
+                onEnterRoom={onEnterRoom}
+                onDelete={onDelete}
+              />
+            </Spin>
           </StyledMyStudyCard>
           <StyledMyStudyCard>
             <StdTypoH4>온에어 공부방</StdTypoH4>
-            <OnAirStudyRoom data={studyRoom?.data} onEnterRoom={onEnterRoom} />
+            <Spin spinning={studyRoom.isValidating}>
+              <OnAirStudyRoom
+                data={studyRoom?.data}
+                onEnterRoom={onEnterRoom}
+              />
+            </Spin>
           </StyledMyStudyCard>
         </StyledRestrictedArea>
       </Spin>
