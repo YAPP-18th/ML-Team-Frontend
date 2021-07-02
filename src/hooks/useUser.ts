@@ -37,7 +37,7 @@ function useUser(): SWRResponse<IUser, AxiosError> {
       // 온보딩
       if (status === 403) return;
       // 권한이 없을 경우
-      if (status === 401) {
+      if (status === 401 || status === 500) {
         setAccessToken(null);
         history.replace('/');
         message.error(
