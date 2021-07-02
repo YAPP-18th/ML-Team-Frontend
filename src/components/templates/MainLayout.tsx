@@ -49,7 +49,7 @@ const menuItemMap: MenuItemMap = {
   report: {
     linkTo: '/app/report',
     title: '학습레포트',
-    disabled: true,
+    disabled: false,
   },
 };
 
