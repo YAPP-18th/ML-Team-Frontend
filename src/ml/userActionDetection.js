@@ -1,5 +1,5 @@
 // var previousUserAction = 'study';
-var currentUserAction = '공부중';
+var currentUserAction = 'study';
 // var startTime = Date.now();
 // var userActions = {
 //   userAction: {
@@ -31,7 +31,7 @@ async function smartPhoneDetection(network, image) {
       drowsinessCount = 0;
       leaveCount = 0;
       isUsingSmartPhone = true;
-      currentUserAction = '스마트폰';
+      currentUserAction = 'phone';
       // console.log('smartPhoneDetection 스마트폰중!' + new Date().getTime());
       // if (previousUserAction !== currentUserAction) {
       // userActionTimer(startTime, currentUserAction);
@@ -53,7 +53,7 @@ function handDetection(results) {
   } else {
     leaveCount += 1;
     if (leaveCount >= 20) {
-      currentUserAction = '자리비움';
+      currentUserAction = 'await';
       // console.log('handDetection 자리비움!' + new Date().getTime());
       isHandExist = false;
       leaveCount = 0;
@@ -123,14 +123,14 @@ function drowsinessDetection(handInfo) {
     bothFingerDetection = rightFingerDetection || leftFingerDetection;
     if (bothFingerDetection) {
       studyCount += 1;
-      if (currentUserAction !== '공부중' && studyCount >= 120) {
-        currentUserAction = '공부중';
+      if (currentUserAction !== 'study' && studyCount >= 120) {
+        currentUserAction = 'study';
         // console.log('drowsinessDetection 공부중!' + new Date().getTime());
         studyCount = 0;
         drowsinessCount = 0;
         leaveCount = 0;
       } else {
-        currentUserAction = '공부중';
+        currentUserAction = 'study';
         // console.log('drowsinessDetection 공부중!' + new Date().getTime());
         drowsinessCount = 0;
         leaveCount = 0;
@@ -143,7 +143,7 @@ function drowsinessDetection(handInfo) {
     } else {
       drowsinessCount += 1;
       if (drowsinessCount >= 50) {
-        currentUserAction = '조는중';
+        currentUserAction = 'sleep';
         // console.log('drowsinessDetection 졸고있음!' + new Date().getTime());
       }
       // if (previousUserAction !== currentUserAction) {
@@ -180,7 +180,7 @@ function drowsinessDetection(handInfo) {
       if (!leftFingerDetection) {
         drowsinessCount += 1;
         if (drowsinessCount >= 50) {
-          currentUserAction = '조는중';
+          currentUserAction = 'sleep';
           // console.log('drowsinessDetection 졸고있음!' + new Date().getTime());
         }
         // if (previousUserAction !== currentUserAction) {
@@ -214,7 +214,7 @@ function drowsinessDetection(handInfo) {
       if (!rightFingerDetection) {
         drowsinessCount += 1;
         if (drowsinessCount >= 50) {
-          currentUserAction = '조는중';
+          currentUserAction = 'sleep';
           // console.log('drowsinessDetection 졸고있음!' + new Date().getTime());
         }
         // if (previousUserAction !== currentUserAction) {

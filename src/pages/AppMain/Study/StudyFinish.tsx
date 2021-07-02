@@ -84,11 +84,10 @@ export const StudyFinish = ({ studyRoom, myStudy }: IStudyFinishProps) => {
           tw="text-gray-1"
           type="primary"
           onClick={() => {
-            history.push('/app/report');
-            window.location.reload();
+            history.replace('/app/report');
           }}
         >
-          학습 레포트보기
+          학습 레포트 보기
         </Button>
       </div>
     </div>

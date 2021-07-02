@@ -17,7 +17,7 @@ import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
 import { useRecoilState } from 'recoil';
 import { studyRoomState } from '../../../atoms/studyRoomState';
-import { StudyRoom } from '@pages/AppMain/Study/StudyRoom';
+import { CurrentActionType, StudyRoom } from '@pages/AppMain/Study/StudyRoom';
 import getMyStudyData from '../../../hooks/apis/getMyStudyData';
 import { IMyStudy } from '@shared/interface';
 import useAccessToken from '../../../hooks/useAccessToken';
@@ -56,7 +56,7 @@ export const Study = () => {
     socket?.disconnect();
     setForceLoading(true);
 
-    myStudyId &&
+    if (myStudyId) {
       getMyStudyData(myStudyId, accessToken)
         .then((r) => {
           setMyStudy(r);
@@ -67,9 +67,16 @@ export const Study = () => {
           message.error('현재 나의 공부방 정보를 받아올 수 없습니다.');
           history.replace('/');
         });
+    } else {
+      history.replace('/');
+    }
   };
   const handleEndStudyCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const sendStatus = (status: CurrentActionType) => {
+    socket?.emit('status', status);
   };
 
   const renderedComponent = useMemo(() => {
@@ -80,7 +87,7 @@ export const Study = () => {
             <StudyReady doJoinStudyRoom={() => doJoinStudyRoom(studyRoom.id)} />
           );
         case StudyStep.STUDY_ROOM:
-          return <StudyRoom study={studyRoom} />;
+          return <StudyRoom study={studyRoom} sendStatus={sendStatus} />;
         case StudyStep.STUDY_FINISH:
           return (
             myStudy && <StudyFinish studyRoom={studyRoom} myStudy={myStudy} />
