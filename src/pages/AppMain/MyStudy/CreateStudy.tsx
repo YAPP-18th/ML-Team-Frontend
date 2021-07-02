@@ -15,7 +15,7 @@ import { useLocalStorage } from '@rehooks/local-storage';
 import { ICreateStudyRequest, StudyCardStyle } from '@shared/interface';
 import useUser from '../../../hooks/useUser';
 import createStudyRoom from '../../../hooks/apis/createStudyRoom';
-import { STUDY_ROOM_END_POINT } from '../../../hooks/useStudyRoom';
+import { STUDY_ROOM_END_POINT } from '../../../hooks/useStudyRooms';
 import { MY_STUDY_ROOM_END_POINT } from '../../../hooks/useMyStudyRoom';
 import { useHistory } from 'react-router';
 import { mutate } from 'swr';

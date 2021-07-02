@@ -16,10 +16,13 @@ import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
 import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
 import { useRecoilState } from 'recoil';
-import { studyState } from '../../../atoms/studyState';
-import { StudyRoom } from '@pages/AppMain/Study/StudyRoom';
-import StudyRoomSide from '@components/organisms/StudyRoomSide';
-import Sider from 'antd/es/layout/Sider';
+import { studyRoomState } from '../../../atoms/studyRoomState';
+import { CurrentActionType, StudyRoom } from '@pages/AppMain/Study/StudyRoom';
+import getMyStudyData from '../../../hooks/apis/getMyStudyData';
+import { IMyStudy } from '@shared/interface';
+import useAccessToken from '../../../hooks/useAccessToken';
+import { StudyFinish } from '@pages/AppMain/Study/StudyFinish';
+import { Step } from '@tensorflow/tfjs';
 
 export enum StudyStep {
   STUDY_READY = 'STUDY_READY',
@@ -28,10 +31,19 @@ export enum StudyStep {
 }
 
 export const Study = () => {
-  const [study, setStudy] = useRecoilState(studyState);
+  const [studyRoom, setStudyRoom] = useRecoilState(studyRoomState);
   const [step, setStep] = useState<StudyStep>(StudyStep.STUDY_READY);
+
   const [socket, setSocket] = useState<Socket>();
+
   const [connected, setConnected] = useState(false);
+  const [forceLoading, setForceLoading] = useState(false);
+
+  const [myStudyId, setMyStudyId] = useState<number | null>(null);
+  const [myStudy, setMyStudy] = useState<IMyStudy | null>(null);
+
+  const [accessToken] = useAccessToken();
+
   const user = useUser();
   const history = useHistory();
 
@@ -42,35 +54,63 @@ export const Study = () => {
   const handleEndStudyOk = () => {
     setIsModalVisible(false);
     socket?.disconnect();
-    history.replace('/');
+    setForceLoading(true);
+
+    if (myStudyId) {
+      getMyStudyData(myStudyId, accessToken)
+        .then((r) => {
+          setMyStudy(r);
+          setStep(StudyStep.STUDY_FINISH);
+          setForceLoading(false);
+        })
+        .catch((err) => {
+          message.error('현재 나의 공부방 정보를 받아올 수 없습니다.');
+          history.replace('/');
+        });
+    } else {
+      history.replace('/');
+    }
   };
   const handleEndStudyCancel = () => {
     setIsModalVisible(false);
   };
 
+  const sendStatus = (status: CurrentActionType) => {
+    socket?.emit('status', status);
+  };
+
   const renderedComponent = useMemo(() => {
-    if (study && socket && connected && user?.data) {
+    if (studyRoom && socket && connected && user?.data) {
       switch (step) {
         case StudyStep.STUDY_READY:
           return (
-            <StudyReady doJoinStudyRoom={() => doJoinStudyRoom(study.id)} />
+            <StudyReady doJoinStudyRoom={() => doJoinStudyRoom(studyRoom.id)} />
           );
         case StudyStep.STUDY_ROOM:
-          return <StudyRoom study={study} />;
-        // case StudyStep.STUDY_FINISH:
-        //   return <StudyFinish totalData={} />;
+          return <StudyRoom study={studyRoom} sendStatus={sendStatus} />;
+        case StudyStep.STUDY_FINISH:
+          return (
+            myStudy && <StudyFinish studyRoom={studyRoom} myStudy={myStudy} />
+          );
       }
     } else {
       return <></>;
     }
-  }, [step, socket, connected, user?.data]);
+  }, [myStudy, step, socket, connected, user?.data]);
+
+  function doJoinStudyRoom(id: string) {
+    if (socket) {
+      console.log('Do Join Room');
+      socket.emit('joinRoom', id);
+    }
+  }
 
   useEffect(() => {
-    if (!study) {
+    if (!studyRoom) {
       message.error('현재 참여 중인 공부방이 없습니다.');
       history.replace('/');
     }
-  }, [study]);
+  }, [studyRoom]);
 
   useEffect(() => {
     if (user?.data) {
@@ -92,6 +132,12 @@ export const Study = () => {
             break;
           case 'joinRoom':
             if (message === 'SUCCESS') {
+              if (data?.my_study_id) {
+                setMyStudyId(data.my_study_id);
+              } else {
+                history.replace('/');
+                message.error('공부방 입장에 실패했습니다.');
+              }
               setStep(StudyStep.STUDY_ROOM);
             }
             break;
@@ -112,37 +158,32 @@ export const Study = () => {
     };
   }, []);
 
-  function doJoinStudyRoom(id: string) {
-    if (socket) {
-      console.log('Do Join Room');
-      socket.emit('joinRoom', id);
-    }
-  }
-
   return (
     <Layout tw="h-full">
       <Header css={HeaderStyle}>
         <StdTypoH5 tw="overflow-hidden whitespace-nowrap overflow-ellipsis pr-6">
-          {study?.title || '불러오는 중'}
+          {studyRoom?.title || '불러오는 중'}
         </StdTypoH5>
-        <Button
-          tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 flex-shrink-0"
-          shape="round"
-          type="primary"
-          onClick={showModal}
-        >
-          <img
-            css={css`
-              width: 24px;
-              height: 24px;
-              margin-right: 8px;
-              display: inline-block;
-            `}
-            src={ExitImg}
-            alt="공부종료"
-          />
-          <span>공부 종료하기</span>
-        </Button>
+        {step !== StudyStep.STUDY_FINISH && (
+          <Button
+            tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 flex-shrink-0"
+            shape="round"
+            type="primary"
+            onClick={showModal}
+          >
+            <img
+              css={css`
+                width: 24px;
+                height: 24px;
+                margin-right: 8px;
+                display: inline-block;
+              `}
+              src={ExitImg}
+              alt="공부종료"
+            />
+            <span>공부 종료하기</span>
+          </Button>
+        )}
       </Header>
 
       <Layout>
@@ -156,8 +197,11 @@ export const Study = () => {
             }
           `}
         >
-          <Spin spinning={!(socket && connected && !!user?.data)} size="large">
-            {study && socket && connected && user?.data && renderedComponent}
+          <Spin
+            spinning={forceLoading || !(socket && connected && !!user?.data)}
+            size="large"
+          >
+            {renderedComponent}
           </Spin>
         </Layout>
       </Layout>

@@ -22,16 +22,24 @@ import { GRAY_8, GRAY_9, GRAY_11, PRIMARY_10 } from '@shared/styles/colors';
 
 // images
 import TimeImg from '@assets/images/time.svg';
+import { CurrentActionType } from '@pages/AppMain/Study/StudyRoom';
 
 interface IStudyInfoBarProps {
   isLarge: boolean;
-  status?: string;
+  status: CurrentActionType;
   // setTotalData: Dispatch<SetStateAction<number[]>>;
 }
 
 interface ISizeProps {
   isLarge: boolean;
 }
+
+const getStatusToKOR: { [key in CurrentActionType]: string } = {
+  study: '공부 중',
+  sleep: '조는 중',
+  phone: '스마트폰',
+  await: '자리비움',
+};
 
 const StudyInfoBar = ({
   isLarge,
@@ -132,7 +140,7 @@ IStudyInfoBarProps) => {
         )}
       </div>
       <StyledStudyInfoStatus isLarge={isLarge}>
-        <StdTypoH5>{status}</StdTypoH5>
+        <StdTypoH5>{getStatusToKOR[status]}</StdTypoH5>
       </StyledStudyInfoStatus>
     </StyledStudyInfoBar>
   );

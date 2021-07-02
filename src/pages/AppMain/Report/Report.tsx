@@ -47,9 +47,7 @@ export const Report = () => {
           setReport(r);
         })
         .catch((err: AxiosError) => {
-          throw err;
-        })
-        .catch((err) => {
+          console.log(err);
           setReport([]);
           throw err;
         });

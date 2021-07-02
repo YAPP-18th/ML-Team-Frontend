@@ -8,9 +8,9 @@ import MyStudyRoom from '@components/molecules/MyStudyRoom';
 import OnAirStudyRoom from '@components/molecules/OnAirStudyRoom';
 import { Button, message, Spin } from 'antd';
 import { Link, useRouteMatch } from 'react-router-dom';
-import useStudyRoom, {
+import useStudyRooms, {
   STUDY_ROOM_END_POINT,
-} from '../../../hooks/useStudyRoom';
+} from '../../../hooks/useStudyRooms';
 import useMyStudyRoom, {
   MY_STUDY_ROOM_END_POINT,
 } from '../../../hooks/useMyStudyRoom';
@@ -20,18 +20,18 @@ import deleteStudyRoom from '../../../hooks/apis/deleteStudyRoom';
 import { mutate } from 'swr';
 import { useHistory } from 'react-router';
 import { useRecoilState } from 'recoil';
-import { studyState } from '../../../atoms/studyState';
+import { studyRoomState } from '../../../atoms/studyRoomState';
 import { IStudyRoom } from '@shared/interface';
 import useAccessToken from '../../../hooks/useAccessToken';
 
 export const MyStudy: React.FC = () => {
-  const studyRoom = useStudyRoom(); //{ skip: 0, limit: 5 }
+  const studyRooms = useStudyRooms(); //{ skip: 0, limit: 5 }
   const myStudyRoom = useMyStudyRoom();
   const { path } = useRouteMatch();
   const user = useUser();
   const [accessToken, setAccessToken] = useAccessToken();
   const history = useHistory();
-  const [study, setStudy] = useRecoilState(studyState);
+  const [_, setStudyRoom] = useRecoilState(studyRoomState);
 
   const [loading, setLoading] = useState(false);
 
@@ -40,19 +40,20 @@ export const MyStudy: React.FC = () => {
       setLoading(true);
       joinStudyRoom(studyRoom.id, user.data.id, accessToken, pw)
         .then((r) => {
-          setStudy(studyRoom);
+          setStudyRoom(studyRoom);
           setLoading(false);
           message.success('공부방에 입장했습니다.');
           history.push('./study');
         })
         .catch((err) => {
           if (err?.response?.status === 400) {
-            message.error('이미 접속 중인 공부방입니다.');
+            message.error('이미 접속 중인 공부방이 있습니다.');
           } else {
             message.error(
               '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
             );
           }
+          setLoading(false);
         });
     } else {
       message.error('유저 정보를 받아올 수 없습니다.');
@@ -95,9 +96,9 @@ export const MyStudy: React.FC = () => {
           </StyledMyStudyCard>
           <StyledMyStudyCard>
             <StdTypoH4>온에어 공부방</StdTypoH4>
-            <Spin spinning={studyRoom.isValidating}>
+            <Spin spinning={studyRooms.isValidating}>
               <OnAirStudyRoom
-                data={studyRoom?.data}
+                data={studyRooms?.data}
                 onEnterRoom={onEnterRoom}
               />
             </Spin>

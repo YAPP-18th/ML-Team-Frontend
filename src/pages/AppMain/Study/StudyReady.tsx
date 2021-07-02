@@ -60,7 +60,7 @@ export const StudyReady = ({ doJoinStudyRoom }: IStudyReadyProps) => {
   const [hand, setHand] = useState(false);
   const [leftTime, setLeftTime] = useState(DEFAULT_LEFT_TIME);
   const videoElementRef = useRef<HTMLVideoElement>(null);
-  const detection$ = new Subject<boolean>();
+  const detectionSubject = new Subject<boolean>();
 
   const loadModel = async function (video: HTMLVideoElement) {
     setLoading(true);
@@ -87,8 +87,8 @@ export const StudyReady = ({ doJoinStudyRoom }: IStudyReadyProps) => {
             await smartPhoneDetection(coco, video);
           }
         },
-        width: 1280,
-        height: 720,
+        width: 640,
+        height: 480,
       });
 
       hand.onResults((results: Results) => {
@@ -96,9 +96,9 @@ export const StudyReady = ({ doJoinStudyRoom }: IStudyReadyProps) => {
           results.multiHandedness !== undefined &&
           results.multiHandedness.length === 2
         ) {
-          detection$.next(true);
+          detectionSubject.next(true);
         } else {
-          detection$.next(false);
+          detectionSubject.next(false);
         }
         handDetection(results);
       });
@@ -118,7 +118,7 @@ export const StudyReady = ({ doJoinStudyRoom }: IStudyReadyProps) => {
   };
 
   useEffect(() => {
-    const detectionSubscription = detection$
+    const detectionSubscription = detectionSubject
       .pipe(
         distinctUntilChanged(),
         debounceTime(300),
