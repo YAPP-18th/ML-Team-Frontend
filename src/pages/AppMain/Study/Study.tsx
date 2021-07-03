@@ -54,7 +54,7 @@ export const Study = () => {
   };
   const handleEndStudyOk = () => {
     setIsModalVisible(false);
-    socket?.disconnect();
+    onDestroy();
     setForceLoading(true);
 
     if (myStudyId) {
@@ -67,9 +67,11 @@ export const Study = () => {
         .catch((err) => {
           message.error('현재 나의 공부방 정보를 받아올 수 없습니다.');
           history.replace('/');
+          window.location.reload();
         });
     } else {
       history.replace('/');
+      window.location.reload();
     }
   };
   const handleEndStudyCancel = () => {
@@ -78,6 +80,15 @@ export const Study = () => {
 
   const sendStatus = (status: CurrentActionType) => {
     socket?.emit('status', status);
+  };
+
+  const onDestroy = () => {
+    socket?.disconnect();
+    const videoEl = document.querySelector('video');
+    if (videoEl) {
+      const tracks = (videoEl?.srcObject as MediaStream)?.getTracks();
+      tracks?.forEach((track) => track.stop());
+    }
   };
 
   const renderedComponent = useMemo(() => {
@@ -154,9 +165,7 @@ export const Study = () => {
   }, [user]);
 
   useEffect(() => {
-    return () => {
-      socket?.disconnect();
-    };
+    return onDestroy;
   }, []);
 
   return (

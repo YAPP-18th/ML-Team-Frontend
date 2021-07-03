@@ -169,7 +169,7 @@ export const StudyReady = ({ doJoinStudyRoom }: IStudyReadyProps) => {
 
       <div tw="flex-1 flex justify-center items-center">
         <Spin spinning={loading} size="large" delay={500}>
-          <video tw="rounded-xl" ref={videoElementRef} muted />
+          <video id="std-video" tw="rounded-xl" ref={videoElementRef} muted />
         </Spin>
       </div>
     </div>

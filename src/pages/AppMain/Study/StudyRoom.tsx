@@ -119,8 +119,8 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
           await smartPhoneDetection(_coco, videoElementRef.current);
         }
       },
-      width: 640,
-      height: 480,
+      width: 1280,
+      height: 720,
     });
 
     _hand.onResults((results: Results) => {
