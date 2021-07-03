@@ -27,7 +27,7 @@ export const MyReport = ({ StudyData }: IReportProps) => {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [focusDegree, setFocusDegree] = useState(0);
-  const [distraction, setDistraction] = useState(0);
+  const [distraction, setDistraction] = useState('');
   const [chartData, setChartData] = useState<IDisturbance[]>([]);
   const [disturbance, setDisturbance] = useState<DisturbanceCause[]>([]);
 
@@ -40,7 +40,14 @@ export const MyReport = ({ StudyData }: IReportProps) => {
       setHours(Math.floor(data.totalTime / 3600));
       setMinutes(Math.floor((data.totalTime / 60) % 60));
       setFocusDegree(data.concentration);
-      setDistraction(data.totalStatusCounts);
+      setDistraction(
+        Math.floor(+data.totalStatusTime / 3600) +
+          '시간 ' +
+          Math.floor((+data.totalStatusTime / 60) % 60) +
+          '분 ' +
+          (+data.totalStatusTime % 60) +
+          '초',
+      );
       statuses.map((status) => {
         if (status.name === 'smartphone') status.name = '스마트폰';
         else if (status.name === 'await') status.name = '자리비움';
@@ -111,7 +118,7 @@ export const MyReport = ({ StudyData }: IReportProps) => {
       >
         <StdTypoH5 tw="text-gray-1">집중 분산요인</StdTypoH5>
         <StdTypoBody2 tw="text-gray-1 mt-2 font-normal">
-          총 {distraction}회 집중이 분산됐어요
+          총 {distraction}동안 집중이 분산됐어요
         </StdTypoBody2>
 
         <ReactEcharts
@@ -155,7 +162,7 @@ export const MyReport = ({ StudyData }: IReportProps) => {
                 center: ['50%', '50%'],
                 data: chartData,
                 tooltip: {
-                  formatter: `집중 분산요인<br /> {b} {d}%<br/> 총 {c}회`,
+                  formatter: `집중 분산요인<br /> {b} {d}%<br/> 총 {c}초`,
                   textStyle: {
                     textBorderWidth: 0,
                   },
