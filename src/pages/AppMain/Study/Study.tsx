@@ -23,6 +23,7 @@ import { IMyStudy } from '@shared/interface';
 import useAccessToken from '../../../hooks/useAccessToken';
 import { StudyFinish } from '@pages/AppMain/Study/StudyFinish';
 import { Step } from '@tensorflow/tfjs';
+import { SOCKET_END_POINT } from '@shared/common';
 
 export enum StudyStep {
   STUDY_READY = 'STUDY_READY',
@@ -116,7 +117,7 @@ export const Study = () => {
     if (user?.data) {
       console.log('Create Socket.IO Instance');
 
-      const _socket = io(`${'localhost'}:8000/study`, {
+      const _socket = io(`${SOCKET_END_POINT}/study`, {
         reconnection: true,
         forceNew: false,
         auth: { user_id: user.data?.id },
