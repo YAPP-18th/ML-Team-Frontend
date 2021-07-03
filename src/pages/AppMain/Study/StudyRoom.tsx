@@ -19,9 +19,7 @@ import { IStudyRoom } from '@shared/interface';
 import { Button, Layout, Modal, Spin } from 'antd';
 import { css } from '@emotion/react';
 import { Footer } from 'antd/es/layout/layout';
-import Sider from 'antd/es/layout/Sider';
-import StudyRoomSide from '@components/organisms/StudyRoomSide';
-import { interval, Subject, timer } from 'rxjs';
+import { interval, Subject } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -70,15 +68,13 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
         map((r) => handDetection(r) as CurrentActionType),
         distinctUntilChanged(),
         tap((action) => {
-          if (action === 'study') {
-            sendStatus(action);
-          }
+          sendStatus(action);
           setIsModalVisible(false);
           setCurAction(action);
         }),
         switchMap((action) => {
           return interval(1000).pipe(
-            filter(() => action !== curAction),
+            filter(() => action !== curAction && action !== 'study'),
             take(5),
             map((v) => {
               return { leftTime: 5 - 1 - v, action };
@@ -89,7 +85,6 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
       .subscribe({
         next: ({ leftTime, action }) => {
           if (!leftTime) {
-            sendStatus(action);
             setIsModalVisible(true);
           }
         },
@@ -160,9 +155,9 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
           <ResponsiveStyledStudyInfoBar status={curAction} />
         </Footer>
       </Layout>
-      <Sider width={465}>
-        <StudyRoomSide />
-      </Sider>
+      {/*<Sider width={465}>*/}
+      {/*  <StudyRoomSide />*/}
+      {/*</Sider>*/}
       <Modal
         visible={isModalVisible}
         closable={false}
