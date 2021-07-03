@@ -1,27 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import styled from '@emotion/styled';
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import 'twin.macro';
-
-import locale from 'antd/es/date-picker/locale/ko_KR';
 import ReactEcharts from 'echarts-for-react';
-import { IReport, IDisturbance, DisturbanceCause } from '@shared/interface';
+import { DisturbanceCause, IDisturbance, IReport } from '@shared/interface';
+// typographys
+import {
+  StdTypoBody2,
+  StdTypoH3,
+  StdTypoH5,
+  StdTypoSubtitle1,
+} from '@shared/styled/Typography';
+
+// colors
+import { GRAY_1, GRAY_10, GRAY_4, GRAY_6 } from '@shared/styles/colors';
 
 interface IReportProps {
   StudyData?: IReport[];
 }
-
-// typographys
-import {
-  StdTypoBody2,
-  StdTypoSubtitle1,
-  StdTypoH3,
-  StdTypoH5,
-} from '@shared/styled/Typography';
-
-// colors
-import { GRAY_1, GRAY_4, GRAY_6, GRAY_10 } from '@shared/styles/colors';
-import { createNumericLiteral } from 'typescript';
 
 export const MyReport = ({ StudyData }: IReportProps) => {
   const [hours, setHours] = useState(0);
@@ -52,11 +47,13 @@ export const MyReport = ({ StudyData }: IReportProps) => {
         if (status.name === 'smartphone') status.name = '스마트폰';
         else if (status.name === 'await') status.name = '자리비움';
         else if (status.name === 'sleep') status.name = '졸음';
+        else if (status.name === 'rest') status.name = '휴식';
       });
       for (let i = 0; i < maxStatus.length; i++) {
         if (maxStatus[i] === 'smartphone') maxStatus[i] = '스마트폰';
         else if (maxStatus[i] === 'await') maxStatus[i] = '자리비움';
         else if (maxStatus[i] === 'sleep') maxStatus[i] = '졸음';
+        else if (maxStatus[i] === 'rest') maxStatus[i] = '휴식';
       }
 
       setChartData(statuses);
