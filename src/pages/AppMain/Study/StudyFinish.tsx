@@ -85,6 +85,7 @@ export const StudyFinish = ({ studyRoom, myStudy }: IStudyFinishProps) => {
           type="primary"
           onClick={() => {
             history.replace('/app/report');
+            window.location.reload();
           }}
         >
           학습 레포트 보기
