@@ -25,9 +25,6 @@ export const Main: React.FC = () => {
           path="/landing"
           redirectPath="/app"
           condition={!appAccessCondition}
-          onFalse={() => {
-            message.error('이미 로그인이 되어 있습니다.');
-          }}
         >
           <Landing />
         </ConditionalRoute>
@@ -35,9 +32,6 @@ export const Main: React.FC = () => {
           path="/auth"
           redirectPath="/app"
           condition={!appAccessCondition}
-          onFalse={() => {
-            message.error('이미 로그인이 되어 있습니다.');
-          }}
         >
           <Login />
         </ConditionalRoute>
