@@ -120,10 +120,10 @@ IStudyInfoBarProps) => {
               {totalMinutes < 10 ? `0${totalMinutes}` : totalMinutes}:
               {totalSeconds < 10 ? `0${totalSeconds}` : totalSeconds}
             </StdTypoH1>
-            <StdTypoH5 tw="ml-4 text-gray-4">
-              {cycle}시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:
-              {seconds < 10 ? `0${seconds}` : seconds}
-            </StdTypoH5>
+            {/*<StdTypoH5 tw="ml-4 text-gray-4">*/}
+            {/*  {cycle}시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:*/}
+            {/*  {seconds < 10 ? `0${seconds}` : seconds}*/}
+            {/*</StdTypoH5>*/}
           </div>
         ) : (
           <div>
