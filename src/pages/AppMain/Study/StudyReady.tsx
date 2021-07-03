@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import 'twin.macro';
@@ -18,7 +12,6 @@ import {
   smartPhoneDetection,
 } from '../../../ml/userActionDetection';
 import { message, Spin } from 'antd';
-import { StudyStep } from './Study';
 
 // typography
 import { StdTypoH3 } from '@shared/styled/Typography';
@@ -31,10 +24,7 @@ import {
   GRAY_9,
   PRIMARY_8,
 } from '@shared/styles/colors';
-import SocketContext from '../../../context/socket/SocketContext';
-import { Socket } from 'socket.io-client/build/socket';
-import { IUser } from '@shared/interface';
-import { interval, Subject, timer } from 'rxjs';
+import { interval, Subject } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
