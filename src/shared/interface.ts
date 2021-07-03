@@ -73,9 +73,11 @@ export type DisturbanceCause =
   | 'smartphone'
   | 'await'
   | 'sleep'
+  | 'rest'
   | '스마트폰'
   | '자리비움'
-  | '졸음';
+  | '졸음'
+  | '휴식';
 export interface IDisturbance {
   name: DisturbanceCause;
   value: number;
