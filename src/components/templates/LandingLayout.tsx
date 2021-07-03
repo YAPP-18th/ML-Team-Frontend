@@ -110,7 +110,7 @@ export const LandingLayout: React.FC = ({ children }) => {
                 history.push('/auth');
               }}
             >
-              <StdTypoBody1>시작하기</StdTypoBody1>
+              시작하기
             </Button>
           </StyledRestrictedArea>
         </Header>
