@@ -49,7 +49,9 @@ export const StudyFinish = ({ studyRoom, myStudy }: IStudyFinishProps) => {
         </div>
         <div tw="flex">
           <StyledResultContent>
-            <StdTypoSubtitle1 tw="text-gray-4">누적 공부시간</StdTypoSubtitle1>
+            <StdTypoSubtitle1 tw="text-gray-4">
+              누적 순공부시간
+            </StdTypoSubtitle1>
             <StdTypoH3 tw="text-gray-2">
               {myStudy?.totalTime
                 ? new Date(myStudy.totalTime * 1000).toISOString().substr(11, 8)
