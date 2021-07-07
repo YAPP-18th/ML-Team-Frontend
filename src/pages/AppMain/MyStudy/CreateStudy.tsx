@@ -189,7 +189,8 @@ const CreateStudy: React.FC = () => {
                     tw="w-full mt-20"
                     htmlType="submit"
                     disabled={
-                      (btnLoading && !form.isFieldTouched('style')) ||
+                      btnLoading ||
+                      !form.isFieldTouched('style') ||
                       !form.isFieldTouched('title') ||
                       !form.isFieldTouched('isPublic') ||
                       (!form.getFieldValue('isPublic') &&
