@@ -27,24 +27,15 @@ export interface IStudyRoom {
   isPublic: boolean;
   createdAt: string;
   description: string;
-  id: number;
+  id: string;
   currentJoinCounts: number;
   ownerId: number;
 }
 
 export interface IMyStudy {
   id: number;
-  startedAt: string;
-  endedAt: string;
+  date: string;
   totalTime: number;
-  studyRoomId: string;
-  title: string;
-  disturbances: {
-    id: number;
-    type: string;
-    count: number;
-    time: number;
-  }[];
 }
 
 export type StudyCardStyle = 'style_1' | 'style_2' | 'style_3' | 'style_4';
@@ -76,6 +67,17 @@ export interface ICreateStudyRequest {
   title: string;
   description?: string;
   isPublic: boolean;
+}
+
+export type StudyStatusType = 'study' | 'phone' | 'await' | 'sleep' | 'rest';
+
+export interface IStudyingUser {
+  myStudyId: number;
+  reportId: number;
+  roomId: string;
+  status: StudyStatusType;
+  userId: number;
+  userNickname: string;
 }
 
 export type DisturbanceCause =

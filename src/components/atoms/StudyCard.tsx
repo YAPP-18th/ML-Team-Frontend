@@ -17,7 +17,7 @@ import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 const StudyCard: React.FC<
   IStudyRoom & {
     myUserId?: number;
-    onEnterRoom: (id: number, pw?: string) => void;
+    onEnterRoom: (pw?: string) => void;
     dropdown?: ReactJSXElement;
   }
 > = ({
@@ -26,6 +26,7 @@ const StudyCard: React.FC<
   title,
   description,
   isPublic,
+  currentJoinCounts,
   ownerId,
   myUserId,
   onEnterRoom,
@@ -42,21 +43,9 @@ const StudyCard: React.FC<
     if (!isPublic && !isMine) {
       setIsEnterModalVisible(true);
     } else {
-      onEnterRoom(id);
+      onEnterRoom();
     }
-  }, [id]);
-
-  // const enterStudyRoom = (id: number, password?: string) => {
-  //   joinStudyRoom(id, accessToken, password)
-  //     .then((r) => {
-  //       message.success('공부방에 입장했습니다.');
-  //     })
-  //     .catch((err) => {
-  //       message.error(
-  //         '비밀번호가 틀렸거나, 서버 오류로 공부방 입장에 실패했습니다.',
-  //       );
-  //     });
-  // };
+  }, [isPublic, isMine]);
 
   return (
     <>
@@ -66,7 +55,7 @@ const StudyCard: React.FC<
           <StdTypoBody2>{description}</StdTypoBody2>
           <div tw="flex items-center space-x-1.5">
             <img src={UserIcon} alt="User" />
-            <StdTypoBody2>1/6</StdTypoBody2>
+            <StdTypoBody2>{currentJoinCounts}/6</StdTypoBody2>
           </div>
         </StudyCardInnerWrapper>
         <StudyCardHover className="study-card-hover" onClick={onClickEnter}>
@@ -94,7 +83,7 @@ const StudyCard: React.FC<
         <Form
           form={passwordForm}
           onChange={(values) => setFormValues(values)}
-          onFinish={(v) => onEnterRoom(id, v.password)}
+          onFinish={(v) => onEnterRoom(v.password)}
         >
           <Form.Item name="password" noStyle>
             <Input placeholder="비밀번호를 입력해주세요." type="password" />

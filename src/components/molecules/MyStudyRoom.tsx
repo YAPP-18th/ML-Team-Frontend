@@ -12,8 +12,8 @@ import DeleteIcon from '@assets/icons/delete.svg';
 interface IMyStudyRoomProps {
   data?: IStudyRoom[];
   myUserId?: number;
-  onEnterRoom: (id: number, pw?: string) => void;
-  onDelete: (id: number) => void;
+  onEnterRoom: (studyRoom: IStudyRoom, pw?: string) => void;
+  onDelete: (roomId: string, userId: number) => void;
 }
 
 const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
@@ -24,22 +24,25 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
 }) => {
   const { path } = useRouteMatch();
 
-  const generateMenu = (id: number) => (
-    <Menu>
-      <Menu.Item key="0" onClick={() => onDelete(id)}>
-        <div tw="flex items-center space-x-1">
-          <img src={DeleteIcon} alt="삭제하기 아이콘" />
-          <StdTypoBody2
-            css={css`
-              color: #d6686e;
-            `}
-          >
-            삭제하기
-          </StdTypoBody2>
-        </div>
-      </Menu.Item>
-    </Menu>
-  );
+  const generateMenu = (roomId: string, userId?: number) => {
+    if (!userId) return;
+    return (
+      <Menu>
+        <Menu.Item key="0" onClick={() => onDelete(roomId, userId)}>
+          <div tw="flex items-center space-x-1">
+            <img src={DeleteIcon} alt="삭제하기 아이콘" />
+            <StdTypoBody2
+              css={css`
+                color: #d6686e;
+              `}
+            >
+              삭제하기
+            </StdTypoBody2>
+          </div>
+        </Menu.Item>
+      </Menu>
+    );
+  };
 
   return (
     <>
@@ -55,13 +58,13 @@ const MyStudyRoom: React.FC<IMyStudyRoomProps> = ({
               key={card.id}
               {...card}
               myUserId={myUserId}
-              onEnterRoom={onEnterRoom}
-              dropdown={generateMenu(card.ownerId)}
+              onEnterRoom={(pw) => onEnterRoom(card, pw)}
+              dropdown={generateMenu(card.id, myUserId)}
             />
           ))}
         </div>
       ) : (
-        <StyledEmptyCardWrapper tw="text-center space-y-5 py-20">
+        <StyledEmptyCardWrapper>
           <StdTypoSubtitle1 tw="text-gray-6">
             아직 시작한 공부방이 없어요. 공부를 시작해보세요.
           </StdTypoSubtitle1>

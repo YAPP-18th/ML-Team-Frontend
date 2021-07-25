@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { css, Global } from '@emotion/react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { API_END_POINT } from '@shared/common';
 import { setAccessToken } from '../../hooks/useAccessToken';
 import 'twin.macro';
@@ -75,13 +75,13 @@ const Login = () => {
         `}
       />
       <StyledLoginWrapper>
-        <img
-          src={LogoImg}
-          alt="logo"
-          onClick={() => {
-            history.push('/landing');
-          }}
-        />
+        <Link to="/landing">
+          <img
+            src={LogoImg}
+            tw="hover:opacity-75 transition-opacity"
+            alt="logo"
+          />
+        </Link>
         <StyledLoginContent>
           <StdTypoH3 tw="text-gray-1">
             내 꿈을 향해

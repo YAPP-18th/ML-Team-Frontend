@@ -22,22 +22,30 @@ import { GRAY_8, GRAY_9, GRAY_11, PRIMARY_10 } from '@shared/styles/colors';
 
 // images
 import TimeImg from '@assets/images/time.svg';
+import { CurrentActionType } from '@pages/AppMain/Study/StudyRoom';
 
 interface IStudyInfoBarProps {
   isLarge: boolean;
-  status?: string;
-  setTotalData: Dispatch<SetStateAction<number[]>>;
+  status: CurrentActionType;
+  // setTotalData: Dispatch<SetStateAction<number[]>>;
 }
 
 interface ISizeProps {
   isLarge: boolean;
 }
 
+const getStatusToKOR: { [key in CurrentActionType]: string } = {
+  study: '공부 중',
+  sleep: '조는 중',
+  phone: '스마트폰',
+  await: '자리비움',
+};
+
 const StudyInfoBar = ({
   isLarge,
   status,
-  setTotalData,
-}: IStudyInfoBarProps) => {
+}: // setTotalData,
+IStudyInfoBarProps) => {
   const [sets, setSets] = useState(1);
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
@@ -75,7 +83,7 @@ const StudyInfoBar = ({
       }
       setTotalSeconds(0);
     }
-    setTotalData([sets, totalHours, totalMinutes, totalSeconds]);
+    // setTotalData([sets, totalHours, totalMinutes, totalSeconds]);
   }, 1000);
   useInterval(() => {
     if (seconds > 0) {
@@ -112,10 +120,10 @@ const StudyInfoBar = ({
               {totalMinutes < 10 ? `0${totalMinutes}` : totalMinutes}:
               {totalSeconds < 10 ? `0${totalSeconds}` : totalSeconds}
             </StdTypoH1>
-            <StdTypoH5 tw="ml-4 text-gray-4">
-              {cycle}시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:
-              {seconds < 10 ? `0${seconds}` : seconds}
-            </StdTypoH5>
+            {/*<StdTypoH5 tw="ml-4 text-gray-4">*/}
+            {/*  {cycle}시간까지 00:{minutes < 10 ? `0${minutes}` : minutes}:*/}
+            {/*  {seconds < 10 ? `0${seconds}` : seconds}*/}
+            {/*</StdTypoH5>*/}
           </div>
         ) : (
           <div>
@@ -132,7 +140,7 @@ const StudyInfoBar = ({
         )}
       </div>
       <StyledStudyInfoStatus isLarge={isLarge}>
-        <StdTypoH5>{status}</StdTypoH5>
+        <StdTypoH5>{getStatusToKOR[status]}</StdTypoH5>
       </StyledStudyInfoStatus>
     </StyledStudyInfoBar>
   );
@@ -140,16 +148,13 @@ const StudyInfoBar = ({
 export default StudyInfoBar;
 
 const StyledStudyInfoBar = styled.div(({ isLarge }: ISizeProps) => ({
-  width: isLarge ? `60%` : '90%',
+  width: '100%',
   height: '128px',
-  position: 'absolute',
   color: 'white',
   display: 'flex',
-  top: '75vh',
-  backgroundColor: isLarge ? GRAY_8 : GRAY_11,
+  backgroundColor: GRAY_11,
   opacity: 0.9,
   alignItems: 'center',
-  borderRadius: '20px',
   padding: '0px 40px',
   justifyContent: 'space-between',
 }));

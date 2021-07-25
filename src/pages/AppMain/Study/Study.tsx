@@ -1,85 +1,315 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StudyRoom } from '@pages/AppMain/Study/StudyRoom';
 import { StudyReady } from '@pages/AppMain/Study/StudyReady';
+import { io } from 'socket.io-client';
+import useUser from '../../../hooks/useUser';
+import { Socket } from 'socket.io-client/build/socket';
+import { useHistory } from 'react-router';
+import { css } from '@emotion/react';
+import { Button, Layout, message, Modal, Spin } from 'antd';
+import {
+  StdTypoH4,
+  StdTypoH5,
+  StdTypoSubtitle1,
+} from '@shared/styled/Typography';
+import ExitImg from '@assets/images/exit.svg';
+import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
+import { Header } from 'antd/es/layout/layout';
+import 'twin.macro';
+import { useRecoilState } from 'recoil';
+import {
+  studyingUsersState,
+  studyRoomState,
+} from '../../../atoms/studyRoomState';
+import { CurrentActionType, StudyRoom } from '@pages/AppMain/Study/StudyRoom';
+import getMyStudyData from '../../../hooks/apis/getMyStudyData';
+import { IMyStudy, StudyStatusType } from '@shared/interface';
+import useAccessToken from '../../../hooks/useAccessToken';
 import { StudyFinish } from '@pages/AppMain/Study/StudyFinish';
+import { SOCKET_END_POINT } from '@shared/common';
+import { getResponseObj } from '@shared/utils';
 
 export enum StudyStep {
-  NOTHING = 'NOTHING',
   STUDY_READY = 'STUDY_READY',
   STUDY_ROOM = 'STUDY_ROOM',
   STUDY_FINISH = 'STUDY_FINISH',
 }
 
-interface IStudyProps {
-  isPublic: boolean;
-}
+export const Study = () => {
+  const [studyRoom] = useRecoilState(studyRoomState);
+  const [step, setStep] = useState<StudyStep>(StudyStep.STUDY_READY);
 
-export interface ICurrentStudy {
-  studyId: number;
-  title: string;
-  description: string;
-}
+  const [socket, setSocket] = useState<Socket>();
 
-export interface ITotalStudyData {
-  sets: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
+  const [connected, setConnected] = useState(false);
+  const [forceLoading, setForceLoading] = useState(false);
 
-export const Study = ({ isPublic }: IStudyProps) => {
-  const [currentStudy, setCurrentStudy] = useState<ICurrentStudy>();
-  const [step, setStep] = useState<StudyStep>(StudyStep.NOTHING);
-  const [totalData, setTotalData] = useState<number[]>([]);
-  const componentRendered = useMemo(() => {
-    switch (step) {
-      case StudyStep.STUDY_READY:
-        return (
-          <StudyReady
-            isPublic={isPublic}
-            setStep={setStep}
-            currentStudy={currentStudy}
-          />
-        );
-      case StudyStep.STUDY_ROOM:
-        return (
-          <StudyRoom
-            isPublic={isPublic}
-            setStep={setStep}
-            setTotalData={setTotalData}
-            currentStudy={currentStudy}
-          />
-        );
-      case StudyStep.STUDY_FINISH:
-        return (
-          <StudyFinish totalData={totalData} currentStudy={currentStudy} />
-        );
+  const [myStudyId, setMyStudyId] = useState<number | null>(null);
+  const [myStudy, setMyStudy] = useState<IMyStudy | null>(null);
+
+  const [accessToken] = useAccessToken();
+
+  const [_, setStudyingUsers] = useRecoilState(studyingUsersState);
+
+  const user = useUser();
+  const history = useHistory();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+  const handleEndStudyOk = () => {
+    setIsModalVisible(false);
+    onDestroy();
+    setForceLoading(true);
+
+    if (myStudyId) {
+      getMyStudyData(myStudyId, accessToken)
+        .then((r) => {
+          setMyStudy(r);
+          setStep(StudyStep.STUDY_FINISH);
+          setForceLoading(false);
+        })
+        .catch((err) => {
+          message.error('현재 나의 공부방 정보를 받아올 수 없습니다.');
+          history.replace('/');
+          window.location.reload();
+        });
+    } else {
+      history.replace('/');
+      window.location.reload();
     }
-  }, [step]);
+  };
+  const handleEndStudyCancel = () => {
+    setIsModalVisible(false);
+  };
 
-  // 페이지에 처음 들어왔을 때만 실행
+  const sendStatus = (status: CurrentActionType) => {
+    socket?.emit('status', status);
+  };
+
+  const onDestroy = () => {
+    socket?.disconnect();
+    const videoEl = document.querySelector('video');
+    if (videoEl) {
+      const tracks = (videoEl?.srcObject as MediaStream)?.getTracks();
+      tracks?.forEach((track) => track.stop());
+    }
+  };
+
+  const renderedComponent = useMemo(() => {
+    if (studyRoom && socket && connected && user?.data) {
+      switch (step) {
+        case StudyStep.STUDY_READY:
+          return (
+            <StudyReady doJoinStudyRoom={() => doJoinStudyRoom(studyRoom.id)} />
+          );
+        case StudyStep.STUDY_ROOM:
+          return <StudyRoom sendStatus={sendStatus} />;
+        case StudyStep.STUDY_FINISH:
+          return myStudy && <StudyFinish myStudy={myStudy} />;
+      }
+    } else {
+      return <></>;
+    }
+  }, [myStudy, step, socket, connected, user?.data]);
+
+  function doJoinStudyRoom(id: string) {
+    if (socket) {
+      console.log('Do Join Room');
+      socket.emit('joinRoom', id);
+    }
+  }
+
   useEffect(() => {
-    // 서버에서 이 사람이 어떤 step에 있는지 알아본다.
-    const currentStepFromServer = step;
-    switch (currentStepFromServer) {
-      case StudyStep.NOTHING:
-        // 공부방 입장 API
-        setStep(StudyStep.STUDY_READY);
-        break;
-      case StudyStep.STUDY_READY:
-        // 현재 접속 중인 공부방의 정보를 받아와서 setCurrentStudy
-        setStep(StudyStep.STUDY_READY);
-        break;
-      case StudyStep.STUDY_ROOM:
-        // 현재 접속 중인 공부방의 정보를 받아와서 setCurrentStudy
-        setStep(StudyStep.STUDY_ROOM);
-        break;
-      case StudyStep.STUDY_FINISH:
-        // 현재 접속 중인 공부방의 정보를 받아와서 setCurrentStudy
-        setStep(StudyStep.STUDY_FINISH);
-        break;
+    if (!studyRoom) {
+      message.error('현재 참여 중인 공부방이 없습니다.');
+      history.replace('/');
     }
+  }, [studyRoom]);
+
+  useEffect(() => {
+    if (user?.data) {
+      console.log('Create Socket.IO Instance');
+
+      const _socket = io(`${SOCKET_END_POINT}/study`, {
+        reconnection: true,
+        forceNew: false,
+        auth: { user_id: user.data?.id },
+        transports: ['websocket'],
+        reconnectionAttempts: 3,
+      });
+      const antdMessage = message;
+      _socket.on('response', ({ data, eventName, message, statusCode }) => {
+        switch (eventName) {
+          case 'connect':
+            if (message === 'SUCCESS') {
+              setConnected(_socket.connected);
+            }
+            break;
+          case 'joinRoom':
+            if (message === 'SUCCESS') {
+              data = data.map((i: Record<string, unknown>) =>
+                getResponseObj(i),
+              );
+              setStudyingUsers(data);
+              setMyStudyId(data[0].myStudyId);
+              setStep(StudyStep.STUDY_ROOM);
+            } else {
+              history.replace('/');
+              antdMessage.error('공부방 입장에 실패했습니다.');
+            }
+            break;
+          case 'status':
+            if (message === 'SUCCESS') {
+              data = data.map((i: Record<string, unknown>) =>
+                getResponseObj(i),
+              );
+              setStudyingUsers(data);
+            }
+            break;
+          default:
+            return;
+        }
+      });
+      _socket.on('disconnect', function () {
+        console.log('Client disconnected.');
+      });
+      setSocket(_socket);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    return onDestroy;
   }, []);
 
-  return <>{componentRendered}</>;
+  return (
+    <Layout tw="h-full">
+      <Header css={HeaderStyle}>
+        <StdTypoH5 tw="overflow-hidden whitespace-nowrap overflow-ellipsis pr-6">
+          {studyRoom?.title || '불러오는 중'}
+        </StdTypoH5>
+        {step !== StudyStep.STUDY_FINISH && (
+          <Button
+            tw="bg-gray-10 border-none flex items-center hover:bg-gray-9 flex-shrink-0"
+            shape="round"
+            type="primary"
+            onClick={showModal}
+          >
+            <img
+              css={css`
+                width: 24px;
+                height: 24px;
+                margin-right: 8px;
+                display: inline-block;
+              `}
+              src={ExitImg}
+              alt="공부종료"
+            />
+            <span>공부 종료하기</span>
+          </Button>
+        )}
+      </Header>
+
+      <Layout>
+        <Layout
+          css={css`
+            > .ant-spin-nested-loading {
+              height: 100%;
+              > .ant-spin-container {
+                height: 100%;
+              }
+            }
+          `}
+        >
+          <Spin
+            spinning={forceLoading || !(socket && connected && !!user?.data)}
+            size="large"
+          >
+            {renderedComponent}
+          </Spin>
+        </Layout>
+      </Layout>
+      <Modal
+        visible={isModalVisible}
+        closable={false}
+        onOk={handleEndStudyOk}
+        onCancel={handleEndStudyCancel}
+        keyboard={false}
+        bodyStyle={{
+          height: '148px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        css={css`
+          .ant-modal-footer {
+            display: flex;
+            padding: 0;
+            border: none;
+          }
+        `}
+        footer={
+          <div tw="w-full flex">
+            <StyledModalButton role="Cancel" func={handleEndStudyCancel} />
+            <StyledModalButton role="Ok" func={handleEndStudyOk} />
+          </div>
+        }
+      >
+        <div>
+          <StdTypoH4 tw="text-gray-2">공부를 종료할까요?</StdTypoH4>
+        </div>
+      </Modal>
+    </Layout>
+  );
+};
+
+const HeaderStyle = css`
+  height: 80px;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background: ${GRAY_12};
+  border-bottom-width: 0.1px;
+  border-color: ${GRAY_8};
+`;
+
+interface IModalButtonProps {
+  role: string;
+  func: any;
+}
+
+const StyledModalButton = ({ role, func }: IModalButtonProps) => {
+  return (
+    <Button
+      tw="rounded-none"
+      css={[
+        css`
+          flex: 1;
+          height: 74px;
+          margin: 0 !important;
+        `,
+        role == 'Cancel'
+          ? css`
+              border-bottom-left-radius: 10px;
+              background-color: ${GRAY_8};
+
+              &:hover {
+                background-color: ${GRAY_10};
+              }
+            `
+          : css`
+              border-bottom-right-radius: 10px;
+            `,
+      ]}
+      key={role == 'Cancel' ? 'keep' : 'quit'}
+      type={role == 'Cancel' ? 'default' : 'primary'}
+      onClick={func}
+    >
+      <StdTypoSubtitle1>
+        {role == 'Cancel' ? '조금 더 해볼래요' : '네, 그만할래요'}
+      </StdTypoSubtitle1>
+    </Button>
+  );
 };
