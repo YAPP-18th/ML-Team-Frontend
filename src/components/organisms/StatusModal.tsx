@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 // import { BrowserRouter, Route, RouteComponentProps } from 'react-router-dom'; //npm install react-router-dom
-import styled from '@emotion/styled';
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import 'twin.macro';
 
 // components
-import { Modal, Button, Layout } from 'antd';
+import { Button } from 'antd';
 
 // typography
-import {
-  StdTypoSubtitle1,
-  StdTypoH1,
-  StdTypoH4,
-  StdTypoBody1,
-  StdTypoH5,
-} from '@shared/styled/Typography';
+import { StdTypoBody1, StdTypoH4 } from '@shared/styled/Typography';
 
 // colors
-import { GRAY_8, GRAY_9, GRAY_12, PRIMARY_10 } from '@shared/styles/colors';
 
 // images
 import NowSleepImg from '@assets/images/sleeping_modal.svg';

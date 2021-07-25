@@ -14,6 +14,7 @@ import StudyingImg from '@assets/images/studying.svg';
 import SmartphoneImg from '@assets/images/smartphone_side.svg';
 import StarImg from '@assets/images/star.svg';
 import HostImg from '@assets/images/host.svg';
+import { StudyStatusType } from '@shared/interface';
 
 interface IStudyStatusProps {
   nickname: string;
@@ -21,32 +22,30 @@ interface IStudyStatusProps {
   isHost?: boolean;
 }
 
-type StudyStatusType = 'STUDYING' | 'SMARTPHONE' | 'LEFT' | 'SLEEPING' | 'REST';
-
 const StatusTable: {
-  [key: string]: { color: string; image: string; content: string };
+  [key in StudyStatusType]: { color: string; image: string; content: string };
 } = {
-  STUDYING: {
+  study: {
     color: PRIMARY_8,
     image: StudyingImg,
     content: '공부중',
   },
-  SMARTPHONE: {
+  phone: {
     color: '#E58389',
     image: SmartphoneImg,
     content: '스마트폰',
   },
-  LEFT: {
+  await: {
     color: '#F6D47A',
     image: LeftImg,
     content: '자리비움',
   },
-  SLEEPING: {
+  sleep: {
     color: '#87A1E7',
     image: SleepingImg,
     content: '조는중',
   },
-  REST: {
+  rest: {
     color: '#7DD3B5',
     image: RestImg,
     content: '휴식중',

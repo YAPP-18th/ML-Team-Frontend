@@ -57,7 +57,7 @@ export const StudyReady = ({ doJoinStudyRoom }: IStudyReadyProps) => {
     const coco = await cocossd.load();
     const hand = new Hands({
       locateFile: (file) =>
-        `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+        `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.1/${file}`,
     });
 
     hand.setOptions({
