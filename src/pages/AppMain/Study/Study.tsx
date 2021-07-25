@@ -16,14 +16,17 @@ import { GRAY_10, GRAY_12, GRAY_8 } from '@shared/styles/colors';
 import { Header } from 'antd/es/layout/layout';
 import 'twin.macro';
 import { useRecoilState } from 'recoil';
-import { studyRoomState } from '../../../atoms/studyRoomState';
+import {
+  studyingUsersState,
+  studyRoomState,
+} from '../../../atoms/studyRoomState';
 import { CurrentActionType, StudyRoom } from '@pages/AppMain/Study/StudyRoom';
 import getMyStudyData from '../../../hooks/apis/getMyStudyData';
-import { IMyStudy } from '@shared/interface';
+import { IMyStudy, StudyStatusType } from '@shared/interface';
 import useAccessToken from '../../../hooks/useAccessToken';
 import { StudyFinish } from '@pages/AppMain/Study/StudyFinish';
-import { Step } from '@tensorflow/tfjs';
 import { SOCKET_END_POINT } from '@shared/common';
+import { getResponseObj } from '@shared/utils';
 
 export enum StudyStep {
   STUDY_READY = 'STUDY_READY',
@@ -32,7 +35,7 @@ export enum StudyStep {
 }
 
 export const Study = () => {
-  const [studyRoom, setStudyRoom] = useRecoilState(studyRoomState);
+  const [studyRoom] = useRecoilState(studyRoomState);
   const [step, setStep] = useState<StudyStep>(StudyStep.STUDY_READY);
 
   const [socket, setSocket] = useState<Socket>();
@@ -44,6 +47,8 @@ export const Study = () => {
   const [myStudy, setMyStudy] = useState<IMyStudy | null>(null);
 
   const [accessToken] = useAccessToken();
+
+  const [_, setStudyingUsers] = useRecoilState(studyingUsersState);
 
   const user = useUser();
   const history = useHistory();
@@ -99,11 +104,9 @@ export const Study = () => {
             <StudyReady doJoinStudyRoom={() => doJoinStudyRoom(studyRoom.id)} />
           );
         case StudyStep.STUDY_ROOM:
-          return <StudyRoom study={studyRoom} sendStatus={sendStatus} />;
+          return <StudyRoom sendStatus={sendStatus} />;
         case StudyStep.STUDY_FINISH:
-          return (
-            myStudy && <StudyFinish studyRoom={studyRoom} myStudy={myStudy} />
-          );
+          return myStudy && <StudyFinish myStudy={myStudy} />;
       }
     } else {
       return <></>;
@@ -135,6 +138,7 @@ export const Study = () => {
         transports: ['websocket'],
         reconnectionAttempts: 3,
       });
+      const antdMessage = message;
       _socket.on('response', ({ data, eventName, message, statusCode }) => {
         switch (eventName) {
           case 'connect':
@@ -144,13 +148,23 @@ export const Study = () => {
             break;
           case 'joinRoom':
             if (message === 'SUCCESS') {
-              if (data?.my_study_id) {
-                setMyStudyId(data.my_study_id);
-              } else {
-                history.replace('/');
-                message.error('공부방 입장에 실패했습니다.');
-              }
+              data = data.map((i: Record<string, unknown>) =>
+                getResponseObj(i),
+              );
+              setStudyingUsers(data);
+              setMyStudyId(data[0].myStudyId);
               setStep(StudyStep.STUDY_ROOM);
+            } else {
+              history.replace('/');
+              antdMessage.error('공부방 입장에 실패했습니다.');
+            }
+            break;
+          case 'status':
+            if (message === 'SUCCESS') {
+              data = data.map((i: Record<string, unknown>) =>
+                getResponseObj(i),
+              );
+              setStudyingUsers(data);
             }
             break;
           default:

@@ -69,6 +69,17 @@ export interface ICreateStudyRequest {
   isPublic: boolean;
 }
 
+export type StudyStatusType = 'study' | 'phone' | 'await' | 'sleep' | 'rest';
+
+export interface IStudyingUser {
+  myStudyId: number;
+  reportId: number;
+  roomId: string;
+  status: StudyStatusType;
+  userId: number;
+  userNickname: string;
+}
+
 export type DisturbanceCause =
   | 'smartphone'
   | 'await'

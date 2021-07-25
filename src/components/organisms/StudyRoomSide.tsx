@@ -9,8 +9,11 @@ import StudyStatusCard from './StudyStatusCard';
 import { StdTypoH4, StdTypoCaption1 } from '@shared/styled/Typography';
 // images
 import UserImg from '@assets/images/user.svg';
+import { IStudyingUser } from '@shared/interface';
 
-const StudyRoomSide = () => {
+const StudyRoomSide: React.FC<{ studyingUsers: IStudyingUser[] }> = ({
+  studyingUsers,
+}) => {
   return (
     <section
       tw="h-full bg-gray-12"
@@ -25,17 +28,19 @@ const StudyRoomSide = () => {
           <StdTypoH4>공부중인 사람</StdTypoH4>
           <div tw="flex">
             <img tw="ml-2.5 mr-1" src={UserImg} />
-            <StdTypoCaption1>$/6</StdTypoCaption1>
+            <StdTypoCaption1>{studyingUsers.length}/6</StdTypoCaption1>
           </div>
         </div>
       </StyledSideTitleWrapper>
       <MemberStatusWrapperStyled>
         {/* 인원수만큼*/}
-        <StudyStatusCard nickname="닉네임1" status="LEFT" isHost={true} />
-        <StudyStatusCard nickname="닉네임2" status="REST" />
-        <StudyStatusCard nickname="닉네임3" status="SLEEPING" />
-        <StudyStatusCard nickname="닉네임4" status="STUDYING" />
-        <StudyStatusCard nickname="닉네임5" status="SMARTPHONE" />
+        {studyingUsers.map((user) => (
+          <StudyStatusCard
+            nickname={user.userNickname}
+            status={user.status}
+            key={user.userId}
+          />
+        ))}
       </MemberStatusWrapperStyled>
     </section>
   );

@@ -29,15 +29,17 @@ import {
   tap,
 } from 'rxjs/operators';
 import { StdTypoBody1, StdTypoH4 } from '@shared/styled/Typography';
+import StudyRoomSide from '@components/organisms/StudyRoomSide';
+import { useRecoilState } from 'recoil';
+import { studyingUsersState } from '../../../atoms/studyRoomState';
 
 interface IStudyRoomProps {
-  study: IStudyRoom;
   sendStatus: (status: CurrentActionType) => void;
 }
 
 export type CurrentActionType = 'study' | 'await' | 'sleep' | 'phone';
 
-export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
+export const StudyRoom = ({ sendStatus }: IStudyRoomProps) => {
   const videoElementRef = useRef<HTMLVideoElement>(null);
 
   const [loading, setLoading] = useState(true);
@@ -45,6 +47,10 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
   const [curAction, setCurAction] = useState<CurrentActionType>('study');
 
   const handDetectionSubject = new Subject<Results>();
+
+  const isLarge = useMediaQuery({ minWidth: 965 });
+
+  const [studyingUsers] = useRecoilState(studyingUsersState);
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -101,7 +107,7 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
 
     const _hand = new Hands({
       locateFile: (file) =>
-        `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+        `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.1/${file}`,
     });
     _hand.setOptions({
       //성능조절
@@ -152,12 +158,14 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
           </Spin>
         </div>
         <Footer tw="p-0">
-          <ResponsiveStyledStudyInfoBar status={curAction} />
+          <ResponsiveStyledStudyInfoBar status={curAction} isLarge={isLarge} />
         </Footer>
       </Layout>
-      {/*<Sider width={465}>*/}
-      {/*  <StudyRoomSide />*/}
-      {/*</Sider>*/}
+      {isLarge && (
+        <Layout.Sider width={465}>
+          <StudyRoomSide studyingUsers={studyingUsers || []} />
+        </Layout.Sider>
+      )}
       <Modal
         visible={isModalVisible}
         closable={false}
@@ -232,21 +240,16 @@ export const StudyRoom = ({ study, sendStatus }: IStudyRoomProps) => {
 
 const ResponsiveStyledStudyInfoBar = ({
   status,
+  isLarge,
 }: {
   status: CurrentActionType;
+  isLarge: boolean;
 }) => {
-  const isLarge = useMediaQuery({ minWidth: 965 });
-  return isLarge ? (
+  return (
     <StudyInfoBar
       status={status}
       // setTotalData={props.setTotalData}
-      isLarge={true}
-    />
-  ) : (
-    <StudyInfoBar
-      status={status}
-      // setTotalData={props.setTotalData}
-      isLarge={false}
+      isLarge={isLarge}
     />
   );
 };
