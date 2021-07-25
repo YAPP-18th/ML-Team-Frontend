@@ -82,9 +82,11 @@ export type DisturbanceCause =
   | 'smartphone'
   | 'await'
   | 'sleep'
+  | 'rest'
   | '스마트폰'
   | '자리비움'
-  | '졸음';
+  | '졸음'
+  | '휴식';
 export interface IDisturbance {
   name: DisturbanceCause;
   value: number;
@@ -100,4 +102,21 @@ export interface IReport {
   totalStatusTime: string;
   statuses: IDisturbance[];
   maxStatus: DisturbanceCause[];
+}
+export interface IStudyDisturbance {
+  [x: string]: any;
+  id: number;
+  type: DisturbanceCause;
+  count: number;
+  time: number;
+}
+export interface IStudyLog {
+  [x: string]: any;
+  id: number;
+  startedAt: string;
+  endedAt: string;
+  totalTime: number;
+  studyRoomId: string;
+  title: string;
+  statuses: IStudyDisturbance;
 }

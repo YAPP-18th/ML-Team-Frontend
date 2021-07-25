@@ -6,7 +6,7 @@ import moment, { Moment } from 'moment';
 import tw from 'twin.macro';
 import locale from 'antd/es/date-picker/locale/ko_KR';
 import { Content } from 'antd/es/layout/layout';
-import { IReport } from '@shared/interface';
+import { IReport, IStudyLog } from '@shared/interface';
 import useUser from '../../../hooks/useUser';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { Link, useRouteMatch } from 'react-router-dom';
@@ -19,6 +19,7 @@ import { StyledRestrictedArea } from '@shared/styled/Common';
 // typographys
 import { StdTypoH2 } from '@shared/styled/Typography';
 import getReport from '../../../hooks/apis/getReport';
+import getStudyLog from '../../../hooks/apis/getStudyLog';
 import { AxiosError } from 'axios';
 
 export interface IStudyData {
@@ -29,6 +30,7 @@ export interface IStudyData {
 export const Report = () => {
   const [date, setDate] = useState<Moment>();
   const [report, setReport] = useState<IReport[]>();
+  const [studyLog, setStudyLog] = useState<IStudyLog[]>();
   const user = useUser();
   const { path } = useRouteMatch();
   const [accessToken] = useLocalStorage('accessToken');
@@ -51,6 +53,30 @@ export const Report = () => {
         })
         .catch((err) => {
           setReport([]);
+          throw err;
+        });
+      getStudyLog(
+        {
+          date: value?.format('yyyy-MM-DD'),
+          user_id: user.data?.id,
+        },
+        accessToken,
+      )
+        .then((r) => {
+          const filteredData: React.SetStateAction<IStudyLog[]> = [];
+          r.map((log) => {
+            const startDate = log.startedAt.split('T');
+            if (startDate[0] === value?.format('yyyy-MM-DD')) {
+              filteredData.push(log);
+            }
+          });
+          setStudyLog(filteredData);
+        })
+        .catch((err: AxiosError) => {
+          throw err;
+        })
+        .catch((err) => {
+          setStudyLog([]);
           throw err;
         });
     }
@@ -78,8 +104,9 @@ export const Report = () => {
         </div>
         <Content>
           {/* <div>{JSON.stringify(report)}</div> */}
+          {/* {studyLog && }<div>{JSON.stringify(studyLog)}</div> */}
           {JSON.stringify(report) !== '[]' ? (
-            <MyReport StudyData={report} />
+            <MyReport StudyData={report} StudyLogData={studyLog} />
           ) : (
             <NoReport />
           )}
