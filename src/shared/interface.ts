@@ -105,3 +105,20 @@ export interface IReport {
   statuses: IDisturbance[];
   maxStatus: DisturbanceCause[];
 }
+export interface IStudyDisturbance {
+  [x: string]: any;
+  id: number;
+  type: DisturbanceCause;
+  count: number;
+  time: number;
+}
+export interface IStudyLog {
+  [x: string]: any;
+  id: number;
+  startedAt: string;
+  endedAt: string;
+  totalTime: number;
+  studyRoomId: string;
+  title: string;
+  statuses: IStudyDisturbance;
+}
