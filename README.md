@@ -3,7 +3,7 @@
 
 [https://www.studeep.com](https://www.studeep.com/)
 
-## **✈️ Tech stacks**
+## **✈️ Tech stacks**
 
 ### **Core**
 
@@ -49,9 +49,9 @@
 
 ### Study Room — Machine Learning
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c4ad1c3a-e91d-4d79-b4e6-0512512d2a4b/Studyroom1.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c4ad1c3a-e91d-4d79-b4e6-0512512d2a4b/Studyroom1.png)
+![studyroom1](./images/studyroom1.png)
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fb77a234-f739-4181-a2dd-4212739daef7/Studyroom2.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fb77a234-f739-4181-a2dd-4212739daef7/Studyroom2.png)
+![studyroom2](./images/studyroom2.png)
 
 When you enter the study room, Tensorflow.js will be operated for the registered webcam.
 
@@ -63,7 +63,7 @@ And through **WebSocket(Socket.IO)** technology, you can share your study status
 
 ### Study Report — Data Visualization
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dba57636-cb60-46b2-9989-9df590d49b81/Authentication.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dba57636-cb60-46b2-9989-9df590d49b81/Authentication.png)
+![report](./images/report.png)
 
 We visualize the study timeline of the day and distraction factors as a chart.
 
@@ -71,7 +71,7 @@ If you hover your cursor on the bar displaying your spending time in one study r
 
 ### My Study
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/aeecb131-b5e5-414f-843c-3fbe2d9990b4/mystudy.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/aeecb131-b5e5-414f-843c-3fbe2d9990b4/mystudy.png)
+![mystudy](./images/mystudy.png)
 
 You can make your own private or public study rooms.
 In *OnAir Studyroom* section, you can find and participate in other study rooms.
