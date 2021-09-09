@@ -12,6 +12,7 @@
 
 - React 17
 - TypeScript
+- Recoil
 - RxJS for Reactive Programming
 - OAuth 2.0 for Access-Token handling
 - Context API
